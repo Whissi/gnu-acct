@@ -90,11 +90,11 @@ ac \-  print statistics about users' connect time
 .B ac 
 prints out a report of connect time (in hours) based on the
 logins/logouts in the current
-.I @WTMP_FILE_LOC@
+.I wtmp
 file.  A total is also printed out.
 .LP
 The accounting file 
-.I @WTMP_FILE_LOC@
+.I wtmp
 is maintained by 
 .BR init (8)
 and
@@ -104,12 +104,12 @@ Neither
 nor
 .B login
 creates the 
-.I @WTMP_FILE_LOC@;
+.I wtmp
 if it doesn't exist, no accounting is done.  To begin accounting, create 
 the file with a length of zero.  
 .LP
 NOTE:  The 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file can get really big, really fast.  You might want to trim it every 
 once and a while.
 .LP
@@ -160,12 +160,12 @@ is a space separated list of valid user names; wildcards are not allowed.
 Read from the file 
 .I filename
 instead of the system's 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file.
 .TP
 .B \-\-complain
 When the 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file has a problem (a time-warp, missing record, or
 whatever), print out an appropriate error.
 .TP
@@ -198,7 +198,7 @@ compatibility, include this flag.*
 .TP
 .B \-\-timewarps
 Sometimes, entries in a
-.I @WTMP_FILE_LOC
+.I wtmp
 file will suddenly jump back into the past without a clock change
 record occurring.  It is impossible to know how long a user was logged
 in when this occurs.  If you want to count the time between the login
@@ -219,7 +219,7 @@ the next day where there is login activity.
 Set the time warp leniency to 
 .I num 
 seconds.  Records in 
-.I @WTMP_FILE_LOC@
+.I wtmp
 files might be slightly out of order (most notably when two logins
 occur within a one-second period - the second one gets written first).
 By default, this value is set to 60.  If the program notices this
@@ -231,10 +231,10 @@ flag is used.
 Set the time warp suspicious value to 
 .I num 
 seconds.  If two records in the
-.I @WTMP_FILE_LOC@
+.I wtmp
 file are farther than this number of seconds apart, there is a problem
 with the
-.I @WTMP_FILE_LOC
+.I wtmp
 file (or your machine hasn't been used in a year).  If the program
 notices this problem, time is not assigned to users unless the
 .B \-\-timewarps
@@ -256,9 +256,10 @@ Print the version number of
 to standard output and quit.
 .TP
 .B \-h, \-\-help
-Prints the usage string to standard output and quit.
+Prints the usage string and default locations of system files to
+standard output and exits.
 .SH FILES
-.I @WTMP_FILE_LOC@
+.I wtmp
 .RS
 The system wide login record file. See
 .BR wtmp (5)

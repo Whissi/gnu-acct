@@ -1,6 +1,6 @@
 /* lastcomm.c */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -42,11 +42,12 @@ MA 02139, USA.  */
 #endif
 
 #include <pwd.h>
+
+#include "common.h"
 #include "uid_hash.h"
 #include "dev_hash.h"
 #include "pacct_rd.h"
 #include "hashtab.h"
-#include "common.h"
 #include "getopt.h"
 #include "version.h"
 
@@ -74,12 +75,12 @@ struct hashtab *all_list = NULL;     /* lookup table for users/ttys/cmds */
 
 /* protos */
 
-void main (int, char *[]);
-void give_usage (void);
-void parse_entries (void);
-char *devname (long);
-int get_entry (struct acct **);
-int desired_entry (char *, char *, char *);
+void main PARAMS((int, char *[]));
+void give_usage PARAMS((void));
+void parse_entries PARAMS((void));
+char *devname PARAMS((long));
+int get_entry PARAMS((struct acct **));
+int desired_entry PARAMS((char *, char *, char *));
 
 
 /* code */
@@ -126,8 +127,8 @@ main (int argc, char *argv[])
 	  break;
 	case 'V':
 	case 2:
-	  printf ("%s: GNU Accounting Utilities (release %d.%d)\n",
-		  program_name, RELEASE_MAJOR, RELEASE_MINOR);
+	  printf ("%s: GNU Accounting Utilities (release %s)\n",
+		  program_name, VERSION_STRING);
 	  exit (0);
 	  break;
 	case 'f':
@@ -229,6 +230,7 @@ Usage: %s [-hV] [-f file] [command] ... [user] ... [terminal] ...\n\
 ";
   
   printf (usage, program_name);
+  print_acct_file_location ();
 }
 
 /* parse the entries in an acct file */

@@ -1,26 +1,35 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in,v 1.21 1996/04/19 07:23:48 noel Exp $
+
+dnl init autoconf
 AC_INIT(ac.c)
-AC_CONFIG_HEADER(config.h)
+dnl macros for automake
+AM_INIT_AUTOMAKE(acct, 6.3.2, no-define-symbols)
+AM_CONFIG_HEADER(config.h)
+
+AC_ARG_PROGRAM
 AC_PROG_CC
-if test $ac_cv_prog_gcc_g = yes; then
-  CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
+if test "x${ac_cv_prog_gcc}" = "xyes"; then
+ CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
 fi
 AC_PROG_CPP
-AC_GCC_TRADITIONAL
+AC_PROG_GCC_TRADITIONAL
 AC_PROG_INSTALL
 AC_AIX
 AC_MINIX
 AC_ISC_POSIX
-AC_ALLOCA
-AC_RETSIGTYPE
-dnl AC_MAJOR_HEADER
+
+AM_C_PROTOTYPES
+AC_C_CONST
+
+AC_FUNC_ALLOCA
+AC_TYPE_SIGNAL
+dnl AC_HEADER_MAJOR
 MKTIME_C="mktime.c" MKTIME_O="mktime.o"
-AC_FUNC_CHECK(mktime,
+AC_CHECK_FUNC(mktime,
               AC_DEFINE(HAVE_MKTIME)
               MKTIME_C="" MKTIME_O="" )
-AC_FUNC_CHECK(getpagesize, AC_DEFINE(HAVE_GETPAGESIZE))
-AC_FUNC_CHECK(rename, AC_DEFINE(HAVE_RENAME))
+AC_CHECK_FUNC(getpagesize, AC_DEFINE(HAVE_GETPAGESIZE))
+AC_CHECK_FUNC(rename, AC_DEFINE(HAVE_RENAME))
 AC_CHECK_HEADERS(limits.h stdlib.h unistd.h string.h)
 dnl
 dnl crunky time stuff
@@ -37,18 +46,24 @@ AC_PATH_PROGS(SYS_SA, sa, echo, /bin /etc /sbin /usr/bin /usr/etc /usr/sbin /usr
 dnl
 dnl find out what fields are valid in utmp.h
 dnl
-AC_HEADER_EGREP(ut_id, utmp.h, AC_DEFINE(HAVE_UT_ID), )
-AC_HEADER_EGREP(ut_pid, utmp.h, AC_DEFINE(HAVE_UT_PID), )
-AC_HEADER_EGREP(ut_host, utmp.h, AC_DEFINE(HAVE_UT_HOST), )
-AC_HEADER_EGREP(ut_addr, utmp.h, AC_DEFINE(HAVE_UT_ADDR), )
-AC_HEADER_EGREP(ut_type, utmp.h, AC_DEFINE(HAVE_UT_TYPE), )
+AC_EGREP_HEADER(ut_id, utmp.h, AC_DEFINE(HAVE_UT_ID), )
+AC_EGREP_HEADER(ut_pid, utmp.h, AC_DEFINE(HAVE_UT_PID), )
+AC_EGREP_HEADER(ut_host, utmp.h, AC_DEFINE(HAVE_UT_HOST), )
+AC_EGREP_HEADER(ut_addr, utmp.h, AC_DEFINE(HAVE_UT_ADDR), )
+AC_EGREP_HEADER(ut_type, utmp.h, AC_DEFINE(HAVE_UT_TYPE), )
 dnl
 dnl figure out where acct.h lives
 dnl and whether fields are int/comp_t
 dnl
 AC_CHECK_HEADER(sys/acct.h,
                 AC_DEFINE(HAVE_SYS_ACCT_H)
-                PACCT_PROGS="dump-acct accton lastcomm sa"
+                DUMP_ACCT_PROG=dump-acct
+		ACCTON_PROG=accton
+		LASTCOMM_PROG=lastcomm
+		SA_PROG=sa
+                ACCTON_MAN=accton.8
+		LASTCOMM_MAN=lastcomm.1
+		SA_MAN=sa.8
 	        AC_HEADER_EGREP(ac_utime, sys/acct.h,
 				AC_DEFINE(HAVE_ACUTIME)
                                 AC_HEADER_EGREP(comp_t.*ac_utime, sys/acct.h,
@@ -82,7 +97,13 @@ dnl -- made changes to linux/acct.h.  This code will execute only if
 dnl -- autoconf doesn't find sys/acct.h.
   AC_CHECK_HEADER(linux/acct.h,
 		  AC_DEFINE(HAVE_LINUX_ACCT_H)
-		  PACCT_PROGS="dump-acct accton lastcomm sa"
+		  DUMP_ACCT_PROG=dump-acct
+		  ACCTON_PROG=accton
+		  LASTCOMM_PROG=lastcomm
+		  SA_PROG=sa
+		  ACCTON_MAN=accton.8
+		  LASTCOMM_MAN=lastcomm.1
+		  SA_MAN=sa.8
 		  AC_HEADER_EGREP(ac_utime, linux/acct.h,
 				  AC_DEFINE(HAVE_ACUTIME)
 				  AC_HEADER_EGREP(comp_t.*ac_utime,
@@ -129,77 +150,113 @@ AC_TRY_RUN(
 #include <utmp.h>
 
 #ifndef WTMP_FILE
-  #if defined(__FreeBSD__) || defined (__NetBSD__) || defined(__linux__)
-    #define WTMP_FILE "/var/log/wtmp"
-  #elif defined(sun) || defined(AMIX)
-    #define WTMP_FILE "/var/adm/wtmp"
-  #elif defined(sgi) || defined(SVR4)
-    #define WTMP_FILE "/usr/adm/wtmp"
-  #else
-    #define WTMP_FILE "/usr/adm/wtmp"
-  #endif
+#  if defined(__FreeBSD__) || defined (__NetBSD__) || defined(__linux__)
+#    define WTMP_FILE "/var/log/wtmp"
+#  else
+#    if defined(sun) || defined(AMIX)
+#      define WTMP_FILE "/var/adm/wtmp"
+#    else
+#      if defined(sgi) || defined(SVR4)
+#        define WTMP_FILE "/usr/adm/wtmp"
+#      else
+#        define WTMP_FILE "/usr/adm/wtmp"
+#      endif
+#    endif
+#  endif
 #endif
 
 #ifndef ACCT_FILE
-  #if defined(__FreeBSD__) || defined(__linux__)
-    #define ACCT_FILE "/var/account/pacct"
-  #elif defined(__NetBSD__)
-    #define ACCT_FILE "/var/account/acct"
-  #elif defined(sun) || defined(AMIX)
-    #define ACCT_FILE "/var/adm/pacct"
-  #elif defined(sgi) || defined(SVR4) || defined(M_XENIX)
-    #define ACCT_FILE "/usr/adm/pacct"
-  #else
-    #define ACCT_FILE "/usr/adm/acct"
-  #endif
+#  if defined(__FreeBSD__) || defined(__linux__)
+#    define ACCT_FILE "/var/account/pacct"
+#  else
+#    if defined(__NetBSD__)
+#      define ACCT_FILE "/var/account/acct"
+#    else
+#      if defined(sun) || defined(AMIX)
+#        define ACCT_FILE "/var/adm/pacct"
+#      else
+#        if defined(sgi) || defined(SVR4) || defined(M_XENIX)
+#          define ACCT_FILE "/usr/adm/pacct"
+#        else
+#          define ACCT_FILE "/usr/adm/acct"
+#        endif
+#      endif
+#    endif
+#  endif
 #endif
 
 #ifndef SAVACCT_FILE
-  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
-    #define SAVACCT_FILE "/var/account/savacct"
-  #elif defined(sun) || defined(AMIX)
-    #define SAVACCT_FILE "/var/adm/savacct"
-  #elif defined(sgi) || defined(SVR4)
-    #define SAVACCT_FILE "/usr/adm/savacct"
-  #else
-    #define SAVACCT_FILE "/usr/adm/savacct"
-  #endif
+#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+#    define SAVACCT_FILE "/var/account/savacct"
+#  else
+#    if defined(sun) || defined(AMIX)
+#      define SAVACCT_FILE "/var/adm/savacct"
+#    else
+#      if defined(sgi) || defined(SVR4)
+#        define SAVACCT_FILE "/usr/adm/savacct"
+#      else
+#        define SAVACCT_FILE "/usr/adm/savacct"
+#      endif
+#    endif
+#  endif
 #endif
 
 #ifndef USRACCT_FILE
-  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
-    #define USRACCT_FILE "/var/account/usracct"
-  #elif defined(sun) || defined(AMIX)
-    #define USRACCT_FILE "/var/adm/usracct"
-  #elif defined(sgi) || defined(SVR4)
-    #define USRACCT_FILE "/usr/adm/usracct"
-  #else
-    #define USRACCT_FILE "/usr/adm/usracct"
-  #endif
+#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+#    define USRACCT_FILE "/var/account/usracct"
+#  else
+#    if defined(sun) || defined(AMIX)
+#      define USRACCT_FILE "/var/adm/usracct"
+#    else
+#      if defined(sgi) || defined(SVR4)
+#        define USRACCT_FILE "/usr/adm/usracct"
+#      else
+#        define USRACCT_FILE "/usr/adm/usracct"
+#      endif
+#    endif
+#  endif
 #endif
 
 main ()
 {
   FILE *fp;
   fp = fopen ("locs", "w");
-  fputs ("WTMP_FILE_LOC=" WTMP_FILE "\n", fp);
-  fputs ("ACCT_FILE_LOC=" ACCT_FILE "\n", fp);
-  fputs ("SAVACCT_FILE_LOC=" SAVACCT_FILE "\n", fp);
-  fputs ("USRACCT_FILE_LOC=" USRACCT_FILE "\n", fp);
+  fprintf (fp, "WTMP_FILE_LOC=%s\n", WTMP_FILE);
+  fprintf (fp, "ACCT_FILE_LOC=%s\n", ACCT_FILE);
+  fprintf (fp, "SAVACCT_FILE_LOC=%s\n", SAVACCT_FILE);
+  fprintf (fp, "USRACCT_FILE_LOC=%s\n", USRACCT_FILE);
   fclose (fp);
   exit (0);
 }
-], . locs; rm locs )
-AC_PID_T dnl for sys/acct.h
-AC_UID_T dnl same as above
-AC_SIZE_T
+], . ./locs; rm locs,
+   echo "Error -- could not locate your wtmp and acct files."; exit 1,
+   echo "Sorry -- you cannot cross-compile this package (FIXME)."; exit 1 )
+AC_TYPE_PID_T dnl for sys/acct.h
+AC_TYPE_UID_T dnl same as above
+AC_TYPE_SIZE_T
 AC_HEADER_DIRENT
 echo checking for kitchen sink... You find a ring in the sink!
-AC_SUBST(PACCT_PROGS)
+
+dnl Substitute program names for automake
+AC_SUBST(DUMP_ACCT_PROG)
+AC_SUBST(ACCTON_PROG)
+AC_SUBST(LASTCOMM_PROG)
+AC_SUBST(SA_PROG)
+
+dnl Substitute manual page names for automake
+AC_SUBST(ACCTON_MAN)
+AC_SUBST(LASTCOMM_MAN)
+AC_SUBST(SA_MAN)
+
+dnl Substitutions for mktime
 AC_SUBST(MKTIME_C)
 AC_SUBST(MKTIME_O)
+
+dnl Substitutions for file locations
 AC_SUBST(WTMP_FILE_LOC)
 AC_SUBST(ACCT_FILE_LOC)
 AC_SUBST(SAVACCT_FILE_LOC)
 AC_SUBST(USRACCT_FILE_LOC)
-AC_OUTPUT(Makefile files.h accounting.texi ac.1 accton.8 last.1 lastcomm.1 sa.8, echo timestamp > stamp-h)
+
+dnl Dump the makefiles and etc.
+AC_OUTPUT(Makefile files.h version.h, [test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h])

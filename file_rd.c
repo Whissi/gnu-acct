@@ -11,8 +11,8 @@
 #include <string.h>
 #endif
 
-#include "file_rd.h"
 #include "common.h"
+#include "file_rd.h"
 
 /* Set up a file reader. */
 
@@ -185,10 +185,10 @@ file_reader_get_entry (struct file_rd_info *fri)
     char *rec;
 
     if (fri->backwards)
-      rec = fri->buffer + (--fri->recs_left * fri->record_size);
+      rec = (char *) fri->buffer + (--fri->recs_left * fri->record_size);
     else
-      rec = fri->buffer + ((fri->recs_read - fri->recs_left--)
-			   * fri->record_size);
+      rec = (char *) fri->buffer + ((fri->recs_read - fri->recs_left--)
+				    * fri->record_size);
 
     fri->rec_number++;
 

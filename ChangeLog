@@ -1,3 +1,204 @@
+Tue Mar 10 10:13:07 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* NEWS: document new features in this release.
+
+	* configure.in: increment version to 6.3.2.
+	* configure: regenerated.
+
+	* accounting.text: add Solar Designer to contributors.
+
+Tue Mar 10 09:54:29 1998  Solar Designer  <solar@false.com
+
+	* sa.c (print_user_list): off-by one error when allocating space
+ 	for entry_array.
+
+1997-10-13  Noel Cragg  <noel@swish.red-bean.com>
+
+	* mktime.c: copied new version of this file from glibc (includes
+	fixes for leap days).
+
+	* files.h.in: move #ifndef AHZ statement from common.h so that we
+	make sure we've included the files that might define AHZ before
+	redefining it!
+	* common.h: removed #ifndef AHZ statement.
+
+	* Makefile.am (compare): still specifying old names (tests-*)
+	instead of new ones.  Fixed.
+	* Makefile.in: regenerated.
+	* configure: regenerated.
+
+Sun Oct 12 11:50:18 1997  Kaveh R. Ghazi  <ghazi@caip.rutgers.edu>
+
+	* ac.c: Move inclusion of common.h ahead of all other local
+	headers so that the PARAMS() macro is always defined.
+	* dump-acct.c: Likewise.
+	* dump-utmp.c: Likewise.
+	* hashtab.c: Likewise.
+	* last.c: Likewise.
+	* lastcomm.c: Likewise.
+	* pacct_rd.c: Likewise.
+	* sa.c: Likewise.
+	* utmp_rd.c: Likewise.
+	
+	* ac.c: Wrap prototype function arguments in the PARAMS() macro.
+	* accton.c: Likewise.
+	* common.h: Likewise.
+	* dev_hash.h: Likewise.
+	* dump-acct.c: Likewise.
+	* dump-utmp.c: Likewise.
+	* file_rd.h: Likewise.
+	* hashtab.h: Likewise.
+	* last.c: Likewise.
+	* lastcomm.c: Likewise.
+	* pacct_rd.h: Likewise.
+	* sa.c: Likewise.
+	* uid_hash.h: Likewise.
+	* utmp_rd.h: Likewise.
+
+	* ac.c (user_data): Avoid using automatic aggregate initialization.
+	* sa.c (empty_string): Likewise.
+
+	* al_share.cpp: Avoid using a "void" function signature argument
+	since ansi2knr doesn't parse included files, of which this is one.
+
+	* common.h: Define the PARAMS() macro.
+
+	* configure.in: Add AC_C_CONST.  Also, avoid using an indented #
+	in cpp macros or the #elif directive.  Avoid using ANSI string
+	concatination in fputs, use fprintf instead.
+
+	* dump-acct.c: Avoid ANSI string concatination.
+	* dump-utmp.c: Likewise.
+
+	* getopt.h: Remove unnecessary use of the PROTOTYPES macro.
+
+1997-10-11  Noel Cragg  <noel@swish.red-bean.com>
+
+	* NEWS: document new features in this release.
+
+	* configure.in: increment version to 6.3.1 for prerelease testing.
+	* configure: regenerated.
+
+1997-10-08  Noel Cragg  <noel@swish.red-bean.com>
+
+	* Makefile.am (compare): new target.  Since what we're really
+	doing is comparing the output of these utils to the system's utils
+	(and not in anything resembling an automated fashion -- I'm not
+	sure _that_ can be accomplished), don't use the "check" target.
+
+	* Makefile.in: regenerated.
+	
+	* common.h: include prototypes iff PROTOTYPES is set.
+	* dev_hash.h: same.
+	* file_rd.h: same.
+	* getopt.h: same.
+	* hashtab.h: same.
+	* pacct_rd.h: same.
+	* uid_hash.h: same.
+	* utmp_rd.h: same.
+
+	* .cvsignore: ignore version.texi and stamp-vti files.
+
+	* accounting.texi: include the automake-generated version.texi
+	file so we can automatically substitute VERSION and UPDATED
+	variables.
+
+	* texinfo.tex: removed -- automake supplies it.
+
+Mon Sep 29 13:34:05 1997  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure: regenerated again (lots of changes today, no?).
+	* config.h.in: same.
+	* Makefile.in: same.
+	
+	* configure.in: changed order around to make automake happy.
+  	Changed the substitutions for pacct programs being built by
+ 	creating a variable for each program in question.  This allows us
+ 	to place the definitions for those in different install targets in
+ 	the generated Makefile.
+
+	* acconfig.h: add a #define for PROTOTYPES.  This will mean source
+ 	changes, too, but those haven't been completed yet.
+
+	* Makefile.am: choose the correct bin directories for each program
+ 	and fix the rules for man pages.  Comment out tests for the time
+ 	being, until my tests can be munged into the correct form for
+ 	automake.
+
+	* Makefile.in: thought better of removing it, actually.  We
+ 	include "configure" even though it is regenerated, no?
+		
+	* accounting.texi: rms says that the manual shouldn't contain the
+ 	locations of the system files -- we want to be able to share
+ 	manuals between systems.  Removed all locations and added a note
+ 	about default filesystem locations of wtmp and acct files.  Also
+ 	made below change to common.c to make it easier for people to
+ 	track down their system files.
+	* ac.1: same, plus renamed from ac.1.in since we no longer need to
+ 	substitute pathnames into this file.
+	* accton.8: same, similar.
+	* last.1: same, similar.
+	* lastcomm.1: same, similar.
+	* sa.8: same, similar.
+	
+	* common.c (print_acct_file_locations): new function.  Display the
+ 	locations of the default process accouting files.
+	(print_wtmp_file_location): new function.  Same as above, but for
+ 	the wtmp file.
+	* common.h: add prototypes for above.
+	* ac.c: call the appropriate function above when giving help.
+	* accton.c: same.
+	* dump-acct.c: same.
+	* dump-utmp.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+
+	* Fixed copyright dates in all files to conform to
+ 	gnuorg/maintain.text.
+
+	* configure.in: add a default in the AC_TRY_RUN macro for
+ 	cross-compiling so autoconf doesn't complain every time it is run.
+	* configure: regenerated.
+
+	* install-sh: renamed from install.sh.
+
+	* mkinstalldirs: add to conform to automake.
+	
+	* version.h.in: do text substitution via autoconf to get our
+ 	version number to conform to automake.
+	* version.h: removed -- now automatically generated.
+	* ac.c: use new #define -- VERSION_STRING -- from version.h
+	* accton.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+	
+	* Makefile.am: new file.  Converted the package to use automake.
+  	What a gas!
+	* Makefile.in: removed, since automake generates it.
+	
+	* AUTHORS: new file, added to meet GNU standards.
+	* NEWS: same.
+
+	* INSTALL: new version from FSF.
+
+	* configure.in: convert old autoconf macro names to new.
+	* configure: regenerated.
+	* config.h.in: regenerated.
+
+	* Makefile.in (prefix): fix typo -- missing `@' signs.  Thanks to
+ 	Walter Mueller <walt@pi4.informatik.uni-mannheim.de>.
+	
+	* file_rd.c (file_reader_get_entry): cast pointers to (char *)
+ 	before doing pointer arithmetic, also from Eric.
+	
+	* configure.in: add fixes to support HP-UX 9.05 with /bin/cc.
+  	Thanks to Eric Backus <ericb@lsid.hp.com>.
+
+	* alloca.c: new file, for those system that don't have alloca.
+	* Makefile.in: add @ALLOCA@ to all object lists.
+	
 Tue Aug 19 10:20:55 1997  Noel Cragg  <noel@swish.red-bean.com>
 
 	* version.h: increment version to 6.3.

@@ -1,6 +1,6 @@
 /* accton.c */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file contains the code for GNU accton.
 
@@ -41,8 +41,8 @@ char *program_name;		/* name of this executable */
 
 /* protos */
 
-void main (int argc, char *argv[]);
-void usage (void);
+void main PARAMS((int argc, char *argv[]));
+void usage PARAMS((void));
 
 
 /* code */
@@ -54,6 +54,7 @@ usage (void)
 Usage: %s [-hV] [file]\n\
        [--help] [--version]\n",
 	  program_name);
+  print_acct_file_location ();
 }
 
 void
@@ -83,8 +84,8 @@ main (int argc, char *argv[])
 	{
 	case 'V':
 	case 1:
-	  printf ("%s: GNU Accounting Utilities (release %d.%d)\n",
-		  program_name, RELEASE_MAJOR, RELEASE_MINOR);
+	  printf ("%s: GNU Accounting Utilities (release %s)\n",
+		  program_name, VERSION_STRING);
 	  exit (0);
 	  break;
 	case 'h':

@@ -1,6 +1,6 @@
 /* last.c */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -51,8 +51,8 @@ MA 02139, USA.  */
 #include <signal.h>
 #endif
 
-#include "utmp_rd.h"
 #include "common.h"
+#include "utmp_rd.h"
 #include "getopt.h"
 #include "hashtab.h"
 #include "version.h"
@@ -139,20 +139,20 @@ struct login_data {
 
 /* prototypes */
 
-void log_everyone_in (time_t);
-void give_usage (void);
-void parse_entries (void);
-void update_system_time (time_t);
-void log_out (struct utmp *entry, short fake_flag);
-void log_in (struct utmp *);
-void print_record (struct utmp *, time_t logout_time,
-		   char *, char *, char *);
-void display_date (time_t now);
+void log_everyone_in PARAMS((time_t));
+void give_usage PARAMS((void));
+void parse_entries PARAMS((void));
+void update_system_time PARAMS((time_t));
+void log_out PARAMS((struct utmp *entry, short fake_flag));
+void log_in PARAMS((struct utmp *));
+void print_record PARAMS((struct utmp *, time_t logout_time,
+			  char *, char *, char *));
+void display_date PARAMS((time_t now));
 
 #if defined (SVR4) && !defined (_POSIX_SOURCE)
-RETSIGTYPE handler (int, int, struct sigcontext *);
+RETSIGTYPE handler PARAMS((int, int, struct sigcontext *));
 #else
-RETSIGTYPE handler (int);
+RETSIGTYPE handler PARAMS((int));
 #endif
 
 
@@ -267,8 +267,8 @@ main (int argc, char *argv[])
 	  break;
 	case 'V':
 	case 6:
-	  printf ("%s: GNU Accounting Utilities (release %d.%d)\n",
-		  program_name, RELEASE_MAJOR, RELEASE_MINOR);
+	  printf ("%s: GNU Accounting Utilities (release %s)\n",
+		  program_name, VERSION_STRING);
 	  exit (0);
 	  break;
 	case 'f':
@@ -409,6 +409,7 @@ Usage: %s [-"
 ;
   
   printf (usage, program_name);
+  print_wtmp_file_location ();
 }
 
 

@@ -3,4 +3,4 @@
  * protos & c.
  */
 
-char *uid_name (int);
+char *uid_name PARAMS((int));

@@ -14,8 +14,8 @@
 #include <stdlib.h>
 #endif
 
-#include "hashtab.h"
 #include "common.h"
+#include "hashtab.h"
 
 #define INITIAL_TABLE_SIZE 7	/* number of buckets */
 #define RESIZE_MULTIPLIER 4	/* grow table by this factor */

@@ -33,17 +33,17 @@ struct hashtab {
 				   the data to be added. */
 };
 
-
-struct hashtab *hashtab_init (int numeric);
-struct hashtab_elem *hashtab_create (struct hashtab *ht, void *key,
-				     unsigned int len);
-struct hashtab_elem *hashtab_find (struct hashtab *ht, void *key,
-				   unsigned int len);
-void *hashtab_get_key (struct hashtab_elem *he);
-void *hashtab_get_value (struct hashtab_elem *he);
-void hashtab_set_value (struct hashtab_elem *he, void *v, unsigned int len);
-struct hashtab_elem *hashtab_first (struct hashtab *ht,
-				    struct hashtab_order *ho);
-struct hashtab_elem *hashtab_next (struct hashtab_order *ho);
-void hashtab_dump_keys (struct hashtab *ht, FILE *out);
-void hashtab_delete (struct hashtab_elem *he);
+struct hashtab *hashtab_init PARAMS((int numeric));
+struct hashtab_elem *hashtab_create PARAMS((struct hashtab *ht, void *key,
+					    unsigned int len));
+struct hashtab_elem *hashtab_find PARAMS((struct hashtab *ht, void *key,
+					  unsigned int len));
+void *hashtab_get_key PARAMS((struct hashtab_elem *he));
+void *hashtab_get_value PARAMS((struct hashtab_elem *he));
+void hashtab_set_value PARAMS((struct hashtab_elem *he,
+			       void *v, unsigned int len));
+struct hashtab_elem *hashtab_first PARAMS((struct hashtab *ht,
+					   struct hashtab_order *ho));
+struct hashtab_elem *hashtab_next PARAMS((struct hashtab_order *ho));
+void hashtab_dump_keys PARAMS((struct hashtab *ht, FILE *out));
+void hashtab_delete PARAMS((struct hashtab_elem *he));

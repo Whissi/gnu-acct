@@ -1,6 +1,6 @@
 /* common.h */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -22,7 +22,7 @@ MA 02139, USA.  */
 #ifndef COMMON_H
 #define COMMON_H
 
-#include "config.h"		/* can't hurt!  work that compiler! */
+#include "config.h"		/* can't hurt!  work that CPP! */
 
 /* defines */
 
@@ -38,18 +38,22 @@ MA 02139, USA.  */
 #define SEEK_END 2
 #endif
 
-#ifndef AHZ
-#define AHZ 64
-#endif
+#if PROTOTYPES
+#define PARAMS(x) x
+#else
+#define PARAMS(x) ()
+#endif /* PROTOTYPES */
 
-/* prototypes */
-
-char *xmalloc (unsigned);
-void fatal (char *);
-FILE *file_open (char *, int);
+char *xmalloc PARAMS((unsigned));
+void fatal PARAMS((char *));
+FILE *file_open PARAMS((char *, int));
 
 #ifndef HAVE_RENAME
-int rename (char *from, char *to);
+int rename PARAMS((char *from, char *to));
 #endif
+
+void print_wtmp_file_location PARAMS((void));
+void print_acct_file_location PARAMS((void));
+void print_acct_file_locations PARAMS((void));
 
 #endif /* COMMON_H */

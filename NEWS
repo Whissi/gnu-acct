@@ -1,0 +1,38 @@
+New in 6.3.2:
+
+  * Small memory leak fixed in sa.
+
+  * Released to the general public.
+
+
+New in 6.3.1:
+
+  * A `NEWS' file (and others) so that we conform to the GNU
+    requirements for packaging.
+
+  * We use `automake' to build the package, so things like ansi2knr
+    should be called automatically for those of you that don't have
+    ANSI C compilers.  It also helps write the install targets, etc.
+    Very cool.  I was suprised how easy it was to integrate into this
+    package.  Hats off to David J. MacKenzie and Tom Tromey!
+
+
+New in 6.3:
+
+  * Hey!  We're on prep.ai.mit.edu!
+
+  * Renamed long option `--year' to `--print-year' in both the ac and
+  last programs.
+
+  * Added a `--print-seconds' (or `-s') flag to last, for those who
+  really want the nitty-gritty.
+
+  * Added a `--sort-real-time' option to sa for those who want to sort
+  the output by "real" (elapsed) time.
+
+  * Fixed a buffer overrun error in sa which was preventing it from
+  sorting the username list correctly.
+
+Ancient history:
+
+  * Check the file `ChangeLog' in the source directory.

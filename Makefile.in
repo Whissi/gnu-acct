@@ -1,144 +1,119 @@
-# Makefile for GNU acct utils
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
 
-srcdir = @srcdir@
-VPATH = $(srcdir)
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
 
-prefix = /usr/local
-
-CC = @CC@
-LIBS = @LIBS@
-
-CFLAGS = @CFLAGS@ @DEFS@
-LDFLAGS = $(CFLAGS)
-INCLUDES = -I. -I$(srcdir)
 
 SHELL = /bin/sh
-MV = mv
-MAKEINFO = makeinfo
-TEXI2DVI = texi2dvi
 
-#
-# generic rules
-#
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
-all: dump-utmp ac last @PACCT_PROGS@
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
 
-clean:
-	$(RM) dump-utmp ac last dump-acct lastcomm sa accton *.o
-	$(RM) core mktime
-	$(RM) mon.out *.Addrs *.Counts *.pixie
-	$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
-	$(RM) accounting.info
-	$(RM) *.sys *.gnu tests-ac tests-last tests-lastcomm tests-sa
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 
-mostlyclean: clean
+top_builddir = .
 
-distclean: mostlyclean
-	$(RM) config.status Makefile config.h config.cache files.h stamp-h
-	$(RM) ac.1 accton.8 last.1 lastcomm.1 sa.8 accounting.texi
-	$(RM) TAGS
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
 
-maintainer-clean: distclean
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
 
-.PHONY: TAGS
-TAGS:
-	etags *.c
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
+ACCTON_MAN = @ACCTON_MAN@
+ACCTON_PROG = @ACCTON_PROG@
+CC = @CC@
+CPP = @CPP@
+DUMP_ACCT_PROG = @DUMP_ACCT_PROG@
+LASTCOMM_MAN = @LASTCOMM_MAN@
+LASTCOMM_PROG = @LASTCOMM_PROG@
+MAKEINFO = @MAKEINFO@
+MKTIME_C = @MKTIME_C@
+MKTIME_O = @MKTIME_O@
+PACKAGE = @PACKAGE@
+SA_MAN = @SA_MAN@
+SA_PROG = @SA_PROG@
+U = @U@
+VERSION = @VERSION@
 
+AUTOMAKE_OPTIONS = ansi2knr
 
-.c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+bin_PROGRAMS = ac last @LASTCOMM_PROG@
+sbin_PROGRAMS = dump-utmp @DUMP_ACCT_PROG@ @ACCTON_PROG@ @SA_PROG@
+EXTRA_PROGRAMS = lastcomm dump-acct accton sa
 
-#
-# programs
-#
+ac_SOURCES = ac.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
+  @MKTIME_C@ utmp_rd.c
+ac_LDADD = @ALLOCA@
 
-AC_SRCS = ac.c common.c file_rd.c getopt.c getopt1.c hashtab.c @MKTIME_C@ \
-          utmp_rd.c
-AC_OBJS = ac.o common.o getopt.o getopt1.o hashtab.o @MKTIME_O@ \
-          file_rd.o utmp_rd.o
+accton_SOURCES = accton.c common.c getopt.c getopt1.c
+accton_LDADD = @ALLOCA@
 
-ac: $(AC_SRCS) $(AC_OBJS)
-	$(CC) $(LDFLAGS) $(AC_OBJS) -o ac $(LIBS)
+dump_acct_SOURCES = dump-acct.c common.c getopt.c getopt1.c file_rd.c \
+  pacct_rd.c
+dump_acct_LDADD = @ALLOCA@
 
+dump_utmp_SOURCES = dump-utmp.c common.c getopt.c getopt1.c file_rd.c \
+  utmp_rd.c
+dump_utmp_LDADD = @ALLOCA@
 
-DU_SRCS = dump-utmp.c common.c getopt.c getopt1.c file_rd.c utmp_rd.c
-DU_OBJS = dump-utmp.o common.o getopt.o getopt1.o file_rd.o utmp_rd.o
+last_SOURCES = last.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
+  utmp_rd.c
+last_LDADD = @ALLOCA@
 
-dump-utmp: $(DU_OBJS) $(DU_SRCS)
-	$(CC) $(LDFLAGS) $(DU_OBJS) -o dump-utmp $(LIBS)
+lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c getopt.c \
+  getopt1.c hashtab.c pacct_rd.c uid_hash.c
+lastcomm_LDADD = @ALLOCA@
 
+sa_SOURCES = sa.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
+  pacct_rd.c uid_hash.c
+sa_LDADD = @ALLOCA@
 
-DA_SRCS = dump-acct.c common.c getopt.c getopt1.c file_rd.c pacct_rd.c
-DA_OBJS = dump-acct.o common.o getopt.o getopt1.o file_rd.o pacct_rd.o
+noinst_HEADERS = common.h config.h dev_hash.h file_rd.h getopt.h hashtab.h \
+  pacct_rd.h uid_hash.h utmp_rd.h al_share.cpp
 
-dump-acct: $(DA_OBJS) $(DA_SRCS)
-	$(CC) $(LDFLAGS) $(DA_OBJS) -o dump-acct $(LIBS)
+# What documentation should we include?
 
+info_TEXINFOS = accounting.texi
 
-ACCTON_SRCS = accton.c common.c getopt.c getopt1.c
-ACCTON_OBJS = accton.o common.o getopt.o getopt1.o
+# Note: the manual pages target doesn't work yet.  You're going to
+# have all of the manual pages installed whether you like it or not.
+# The line that I _wanted_ to use was:
+#man_MANS = ac.1 last.1 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
+# but I had to use:
+man_MANS = ac.1 accton.8 last.1 lastcomm.1 sa.8
+EXTRA_DIST = ac.1 accton.8 last.1 lastcomm.1 sa.8
 
-accton: $(ACCTON_SRCS) $(ACCTON_OBJS)
-	$(CC) $(LDFLAGS) $(ACCTON_OBJS) -o accton $(LIBS)
-
-
-LAST_SRCS = last.c common.c file_rd.c getopt.c getopt1.c \
-            hashtab.c utmp_rd.c
-LAST_OBJS = last.o common.o file_rd.o getopt.o getopt1.o \
-            hashtab.o utmp_rd.o
-
-last: $(LAST_SRCS) $(LAST_OBJS)
-	$(CC) $(LDFLAGS) $(LAST_OBJS) -o last $(LIBS)
-
-
-LASTCOMM_SRCS = lastcomm.c common.c dev_hash.c file_rd.c getopt.c getopt1.c \
-                hashtab.c pacct_rd.c uid_hash.c
-LASTCOMM_OBJS = lastcomm.o common.o dev_hash.o getopt.o getopt1.o \
-                file_rd.o hashtab.o pacct_rd.o uid_hash.o
-
-lastcomm: $(LASTCOMM_SRCS) $(LASTCOMM_OBJS)
-	$(CC) $(LDFLAGS) $(LASTCOMM_OBJS) -o lastcomm $(LIBS)
-
-
-SA_SRCS = sa.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
-          pacct_rd.c uid_hash.c
-SA_OBJS = sa.o common.o file_rd.o getopt.o getopt1.o hashtab.o \
-          pacct_rd.o uid_hash.o
-
-sa: $(SA_SRCS) $(SA_OBJS)
-	$(CC) $(LDFLAGS) $(SA_OBJS) -o sa $(LIBS)
-
-
-#
-# documentation
-#
-
-info: accounting.info
-
-accounting.info: accounting.texi
-	$(MAKEINFO) accounting.texi
-
-dvi: accounting.dvi
-
-accounting.dvi: accounting.texi
-	$(TEXI2DVI) accounting.texi
-
- 
-#
-# debugging targets
-#
-
-mktime: mktime.c
-	$(CC) $(LDFLAGS) -DDEBUG mktime.c -o mktime
-
-
-#
-# testing
-#
-
-.PHONY: tests-ac tests-last tests-lastcomm tests-sa
-
-check: tests-ac tests-last tests-lastcomm tests-sa
+DISTCLEANFILES = files.h version.h
 
 SYS_LAST = @SYS_LAST@
 SYS_LASTCOMM = @SYS_LASTCOMM@
@@ -149,146 +124,695 @@ WTMP_FILE_LOC = @WTMP_FILE_LOC@
 ACCT_FILE_LOC = @ACCT_FILE_LOC@
 SAVACCT_FILE_LOC = @SAVACCT_FILE_LOC@
 USRACCT_FILE_LOC = @USRACCT_FILE_LOC@
-
-tests-ac: ac
-	@echo
-	@echo "Running tests for ac"
-	@echo "The total times for each user will probably" > tests-ac
-	@echo "differ between your system's ac and GNU ac," >> tests-ac
-	@echo "owing to the fact that many stock ac's don't" >> tests-ac
-	@echo "expect errors in the wtmp file.  See the" >> tests-ac
-	@echo "documentation for more information." >> tests-ac
-	@echo >> tests-ac
-	@echo "invoking the system ac..." | tee -a tests-ac
-	@-time $(SYS_AC) -p 2>> tests-ac | sort > ac.sys
-	@echo >> tests-ac
-	@echo "invoking GNU ac..." | tee -a tests-ac
-	@-time ./ac -p --compatibility 2>> tests-ac | sort > ac.gnu
-	@echo >> tests-ac
-	@echo "diffing..."
-	@echo "diff -b <sys> <GNU>" >> tests-ac
-	@-diff -b ac.sys ac.gnu >> tests-ac
-	@echo "removing temporary files..."
-	@$(RM) ac.gnu ac.sys
-	@echo "Results are in the file tests-ac"
-	@echo
-
-tests-last: last
-	@echo
-	@echo "Running tests for last"
-	@echo "If you see differing 'ftp' entries, don't worry." > tests-last
-	@echo "Most system lasts report the incorrect time for" >> tests-last
-	@echo "ftp connections.  See the documentation for more" >> tests-last
-	@echo "information." >> tests-last
-	@echo >> tests-last
-	@echo "invoking the system last..." | tee -a tests-last
-	@-time $(SYS_LAST) -5000 2>> tests-last > last.sys
-	@echo >> tests-last
-	@echo "invoking GNU last..." | tee -a tests-last
-	@-time ./last -5000 2>> tests-last > last.gnu
-	@echo >> tests-last
-	@echo "diffing..."
-	@echo "diff -b <sys> <GNU>" >> tests-last
-	@-diff -b last.sys last.gnu >> tests-last
-	@echo "removing temporary files..."
-	@$(RM) last.gnu last.sys
-	@echo "Results are in the file tests-last"
-	@echo
-
-tests-lastcomm: lastcomm
-	@echo
-	@echo "Running tests for lastcomm"
-	@echo "If, in the diff of the outputs, you see some" > tests-lastcomm
-	@echo "extra stuff that's only in the file produced" >> tests-lastcomm
-	@echo "by GNU lastcomm, don't worry about it.  Those" >> tests-lastcomm
-	@echo "are just the commands executed while this" >> tests-lastcomm
-	@echo "script was running." >> tests-lastcomm
-	@echo >> tests-lastcomm
-	@echo "invoking the system lastcomm..." | tee -a tests-lastcomm
-	@-time $(SYS_LASTCOMM) 2>> tests-lastcomm | head -5000 > lastcomm.sys
-	@echo >> tests-lastcomm
-	@echo "invoking GNU lastcomm..." | tee -a tests-lastcomm
-	@-time ./lastcomm 2>> tests-lastcomm | head -5000 > lastcomm.gnu
-	@echo >> tests-lastcomm
-	@echo "diffing..."
-	@echo "diff -b <sys> <GNU>" >> tests-lastcomm
-	@-diff -b lastcomm.sys lastcomm.gnu >> tests-lastcomm
-	@echo "removing temporary files..."
-	@$(RM) lastcomm.gnu lastcomm.sys
-	@echo "Results are in the file tests-lastcomm"
-	@echo
-
-tests-sa: sa
-	@echo
-	@echo "Running tests for sa"
-	@echo "If, in the diff of the outputs, you see that the" > tests-sa
-	@echo "numbers generated by GNU sa are larger than those" >> tests-sa
-	@echo "of the system, don't worry.  The numbers just" >> tests-sa
-	@echo "reflect those commands which happened while this" >> tests-sa
-	@echo "script was running." >> tests-sa
-	@echo >> tests-sa
-	@echo "invoking the system sa..." | tee -a tests-sa
-	@-time $(SYS_SA) -acilnt 2>> tests-sa > sa.sys
-	@echo >> tests-sa
-	@echo "invoking GNU sa..." | tee -a tests-sa
-	@-time ./sa -acilnt --separate-forks 2>> tests-sa > sa.gnu
-	@echo >> tests-sa
-	@echo "diffing..."
-	@echo "diff -b <sys> <GNU>" >> tests-sa
-	@-diff -b sa.sys sa.gnu >> tests-sa
-	@echo "Removing temporary files..."
-	@$(RM) sa.gnu sa.sys
-	@echo "Results are in the file tests-sa"
-	@echo
+ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = config.h
+CONFIG_CLEAN_FILES =  files.h version.h
+PROGRAMS =  $(bin_PROGRAMS) $(sbin_PROGRAMS)
 
 
+DEFS = @DEFS@ -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+ANSI2KNR = @ANSI2KNR@
+lastcomm_OBJECTS =  lastcomm$U.o common$U.o dev_hash$U.o file_rd$U.o \
+getopt$U.o getopt1$U.o hashtab$U.o pacct_rd$U.o uid_hash$U.o
+lastcomm_DEPENDENCIES =  @ALLOCA@
+lastcomm_LDFLAGS = 
+dump_acct_OBJECTS =  dump-acct$U.o common$U.o getopt$U.o getopt1$U.o \
+file_rd$U.o pacct_rd$U.o
+dump_acct_DEPENDENCIES =  @ALLOCA@
+dump_acct_LDFLAGS = 
+accton_OBJECTS =  accton$U.o common$U.o getopt$U.o getopt1$U.o
+accton_DEPENDENCIES =  @ALLOCA@
+accton_LDFLAGS = 
+sa_OBJECTS =  sa$U.o common$U.o file_rd$U.o getopt$U.o getopt1$U.o \
+hashtab$U.o pacct_rd$U.o uid_hash$U.o
+sa_DEPENDENCIES =  @ALLOCA@
+sa_LDFLAGS = 
+ac_OBJECTS =  ac$U.o common$U.o file_rd$U.o getopt$U.o getopt1$U.o \
+hashtab$U.o utmp_rd$U.o
+ac_DEPENDENCIES =  @ALLOCA@
+ac_LDFLAGS = 
+last_OBJECTS =  last$U.o common$U.o file_rd$U.o getopt$U.o getopt1$U.o \
+hashtab$U.o utmp_rd$U.o
+last_DEPENDENCIES =  @ALLOCA@
+last_LDFLAGS = 
+dump_utmp_OBJECTS =  dump-utmp$U.o common$U.o getopt$U.o getopt1$U.o \
+file_rd$U.o utmp_rd$U.o
+dump_utmp_DEPENDENCIES =  @ALLOCA@
+dump_utmp_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+TEXI2DVI = texi2dvi
+TEXINFO_TEX = $(srcdir)/texinfo.tex
+INFO_DEPS = accounting.info
+DVIS = accounting.dvi
+TEXINFOS = accounting.texi
+MANS = ac.1 accton.8 last.1 lastcomm.1 sa.8
 
-# autoconf & autoheader used to happen automatically, but they make it
-# a pain for those people who don't have them.
+NROFF = nroff
+HEADERS =  $(noinst_HEADERS)
 
-#$(srcdir)/configure: configure.in stamp-h.in #aclocal.m4
-#	cd $(srcdir) && autoconf
+DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
+Makefile.in NEWS acconfig.h aclocal.m4 alloca.c ansi2knr.1 ansi2knr.c \
+config.h.in configure configure.in files.h.in install-sh mdate-sh \
+missing mkinstalldirs stamp-h.in stamp-vti version.h.in version.texi
 
-# autoheader might not change config.h.in, so touch a stamp file.
-#$(srcdir)/config.h.in: stamp-h.in
-#$(srcdir)/stamp-h.in: configure.in acconfig.h #aclocal.m4 config.h.top config.h.bot
-#	cd $(srcdir) && autoheader
-#	echo timestamp > $(srcdir)/stamp-h.in
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP = --best
+SOURCES = $(lastcomm_SOURCES) $(dump_acct_SOURCES) $(accton_SOURCES) $(sa_SOURCES) $(ac_SOURCES) $(last_SOURCES) $(dump_utmp_SOURCES)
+OBJECTS = $(lastcomm_OBJECTS) $(dump_acct_OBJECTS) $(accton_OBJECTS) $(sa_OBJECTS) $(ac_OBJECTS) $(last_OBJECTS) $(dump_utmp_OBJECTS)
+
+default: all
+
+.SUFFIXES:
+.SUFFIXES: .c .dvi .info .o .ps .texi .texinfo
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps Makefile
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+$(ACLOCAL_M4):  configure.in 
+	cd $(srcdir) && $(ACLOCAL)
+
+config.status: $(srcdir)/configure
+	$(SHELL) ./config.status --recheck
+$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+	cd $(srcdir) && $(AUTOCONF)
 
 config.h: stamp-h
-stamp-h: config.h.in config.status files.h.in
-	./config.status
+stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h
+$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/stamp-h.in
 
-Makefile: Makefile.in config.status
-	./config.status
+mostlyclean-hdr:
 
-config.status: configure
-	./config.status --recheck
+clean-hdr:
 
-depend:
-	sed '/^\#* \A\U\T\O/,$$d' Makefile > __crunkfile__
-	echo "######## AUTO-GENERATED DEPENDENCIES -- DO NOT MODIFY BELOW THIS LINE ########" >> __crunkfile__
-	echo >> __crunkfile__
-	for i in *.c; do crunk=`echo $$i | sed 's#\.c#.o#'`; echo -n "$$crunk :"; awk '{ if ($$1 == "#include" && substr ($$2, 1, 1) == "\"") printf (" %s", substr ($$2, 2, length ($$2) - 2)) }' $$i; echo ; done >> __crunkfile__
-	-mv -f __crunkfile__ Makefile
-	-$(RM) __crunkfile__
+distclean-hdr:
+	rm -f config.h
 
-######## AUTO-GENERATED DEPENDENCIES -- DO NOT MODIFY BELOW THIS LINE ########
+maintainer-clean-hdr:
+files.h: $(top_builddir)/config.status files.h.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
+version.h: $(top_builddir)/config.status version.h.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
 
-ac.o : config.h utmp_rd.h common.h getopt.h hashtab.h version.h al_share.cpp
-accton.o : config.h common.h getopt.h version.h
-common.o : config.h common.h
-dev_hash.o : config.h common.h hashtab.h dev_hash.h
-dump-acct.o : pacct_rd.h common.h getopt.h
-dump-utmp.o : utmp_rd.h common.h getopt.h
-file_rd.o : config.h file_rd.h common.h
-getopt.o : config.h getopt.h
-getopt1.o : config.h getopt.h
-hashtab.o : config.h hashtab.h common.h
-last.o : config.h utmp_rd.h common.h getopt.h hashtab.h version.h al_share.cpp
-lastcomm.o : config.h uid_hash.h dev_hash.h pacct_rd.h hashtab.h common.h getopt.h version.h
-mktime.o :
-pacct_rd.o : config.h file_rd.h pacct_rd.h common.h
-sa.o : config.h pacct_rd.h utmp_rd.h common.h getopt.h uid_hash.h version.h
-uid_hash.o : config.h common.h hashtab.h uid_hash.h
-utmp_rd.o : config.h file_rd.h utmp_rd.h common.h
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+mostlyclean-sbinPROGRAMS:
+
+clean-sbinPROGRAMS:
+	test -z "$(sbin_PROGRAMS)" || rm -f $(sbin_PROGRAMS)
+
+distclean-sbinPROGRAMS:
+
+maintainer-clean-sbinPROGRAMS:
+
+install-sbinPROGRAMS: $(sbin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(sbindir)
+	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(sbindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(sbindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-sbinPROGRAMS:
+	$(NORMAL_UNINSTALL)
+	list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(sbindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+mostlyclean-krextra:
+
+clean-krextra:
+	rm -f ansi2knr
+
+distclean-krextra:
+
+maintainer-clean-krextra:
+ansi2knr: ansi2knr.o
+	$(LINK) ansi2knr.o $(LIBS)
+ansi2knr.o: $(CONFIG_HEADER)
+
+
+mostlyclean-kr:
+	rm -f *_.c
+
+clean-kr:
+
+distclean-kr:
+
+maintainer-clean-kr:
+
+lastcomm: $(lastcomm_OBJECTS) $(lastcomm_DEPENDENCIES)
+	@rm -f lastcomm
+	$(LINK) $(lastcomm_LDFLAGS) $(lastcomm_OBJECTS) $(lastcomm_LDADD) $(LIBS)
+
+dump-acct: $(dump_acct_OBJECTS) $(dump_acct_DEPENDENCIES)
+	@rm -f dump-acct
+	$(LINK) $(dump_acct_LDFLAGS) $(dump_acct_OBJECTS) $(dump_acct_LDADD) $(LIBS)
+
+accton: $(accton_OBJECTS) $(accton_DEPENDENCIES)
+	@rm -f accton
+	$(LINK) $(accton_LDFLAGS) $(accton_OBJECTS) $(accton_LDADD) $(LIBS)
+
+sa: $(sa_OBJECTS) $(sa_DEPENDENCIES)
+	@rm -f sa
+	$(LINK) $(sa_LDFLAGS) $(sa_OBJECTS) $(sa_LDADD) $(LIBS)
+
+ac: $(ac_OBJECTS) $(ac_DEPENDENCIES)
+	@rm -f ac
+	$(LINK) $(ac_LDFLAGS) $(ac_OBJECTS) $(ac_LDADD) $(LIBS)
+
+last: $(last_OBJECTS) $(last_DEPENDENCIES)
+	@rm -f last
+	$(LINK) $(last_LDFLAGS) $(last_OBJECTS) $(last_LDADD) $(LIBS)
+
+dump-utmp: $(dump_utmp_OBJECTS) $(dump_utmp_DEPENDENCIES)
+	@rm -f dump-utmp
+	$(LINK) $(dump_utmp_LDFLAGS) $(dump_utmp_OBJECTS) $(dump_utmp_LDADD) $(LIBS)
+ac_.c: ac.c
+	$(ANSI2KNR) $< ac_.c
+accton_.c: accton.c
+	$(ANSI2KNR) $< accton_.c
+common_.c: common.c
+	$(ANSI2KNR) $< common_.c
+dev_hash_.c: dev_hash.c
+	$(ANSI2KNR) $< dev_hash_.c
+dump-acct_.c: dump-acct.c
+	$(ANSI2KNR) $< dump-acct_.c
+dump-utmp_.c: dump-utmp.c
+	$(ANSI2KNR) $< dump-utmp_.c
+file_rd_.c: file_rd.c
+	$(ANSI2KNR) $< file_rd_.c
+getopt_.c: getopt.c
+	$(ANSI2KNR) $< getopt_.c
+getopt1_.c: getopt1.c
+	$(ANSI2KNR) $< getopt1_.c
+hashtab_.c: hashtab.c
+	$(ANSI2KNR) $< hashtab_.c
+last_.c: last.c
+	$(ANSI2KNR) $< last_.c
+lastcomm_.c: lastcomm.c
+	$(ANSI2KNR) $< lastcomm_.c
+pacct_rd_.c: pacct_rd.c
+	$(ANSI2KNR) $< pacct_rd_.c
+sa_.c: sa.c
+	$(ANSI2KNR) $< sa_.c
+uid_hash_.c: uid_hash.c
+	$(ANSI2KNR) $< uid_hash_.c
+utmp_rd_.c: utmp_rd.c
+	$(ANSI2KNR) $< utmp_rd_.c
+ac_.o accton_.o common_.o dev_hash_.o dump-acct_.o dump-utmp_.o \
+file_rd_.o getopt_.o getopt1_.o hashtab_.o last_.o lastcomm_.o \
+pacct_rd_.o sa_.o uid_hash_.o utmp_rd_.o : $(ANSI2KNR)
+
+version.texi: stamp-vti
+	cp $(srcdir)/stamp-vti $(srcdir)/version.texi
+
+stamp-vti: accounting.texi $(top_srcdir)/configure.in
+	@echo "@set UPDATED `cd $(srcdir) \
+	  && $(SHELL) ./mdate-sh accounting.texi`" > vti.tmp
+	@echo "@set EDITION $(VERSION)" >> vti.tmp
+	@echo "@set VERSION $(VERSION)" >> vti.tmp
+	@cmp -s vti.tmp $(srcdir)/stamp-vti \
+	  || (echo "Updating $(srcdir)/stamp-vti"; \
+	      cp vti.tmp $(srcdir)/stamp-vti)
+	@rm -f vti.tmp
+
+mostlyclean-vti:
+	rm -f vti.tmp
+
+clean-vti:
+
+distclean-vti:
+
+maintainer-clean-vti:
+	rm -f stamp-vti version.texi
+
+accounting.info: accounting.texi version.texi
+accounting.dvi: accounting.texi version.texi
+
+
+DVIPS = dvips
+
+.texi.info:
+	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+	cd $(srcdir) \
+	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+
+.texi.dvi:
+	TEXINPUTS=$(srcdir):$$TEXINPUTS \
+	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+
+.texi:
+	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+	cd $(srcdir) \
+	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+
+.texinfo.info:
+	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+	cd $(srcdir) \
+	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+
+.texinfo:
+	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
+	cd $(srcdir) \
+	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
+
+.texinfo.dvi:
+	TEXINPUTS=$(srcdir):$$TEXINPUTS \
+	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+.dvi.ps:
+	$(DVIPS) $< -o $@
+
+install-info-am: $(INFO_DEPS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(infodir)
+	@for file in $(INFO_DEPS); do \
+	  d=$(srcdir); \
+	  for ifile in `cd $$d && echo $$file $$file-[0-9] $$file-[0-9][0-9]`; do \
+	    if test -f $$d/$$ifile; then \
+	      echo " $(INSTALL_DATA) $$d/$$ifile $(infodir)/$$ifile"; \
+	      $(INSTALL_DATA) $$d/$$ifile $(infodir)/$$ifile; \
+	    else : ; fi; \
+	  done; \
+	done
+	@$(POST_INSTALL)
+	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
+	  for file in $(INFO_DEPS); do \
+	    echo " install-info --info-dir=$(infodir) $(infodir)/$$file";\
+	    install-info --info-dir=$(infodir) $(infodir)/$$file || :;\
+	  done; \
+	else : ; fi
+
+uninstall-info:
+	$(PRE_UNINSTALL)
+	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then \
+	  ii=yes; \
+	else ii=; fi; \
+	for file in $(INFO_DEPS); do \
+	  test -z $ii || install-info --info-dir=$(infodir) --remove $$file; \
+	done
+	$(NORMAL_UNINSTALL)
+	for file in $(INFO_DEPS); do \
+	  (cd $(infodir) && rm -f $$file $$file-[0-9] $$file-[0-9][0-9]); \
+	done
+
+dist-info: $(INFO_DEPS)
+	for base in $(INFO_DEPS); do \
+	  d=$(srcdir); \
+	  for file in `cd $$d && eval echo $$base*`; do \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file; \
+	  done; \
+	done
+
+mostlyclean-aminfo:
+	rm -f accounting.aux accounting.cp accounting.cps accounting.dvi \
+	  accounting.fn accounting.fns accounting.ky accounting.log \
+	  accounting.pg accounting.toc accounting.tp accounting.tps \
+	  accounting.vr accounting.vrs accounting.op accounting.tr \
+	  accounting.cv
+
+clean-aminfo:
+
+distclean-aminfo:
+
+maintainer-clean-aminfo:
+	for i in $(INFO_DEPS); do rm -f `eval echo $$i*`; done
+install-man: $(MANS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(mandir)/man1
+	$(mkinstalldirs) $(mandir)/man8
+	@sect=1;				\
+	inst=`echo "ac" | sed '$(transform)'`.1; \
+	if test -f $(srcdir)/ac.1; then file=$(srcdir)/ac.1; \
+	else file=ac.1; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+	@sect=8;				\
+	inst=`echo "accton" | sed '$(transform)'`.8; \
+	if test -f $(srcdir)/accton.8; then file=$(srcdir)/accton.8; \
+	else file=accton.8; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+	@sect=1;				\
+	inst=`echo "last" | sed '$(transform)'`.1; \
+	if test -f $(srcdir)/last.1; then file=$(srcdir)/last.1; \
+	else file=last.1; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+	@sect=1;				\
+	inst=`echo "lastcomm" | sed '$(transform)'`.1; \
+	if test -f $(srcdir)/lastcomm.1; then file=$(srcdir)/lastcomm.1; \
+	else file=lastcomm.1; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+	@sect=8;				\
+	inst=`echo "sa" | sed '$(transform)'`.8; \
+	if test -f $(srcdir)/sa.8; then file=$(srcdir)/sa.8; \
+	else file=sa.8; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+
+uninstall-man:
+	$(NORMAL_UNINSTALL)
+	inst=`echo "ac" | sed '$(transform)'`.1; \
+	rm -f $(mandir)/man1/$$inst
+	inst=`echo "accton" | sed '$(transform)'`.8; \
+	rm -f $(mandir)/man8/$$inst
+	inst=`echo "last" | sed '$(transform)'`.1; \
+	rm -f $(mandir)/man1/$$inst
+	inst=`echo "lastcomm" | sed '$(transform)'`.1; \
+	rm -f $(mandir)/man1/$$inst
+	inst=`echo "sa" | sed '$(transform)'`.8; \
+	rm -f $(mandir)/man8/$$inst
+
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	test -z "$(ETAGS_ARGS)config.h.in$(SOURCES)$(HEADERS)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $(SOURCES) $(HEADERS) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(PACKAGE)-$(VERSION)
+top_distdir = $(distdir)
+
+# This target untars the dist file and tries a VPATH configuration.  Then
+# it guarantees that the distribution is self-contained by making another
+# tarfile.
+distcheck: dist
+	rm -rf $(distdir)
+	GZIP=$(GZIP) $(TAR) zxf $(distdir).tar.gz
+	mkdir $(distdir)/=build
+	mkdir $(distdir)/=inst
+	dc_install_base=`cd $(distdir)/=inst && pwd`; \
+	cd $(distdir)/=build \
+	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
+	  && $(MAKE) \
+	  && $(MAKE) dvi \
+	  && $(MAKE) check \
+	  && $(MAKE) install \
+	  && $(MAKE) installcheck \
+	  && $(MAKE) dist
+	rm -rf $(distdir)
+	@echo "========================"; \
+	echo "$(distdir).tar.gz is ready for distribution"; \
+	echo "========================"
+dist: distdir
+	-chmod -R a+r $(distdir)
+	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
+dist-all: distdir
+	-chmod -R a+r $(distdir)
+	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
+distdir: $(DISTFILES)
+	rm -rf $(distdir)
+	mkdir $(distdir)
+	-chmod 777 $(distdir)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+	$(MAKE) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-info
+ac.o ac.lo: ac.c config.h common.h utmp_rd.h files.h getopt.h hashtab.h \
+	version.h al_share.cpp
+accton.o accton.lo: accton.c config.h common.h getopt.h version.h
+alloca.o alloca.lo: alloca.c config.h
+common.o common.lo: common.c config.h files.h common.h
+dev_hash.o dev_hash.lo: dev_hash.c config.h common.h hashtab.h \
+	dev_hash.h
+dump-acct.o dump-acct.lo: dump-acct.c config.h common.h pacct_rd.h \
+	files.h getopt.h
+dump-utmp.o dump-utmp.lo: dump-utmp.c config.h common.h utmp_rd.h \
+	files.h getopt.h
+file_rd.o file_rd.lo: file_rd.c config.h common.h file_rd.h
+getopt.o getopt.lo: getopt.c config.h
+getopt1.o getopt1.lo: getopt1.c config.h getopt.h
+hashtab.o hashtab.lo: hashtab.c config.h common.h hashtab.h
+last.o last.lo: last.c config.h common.h utmp_rd.h files.h getopt.h \
+	hashtab.h version.h al_share.cpp
+lastcomm.o lastcomm.lo: lastcomm.c config.h common.h uid_hash.h \
+	dev_hash.h pacct_rd.h files.h hashtab.h getopt.h version.h
+pacct_rd.o pacct_rd.lo: pacct_rd.c config.h common.h file_rd.h \
+	pacct_rd.h files.h
+sa.o sa.lo: sa.c config.h common.h pacct_rd.h files.h utmp_rd.h getopt.h \
+	uid_hash.h hashtab.h version.h
+uid_hash.o uid_hash.lo: uid_hash.c config.h common.h hashtab.h \
+	uid_hash.h
+utmp_rd.o utmp_rd.lo: utmp_rd.c config.h common.h file_rd.h utmp_rd.h \
+	files.h
+
+info: $(INFO_DEPS)
+dvi: $(DVIS)
+check: all
+	$(MAKE)
+installcheck:
+install-exec: install-binPROGRAMS install-sbinPROGRAMS
+	@$(NORMAL_INSTALL)
+
+install-data: install-info-am install-man
+	@$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-binPROGRAMS uninstall-sbinPROGRAMS uninstall-info uninstall-man
+
+all: Makefile $(INFO_DEPS) $(ANSI2KNR) $(PROGRAMS) $(MANS) $(HEADERS) config.h
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+installdirs:
+	$(mkinstalldirs)  $(bindir) $(sbindir) $(infodir) $(mandir)/man1 \
+		$(mandir)/man8
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-hdr mostlyclean-binPROGRAMS \
+		mostlyclean-sbinPROGRAMS mostlyclean-compile \
+		mostlyclean-krextra mostlyclean-kr mostlyclean-vti \
+		mostlyclean-aminfo mostlyclean-tags mostlyclean-generic
+
+clean:  clean-hdr clean-binPROGRAMS clean-sbinPROGRAMS clean-compile \
+		clean-krextra clean-kr clean-vti clean-aminfo \
+		clean-tags clean-generic mostlyclean
+
+distclean:  distclean-hdr distclean-binPROGRAMS distclean-sbinPROGRAMS \
+		distclean-compile distclean-krextra distclean-kr \
+		distclean-vti distclean-aminfo distclean-tags \
+		distclean-generic clean
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-hdr maintainer-clean-binPROGRAMS \
+		maintainer-clean-sbinPROGRAMS maintainer-clean-compile \
+		maintainer-clean-krextra maintainer-clean-kr \
+		maintainer-clean-vti maintainer-clean-aminfo \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+	rm -f config.status
+
+.PHONY: default mostlyclean-hdr distclean-hdr clean-hdr \
+maintainer-clean-hdr mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS mostlyclean-sbinPROGRAMS distclean-sbinPROGRAMS \
+clean-sbinPROGRAMS maintainer-clean-sbinPROGRAMS uninstall-sbinPROGRAMS \
+install-sbinPROGRAMS mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-krextra \
+distclean-krextra clean-krextra maintainer-clean-krextra mostlyclean-kr \
+distclean-kr clean-kr maintainer-clean-kr mostlyclean-vti distclean-vti \
+clean-vti maintainer-clean-vti install-info-am uninstall-info \
+mostlyclean-aminfo distclean-aminfo clean-aminfo \
+maintainer-clean-aminfo install-man uninstall-man tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
+installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+mktime: mktime.c
+	$(CC) $(LDFLAGS) -DDEBUG mktime.c -o mktime
+
+compare: compare-ac compare-last compare-lastcomm compare-sa
+
+compare-ac: ac
+	@echo
+	@echo "Running tests for ac"
+	@echo "The total times for each user will probably" > compare-ac
+	@echo "differ between your system's ac and GNU ac," >> compare-ac
+	@echo "owing to the fact that many stock ac's don't" >> compare-ac
+	@echo "expect errors in the wtmp file.  See the" >> compare-ac
+	@echo "documentation for more information." >> compare-ac
+	@echo >> compare-ac
+	@echo "invoking the system ac..." | tee -a compare-ac
+	@-time $(SYS_AC) -p 2>> compare-ac | sort > ac.sys
+	@echo >> compare-ac
+	@echo "invoking GNU ac..." | tee -a compare-ac
+	@-time ./ac -p --compatibility 2>> compare-ac | sort > ac.gnu
+	@echo >> compare-ac
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> compare-ac
+	@-diff -b ac.sys ac.gnu >> compare-ac
+	@echo "removing temporary files..."
+	@$(RM) ac.gnu ac.sys
+	@echo "Results are in the file compare-ac"
+	@echo
+
+compare-last: last
+	@echo
+	@echo "Running tests for last"
+	@echo "If you see differing 'ftp' entries, don't worry." > compare-last
+	@echo "Most system lasts report the incorrect time for" >> compare-last
+	@echo "ftp connections.  See the documentation for" >> compare-last
+	@echo "complete information." >> compare-last
+	@echo >> compare-last
+	@echo "invoking the system last..." | tee -a compare-last
+	@-time $(SYS_LAST) -5000 2>> compare-last > last.sys
+	@echo >> compare-last
+	@echo "invoking GNU last..." | tee -a compare-last
+	@-time ./last -5000 2>> compare-last > last.gnu
+	@echo >> compare-last
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> compare-last
+	@-diff -b last.sys last.gnu >> compare-last
+	@echo "removing temporary files..."
+	@$(RM) last.gnu last.sys
+	@echo "Results are in the file compare-last"
+	@echo
+
+compare-lastcomm: lastcomm
+	@echo
+	@echo "Running tests for lastcomm"
+	@echo "If, in the diff of the outputs, you see some" > compare-lastcomm
+	@echo "extra stuff only in the file produced" >> compare-lastcomm
+	@echo "by GNU lastcomm, don't panic.  Those" >> compare-lastcomm
+	@echo "are just the commands executed while this" >> compare-lastcomm
+	@echo "script was running." >> compare-lastcomm
+	@echo >> compare-lastcomm
+	@echo "invoking the system lastcomm..." | tee -a compare-lastcomm
+	@-time $(SYS_LASTCOMM) 2>> compare-lastcomm | head -5000 > lastcomm.sys
+	@echo >> compare-lastcomm
+	@echo "invoking GNU lastcomm..." | tee -a compare-lastcomm
+	@-time ./lastcomm 2>> compare-lastcomm | head -5000 > lastcomm.gnu
+	@echo >> compare-lastcomm
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> compare-lastcomm
+	@-diff -b lastcomm.sys lastcomm.gnu >> compare-lastcomm
+	@echo "removing temporary files..."
+	@$(RM) lastcomm.gnu lastcomm.sys
+	@echo "Results are in the file compare-lastcomm"
+	@echo
+
+compare-sa: sa
+	@echo
+	@echo "Running tests for sa"
+	@echo "If, in the diff of the outputs, you see that the" > compare-sa
+	@echo "numbers generated by GNU sa are larger than those" >> compare-sa
+	@echo "of the system, don't worry.  The numbers just" >> compare-sa
+	@echo "reflect those commands which happened while this" >> compare-sa
+	@echo "script was running." >> compare-sa
+	@echo >> compare-sa
+	@echo "invoking the system sa..." | tee -a compare-sa
+	@-time $(SYS_SA) -acilnt 2>> compare-sa > sa.sys
+	@echo >> compare-sa
+	@echo "invoking GNU sa..." | tee -a compare-sa
+	@-time ./sa -acilnt --separate-forks 2>> compare-sa > sa.gnu
+	@echo >> compare-sa
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> compare-sa
+	@-diff -b sa.sys sa.gnu >> compare-sa
+	@echo "Removing temporary files..."
+	@$(RM) sa.gnu sa.sys
+	@echo "Results are in the file compare-sa"
+	@echo
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

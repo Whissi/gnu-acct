@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #endif
 
-#include "utmp_rd.h"
 #include "common.h"
+#include "utmp_rd.h"
 #include "getopt.h"
 
 
@@ -20,15 +20,16 @@ int debugging_enabled = 0;	/* no -- we don't care about bad
 				   records or the file-reading
 				   algorithms. */
 
-void main (int argc, char *argv[]);
+void main PARAMS((int argc, char *argv[]));
 
 static
 void
 give_usage (void)
 {
-  printf ("Usage: %s [-hrR] [-n <recs>] <files>\n"
-	  "       [--num <recs>] [--raw] [--reverse] [--help]\n",
+  printf ("Usage: %s [-hrR] [-n <recs>] <files>\n\
+       [--num <recs>] [--raw] [--reverse] [--help]\n",
 	  program_name);
+  print_wtmp_file_location ();
 }
 
 

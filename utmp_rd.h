@@ -60,16 +60,14 @@ static struct utmp utmp_rd_never_used;
 
 #endif
 
-/* protos */
-
-void utmp_init (int backwards);
-void add_utmp_file (char *name);
-struct utmp *utmp_get_entry (void);
-void print_utmp_record (struct utmp *rec, FILE *out);
-void utmp_print_file_and_line (FILE *out);
+void utmp_init PARAMS((int backwards));
+void add_utmp_file PARAMS((char *name));
+struct utmp *utmp_get_entry PARAMS((void));
+void print_utmp_record PARAMS((struct utmp *rec, FILE *out));
+void utmp_print_file_and_line PARAMS((FILE *out));
 
 #ifdef HAVE_UT_TYPE
-int fix_ut_type_field (struct utmp *rec);
+int fix_ut_type_field PARAMS((struct utmp *rec));
 #endif
 
-int bad_utmp_record (struct utmp *rec);
+int bad_utmp_record PARAMS((struct utmp *rec));

@@ -11,7 +11,7 @@
    only one copy of it to reduce the possiblity of errors. */
 
 void
-parse_entries (void)
+parse_entries ()
 {
   struct utmp *rec;		/* the current record */
   int expecting_clock = 0;	/* set to a nonzero value if the next

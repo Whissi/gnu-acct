@@ -22,4 +22,8 @@
 #define SAVACCT_FILE_LOC "@SAVACCT_FILE_LOC@"
 #define USRACCT_FILE_LOC "@USRACCT_FILE_LOC@"
 
+#ifndef AHZ
+#define AHZ 64
+#endif
+
 #endif /* ! FILES_H */

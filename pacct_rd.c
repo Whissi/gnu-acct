@@ -18,9 +18,9 @@
 # endif
 #endif
 
+#include "common.h"
 #include "file_rd.h"
 #include "pacct_rd.h"
-#include "common.h"
 
 /* globals */
 

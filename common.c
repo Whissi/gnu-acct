@@ -1,6 +1,6 @@
 /* common.c */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -37,6 +37,8 @@ char *alloca ();
 #  endif
 # endif
 #endif
+
+#include "files.h"
 
 #include <stdio.h>
 
@@ -107,8 +109,6 @@ file_open (char *file_name, int write_flag)
  *	 It might return unexpected errno values.
  *
  * Author: Christoph Badura <bad@flatlin.ka.sub.org>
- *
- * $Id: common.c,v 1.14 1996/04/06 01:46:19 noel Exp $
  */
 
 #include <sys/types.h>
@@ -162,3 +162,36 @@ rename (char *from, char *to)
 }
 
 #endif
+
+
+/* Print the default wtmp file (for ac, last). */
+
+void
+print_wtmp_file_location (void)
+{
+  printf ("\nThe system's default login accounting file is %s.\n",
+	  WTMP_FILE_LOC);
+}
+
+
+/* Print the default acct file (for accton, lastcomm). */
+
+void
+print_acct_file_location (void)
+{
+  printf ("\nThe system's default process accounting file is %s.\n",
+	  ACCT_FILE_LOC);
+}
+
+
+/* Print the default acct file (for sa). */
+
+void
+print_acct_file_locations (void)
+{
+  printf ("The system's default process accounting files are:\n\n");
+  printf ("  raw process accounting data: %s\n", ACCT_FILE_LOC);
+  printf ("      summary by command name: %s\n", SAVACCT_FILE_LOC);
+  printf ("          summary by username: %s\n\n", USRACCT_FILE_LOC);
+}
+

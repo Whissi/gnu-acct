@@ -68,5 +68,8 @@
 /* Define if your system has the RENAME system call. */
 #undef HAVE_RENAME
 
+/* Define if your system has prototypes. */
+#undef PROTOTYPES
+
 
 /* Hey!  Hey YOU!  Leave that ^L in on the previous line */

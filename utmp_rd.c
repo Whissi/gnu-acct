@@ -24,9 +24,9 @@
 # endif
 #endif
 
+#include "common.h"
 #include "file_rd.h"
 #include "utmp_rd.h"
-#include "common.h"
 
 /* globals */
 

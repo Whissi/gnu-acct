@@ -1,6 +1,6 @@
 /* sa.c -- everyone's favorite hairball */
 
-/* Copyright (C) 1993, 1996 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -70,9 +70,9 @@ char *alloca ();
 
 #include <pwd.h>
 
+#include "common.h"
 #include "pacct_rd.h"
 #include "utmp_rd.h"
-#include "common.h"
 #include "getopt.h"
 #include "uid_hash.h"
 #include "hashtab.h"
@@ -237,24 +237,25 @@ int always_yes = 0;		/* nonzero means always answer yes to
 
 /* prototypes */
 
-void main (int, char *[]);
-void give_usage (void);
-void write_savacct_file (char *);
-void write_usracct_file (char *);
-void parse_savacct_entries (char *);
-void parse_usracct_entries (char *);
-void parse_acct_entries (void);
-void init_flags_and_data (void);
-unsigned long hash_name (char *);
-void update_command_list (char *, struct stats *, short fork_flag);
-void update_user_list (char *, struct stats *);
-int compare_sum_entry (struct hashtab_elem **, struct hashtab_elem **);
-int compare_user_entry (struct hashtab_elem **, struct hashtab_elem **);
-int compare_stats_entry (struct stats *, struct stats *);
-void print_command_list (void);
-void print_user_list (void);
-int non_printable (char *, int);
-int ask_if_junkable (char *, int);
+void main PARAMS((int, char *[]));
+void give_usage PARAMS((void));
+void write_savacct_file PARAMS((char *));
+void write_usracct_file PARAMS((char *));
+void parse_savacct_entries PARAMS((char *));
+void parse_usracct_entries PARAMS((char *));
+void parse_acct_entries PARAMS((void));
+void init_flags_and_data PARAMS((void));
+unsigned long hash_name PARAMS((char *));
+void update_command_list PARAMS((char *, struct stats *, short fork_flag));
+void update_user_list PARAMS((char *, struct stats *));
+int compare_sum_entry PARAMS((struct hashtab_elem **, struct hashtab_elem **));
+int compare_user_entry PARAMS((struct hashtab_elem **,
+			       struct hashtab_elem **));
+int compare_stats_entry PARAMS((struct stats *, struct stats *));
+void print_command_list PARAMS((void));
+void print_user_list PARAMS((void));
+int non_printable PARAMS((char *, int));
+int ask_if_junkable PARAMS((char *, int));
 
 
 
@@ -383,8 +384,8 @@ main (int argc, char *argv[])
 	  break;
 	case 'V':
 	case 2:
-	  printf ("%s: GNU Accounting Utilities (release %d.%d)\n",
-		  program_name, RELEASE_MAJOR, RELEASE_MINOR);
+	  printf ("%s: GNU Accounting Utilities (release %s)\n",
+		  program_name, VERSION_STRING);
 	  exit (0);
 	  break;
 	case 4:
@@ -677,6 +678,7 @@ Usage: %s [ options ] [ file ]\n\
 ";
   
   printf (usage, program_name);
+  print_acct_file_locations ();
 }
 
 
@@ -1409,7 +1411,7 @@ print_user_list (void)
   struct hashtab_elem *he, **entry_array, user_totals;
   struct user_data user_totals_ud;
   long num_users, which, temp;
-  char empty_string[] = "";
+  char * const empty_string = "";
 
   /* Make the summary record.  FIXME -- we need some functions so we
      can fabricate these entries without playing with the structure
@@ -1429,7 +1431,7 @@ print_user_list (void)
   num_users++;			/* one for the summary entry */
 
   entry_array = (struct hashtab_elem **)
-    xmalloc (sizeof (struct hashtab_elem *) * num_users);
+    xmalloc (sizeof (struct hashtab_elem *) * (num_users + 1));
 
   which = 0;
   entry_array[which++] = &user_totals;

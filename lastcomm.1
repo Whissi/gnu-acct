@@ -64,7 +64,7 @@ commands.  If no arguments are specified,
 .B lastcomm 
 will print info
 about all of the commands in 
-.I @ACCT_FILE_LOC@
+.I acct
 (the record file).  If called with one or more of
 .I command-name,
 .I user-name, 
@@ -127,7 +127,7 @@ List records for tty
 Read from the file 
 .I filename 
 instead of
-.I @ACCT_FILE_LOC@
+.I acct
 .TP
 .B \-\-debug
 Print verbose internal information.
@@ -137,12 +137,17 @@ Print the version number of
 .B lastcomm.
 .TP
 .B \-h, \-\-help
-Prints the usage string.
+Prints the usage string and default locations of system files to
+standard output and exits.
 
 .SH FILES
-.I @ACCT_FILE_LOC@
+.I acct
 .RS
-The system wide process accounting file. 
+The system wide process accounting file. See
+.BR acct (5)
+(or
+.BR pacct (5))
+for further details.
 .RE
 .LP
 

@@ -26,10 +26,10 @@ struct file_rd_info {
 				   file, for error-reporting purposes */
 };
 
-/* protos */
-
-struct file_rd_info *file_reader_init (int record_size, int buffered_records,
-				       int backwards);
-void file_reader_add_file (struct file_rd_info *fri, char *name);
-char *file_reader_get_entry (struct file_rd_info *fri);
-void file_reader_print_file_and_line (FILE *out, struct file_rd_info *fri);
+struct file_rd_info *file_reader_init PARAMS((int record_size,
+					      int buffered_records,
+					      int backwards));
+void file_reader_add_file PARAMS((struct file_rd_info *fri, char *name));
+char *file_reader_get_entry PARAMS((struct file_rd_info *fri));
+void file_reader_print_file_and_line PARAMS((FILE *out,
+					     struct file_rd_info *fri));

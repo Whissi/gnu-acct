@@ -143,26 +143,27 @@ sa \-  summarizes accounting information
 .B sa
 summarizes information about previously executed commands as
 recorded in the 
-.I @ACCT_FILE_LOC@
-file.  In addition, it condenses this data into a summary file (usually 
-.I @SAVACCT_FILE_LOC@), 
+.I acct
+file.  In addition, it condenses this data into a summary file named
+.I savacct
 which contains the number of times the command was called and the system 
 resources used.  The information can also be summarized on a per-user 
 basis; 
 .B sa
-will save this information into 
-.I @USRACCT_FILE_LOC@.  
+will save this information into a file named
+.I usracct.
 .LP
 If no arguments are specified, 
 .B sa 
 will print information about all of the commands in the 
-.I @ACCT_FILE_LOC@
+.I acct
 file.  
 .LP
 If called with a file name as the last argument, 
 .B sa 
-will use that file instead of 
-.I @ACCT_FILE_LOC@.
+will use that file instead of the system's default
+.I acct
+file.
 .LP
 By default, 
 .B sa 
@@ -248,8 +249,9 @@ When using the `\-\-threshold' option, assume that all answers to
 interactive queries will be affirmative.
 .TP
 .B \-i, \-\-dont-read-summary-file
-Don't read the information in 
-.I @SAVACCT_FILE_LOC@.
+Don't read the information in the system's default
+.I savacct
+file.
 .TP
 .B \-j, \-\-print-seconds
 Instead of printing total minutes for each category, print seconds per call.
@@ -276,9 +278,9 @@ Sort output items in reverse order.
 .TP
 .B \-s, \-\-merge
 Merge the summarized accounting data into the summary files
-.I @SAVACCT_FILE_LOC@
+.I savacct
 and
-.I @USRACCT_FILE_LOC@.
+.I usracct.
 .TP
 .B \-t, \-\-print-ratio
 For each entry, print the ratio of real time to the sum of system
@@ -313,7 +315,8 @@ Print the version number of
 .B sa.
 .TP
 .B \-h, \-\-help
-Prints the usage string to stderr.
+Prints the usage string and default locations of system files to
+standard output and exits.
 .TP
 .BI \-\-sort-real-time
 Sort the output by the "real time" field.
@@ -321,29 +324,36 @@ Sort the output by the "real time" field.
 .BI \-\-other-usracct-file " filename"
 Write summaries by user ID to 
 .I filename
-rather than the default
-.I @USRACCT_FILE_LOC@.
+rather than the system's default
+.I usracct
+file.
 .TP
 .BI \-\-other-savacct-file " filename"
 Write summaries by command name to 
 .I filename
-rather than the default
-.I @SAVACCT_FILE_LOC@.
+rather than the system's default
+.I SAVACCT
+file.
 .TP
 .BI \-\-other-file " filename"
 Read from the file 
 .I filename 
-instead of
-.I @ACCT_FILE_LOC@.
+instead of the system's default
+.I ACCT
+file.
 .SH FILES
 .TP
-.I @ACCT_FILE_LOC@
-The raw system wide process accounting file. 
+.I acct
+The raw system wide process accounting file. See
+.BR acct (5)
+(or
+.BR pacct (5))
+for further details.
 .TP
-.I @SAVACCT_FILE_LOC@
+.I savacct
 A summary of system process accounting sorted by command.
 .TP
-.I @USRACCT_FILE_LOC@
+.I usracct
 A summary of system process accounting sorted by user ID.
 .RE
 .LP

@@ -1,6 +1,6 @@
 /* ac.c */
 
-/* Copyright (C) 1993 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -43,8 +43,8 @@ MA 02139, USA.  */
 # endif
 #endif
 
-#include "utmp_rd.h"
 #include "common.h"
+#include "utmp_rd.h"
 #include "getopt.h"
 #include "hashtab.h"
 #include "version.h"
@@ -152,17 +152,17 @@ struct login_data {
 
 /* prototypes */
 
-void main (int, char *[]);
-void give_usage (void);
-void do_statistics (char *);
-void log_in (struct utmp *);
-void update_user_time (char *, time_t, char *);
-void log_out (struct utmp *);
-void log_everyone_out (time_t, int, int, char *);
-void parse_entries (void);
-void do_totals (time_t *, time_t, int, int, char *);
-void update_system_time (time_t);
-time_t midnight_after_me (time_t);
+void main PARAMS((int, char *[]));
+void give_usage PARAMS((void));
+void do_statistics PARAMS((char *));
+void log_in PARAMS((struct utmp *));
+void update_user_time PARAMS((char *, time_t, char *));
+void log_out PARAMS((struct utmp *));
+void log_everyone_out PARAMS((time_t, int, int, char *));
+void parse_entries PARAMS((void));
+void do_totals PARAMS((time_t *, time_t, int, int, char *));
+void update_system_time PARAMS((time_t));
+time_t midnight_after_me PARAMS((time_t));
 
 
 
@@ -239,8 +239,8 @@ main (int argc, char *argv[])
 	  break;
 	case 'V':
 	case 8:
-	  printf ("%s: GNU Accounting Utilities (release %d.%d)\n",
-		  program_name, RELEASE_MAJOR, RELEASE_MINOR);
+	  printf ("%s: GNU Accounting Utilities (release %s)\n",
+		  program_name, VERSION_STRING);
 	  exit (0);
 	  break;
 	case 10:
@@ -354,6 +354,7 @@ Usage: %s [-dhpVy] [-f <file>] [people] ...\n\
        [--tw-suspicious <value>] [--version] [--help]\n";
   
   printf (usage, program_name);
+  print_wtmp_file_location ();
 }
 
 
@@ -649,7 +650,9 @@ update_user_time (char *name, time_t the_time, char *debug_label)
   he = hashtab_find (user_totals, name, NAME_LEN);
   if (he == NULL)
     {
-      struct user_data u = { 0 };
+      struct user_data u;
+
+      u.time = 0;
       he = hashtab_create (user_totals, name, NAME_LEN);
       hashtab_set_value (he, &u, sizeof (u));
     }

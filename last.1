@@ -90,7 +90,7 @@ last \- list logins on the system
 .SH DESCRIPTION
 .B last
 looks through the file 
-.I @WTMP_FILE_LOC@
+.I wtmp
 (which records all logins/logouts) and
 prints information about connect times of users. Records are printed from
 most recent to least recent.  Records can be specified by tty and username.
@@ -126,7 +126,7 @@ If
 .B last 
 is interrupted by a quit signal, it prints out how far its search
 in the 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file had reached and then quits.
 .SH OPTIONS
 .PD 0
@@ -142,12 +142,12 @@ which lets you specify the number right after a dash.
 Read from the file 
 .I filename
 instead of the system's 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file.
 .TP
 .B \-\-complain
 When the 
-.I @WTMP_FILE_LOC@
+.I wtmp
 file has a problem (a time-warp, missing record, or
 whatever), print out an appropriate error.
 .TP
@@ -155,7 +155,7 @@ whatever), print out an appropriate error.
 Set the time warp leniency to 
 .I num 
 seconds.  Records in 
-.I @WTMP_FILE_LOC@
+.I wtmp
 files might be slightly out of order (most notably when two logins
 occur within a one-second period - the second one gets written first).
 By default, this value is set to 60.  If the program notices this
@@ -167,10 +167,10 @@ flag is used.
 Set the time warp suspicious value to 
 .I num 
 seconds.  If two records in the
-.I @WTMP_FILE_LOC@
+.I wtmp
 file are farther than this number of seconds apart, there is a problem
 with the
-.I @WTMP_FILE_LOC@
+.I wtmp
 file (or your machine hasn't been used in a year).  If the program
 notices this problem, time is not assigned to users unless the
 .B \-\-timewarps
@@ -186,7 +186,7 @@ the normal records.
 .TP 
 .B \-a, \-\-all-records
 Print out all records in the
-.I @WTMP_FILE_LOC@
+.I wtmp
 file.
 .TP
 .B \-i, \-\-ip-address
@@ -211,11 +211,10 @@ Print
 version number.
 .TP
 .B \-h, \-\-help
-Print 
-.B last's 
-usage string.
+Prints the usage string and default locations of system files to
+standard output and exits.
 .SH FILES
-.I @WTMP_FILE_LOC@
+.I wtmp
 .RS
 The system wide login record file. See
 .BR wtmp (5)
