@@ -1,0 +1,25 @@
+/* files.h.in
+ *
+ * file locations */
+
+#ifndef FILES_H
+#define FILES_H
+
+#include "config.h"
+
+#include <sys/types.h>
+
+#ifdef HAVE_LINUX_ACCT_H
+# include <linux/acct.h>
+#else
+# include <sys/acct.h>
+#endif
+
+#include <utmp.h>
+
+#define WTMP_FILE_LOC "@WTMP_FILE_LOC@"
+#define ACCT_FILE_LOC "@ACCT_FILE_LOC@"
+#define SAVACCT_FILE_LOC "@SAVACCT_FILE_LOC@"
+#define USRACCT_FILE_LOC "@USRACCT_FILE_LOC@"
+
+#endif /* ! FILES_H */

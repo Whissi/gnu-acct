@@ -1,0 +1,885 @@
+\input texinfo   @c -*-texinfo-*-
+@setfilename accounting.info
+@settitle Accounting Utilities Manual
+
+@ifinfo
+GNU Accounting Utilities
+Copyright (C) 1993--7 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through Tex and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Foundation.
+@end ifinfo
+
+@titlepage
+@title GNU Accounting Utilities
+@subtitle Version 6.3
+@subtitle 19 August 1997
+@author Noel Cragg @code{(noel@@gnu.ai.mit.edu)}
+@page
+
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1993--7 Free Software Foundation,
+Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Foundation.
+@end titlepage
+
+@c ----------------------------------------------------------------------
+@ifinfo
+@node Top, Preface, (dir), (dir)
+
+Welcome to the GNU Accounting Utilities!  If you don't have a clue about
+the accounting utilities, read the introduction.  For specfic
+information about any of the applications, see the chapter with the
+program's name.
+@end ifinfo
+
+@menu
+* Preface::                     general information about the accounting utilities
+
+* ac::                          print statistics about connect time
+* accton::                      turns accounting on or off
+* last::                        list last logins of users and terms
+* lastcomm::                    list last commands executed
+* sa::                          print accounting statistics
+
+@end menu
+
+@c ----------------------------------------------------------------------
+@node Preface, ac, Top, Top
+@unnumbered Preface
+
+Way back a long time ago, Thompson and Ritchie were sitting opposite one
+another at the commissary, sipping coffees and discussing their evolving
+behemoth.
+
+``This behemoth of ours,'' said Ken, ``is becoming rather popular,
+wouldn't you say?''  ``Yes,'' said Dennis.  ``Every time I want to do a
+compilation, I have to wait for hours and hours.  It's infuriating.''
+They both agreed that the load on their system was too great.  Both
+sighed, picked up their mugs, and went back to the workbench.  Little
+did they know that an upper-management type was sitting just within
+earshot of their conversation.
+
+``We are AT&T Bell Laboratories, aren't we?'' the upper-management type
+thought to himself.  ``Well, what is our organization best known for?''
+The brill-cream in his hair glistened.  ``Screwing people out of lots of
+money, of course!  If there were some way that we could keep tabs on
+users and charge them through the nose for their CPU time...''
+
+The accounting utilities were born.
+
+Seriously though, the accouting utilities can provide a system
+administrator with useful information about system usage---connections,
+programs executed, and utilization of system resources.
+
+Information about users---their connect time, location, programs
+executed, and the like---is automatically recored in files by
+@code{init} and @code{login}.  Four of them are of interest to us:
+@code{@WTMP_FILE_LOC@}, which has records for each login and logout;
+@code{@ACCT_FILE_LOC@}, which records each command that was run;
+@code{@USRACCT_FILE_LOC@} and @code{@SAVACCT_FILE_LOC@}, which contain
+summaries of the information in @code{@ACCT_FILE_LOC@} by user and
+command, respectively.  Each of the accounting utilities reports or
+summarizes information stored in these files.
+
+@table @code
+@item ac
+prints statistics about users' connect time.  @code{ac} can tell you how
+long a particular user or group of users were connected to your system,
+printing totals by day or for all of the entries in the
+@code{@WTMP_FILE_LOC@} file.
+
+@item accton
+turns accounting on or off.
+
+@item last
+lists the logins on the system, most recent first.  With @code{last},
+you can search the @code{@WTMP_FILE_LOC@} file for a particular user or
+terminal name (to which the user was connected).  Of special interest
+are two fake users, @samp{reboot} and @samp{shutdown}, which are
+recorded when the system is shut down or reboots.
+
+@item lastcomm
+lists the commands executed on the system, most recent first, showing
+the run state of each command.  With @code{last}, you can search the
+@code{@ACCT_FILE_LOC@} file for a particular user, terminal, or command.
+
+@item sa
+summarizes the information in the @code{@ACCT_FILE_LOC@} file into the
+@code{@SAVACCT_FILE_LOC@} and @code{@USRACCT_FILE_LOC@} file.  It also
+generates reports about commands, giving the number of invocations, cpu
+time used, average core usage, etc.
+
+@item dump-acct
+@itemx dump-utmp
+display acct/pacct and utmp files in a human-readable format.
+
+@end table
+
+For more detailed information on any of these programs, check the
+chapter with the program title.
+
+@unnumberedsec History of the Accounting Utilities
+
+I don't have any idea who originally wrote these utilities.  If anybody
+does, please send some mail to @code{noel@@gnu.ai.mit.edu} and I'll add
+your information here!
+
+Since the first alpha versions of this software in late 1993, many
+people have contributed to the package.  They are (in alphabetical
+order):
+
+@c If you've changed something in this package, add your name here!
+
+@table @code
+@item Dirk Eddelbuettel <edd@@miles.econ.queensu.ca>
+Managed bug-fixes & etc. for Debian distribution, as well as the
+architect of merge of GNU + Debian distributions.  A big thanks to Dirk
+for kicking me back into gear again after a long period of no work on
+this project.
+
+@item Christoph Badura <bad@@flatlin.ka.sub.org>
+Christoph was a BIG HELP in computing statistics, most notably k*sec
+stuff!  He also did Xenix testing and contributed some Makefile fixes
+and output optimizations.
+
+@item Michael Calwas <calwas@@ttd.teradyne.com>
+Fixed bugs in mktime.c.
+
+@item Alan Cox <iiitac@@pyr.swan.ac.uk>
+Original Linux kernel accounting patches.
+
+@item Susan Kleinmann <sgk@@sgk.tiac.net>
+Contributed excellent man pages!
+
+@item Marek Michalkiewicz <marekm@@i17linuxb.ists.pwr.wroc.pl>
+Suggested the @code{--ip-address} flag for @code{last}.
+
+@item David S. Miller <davem@@caip.rutgers.edu>
+Noticed missing GNU-standard makefile rules.
+
+@item Ian Murdock <imurdock@@gnu.ai.mit.edu> 
+Tracked down miscellaneous bugs in sa.c under Linux.  Added Debian
+package maintenance files.
+
+@item Luc I. Suryo <root@@patriots.nl.mugnet.org>
+Suggested the @code{--user} flag for @code{lastcomm}.
+
+@item Pedro A M Vazquez <vazquez@@iqm.unicamp.br>
+Fixed bugs in sa.c and tested under FreeBSD.
+
+@item Marco van Wieringen <Marco.van.Wieringen@@mcs.nl.mugnet.org>
+Modified (wrote?) Linux kernel accounting patches.
+
+@item Jason Grant <jamalcol@@pc-5530.bc.rogers.wave.ca>
+Identified a buffer-overrun bug in @code{sa}.
+
+@item Scott Crosby <root@@hypercube.res.cmu.edu>
+Suggested idea behind @code{--sort-real-time} for @code{sa}.
+@end table
+
+
+@c ----------------------------------------------------------------------
+@node ac, accton, Preface, Top
+@chapter @code{ac}
+@cindex ac
+@cindex connect time
+
+The @code{ac} command prints out a report of connect time (in hours)
+based on the logins/logouts in the current @code{@WTMP_FILE_LOC@} file.
+A total is also printed out.
+
+The accounting file @code{@WTMP_FILE_LOC@} is maintained by @code{init}
+and @code{login}.  Neither of these programs creates the file; if the
+file is not there, no accounting is done.  To begin accounting, create
+the file with a length of zero.  @strong{NOTE:} the
+@code{@WTMP_FILE_LOC@} file can get really big, really fast.  You might
+want to trim it every once and a while.
+
+GNU @code{ac} works nearly the same u*x @code{ac}, though it's a little
+smarter in its printing out of daily totals---it actually prints
+@emph{every} day, rather than skipping to the date of the next entry in
+the @code{@WTMP_FILE_LOC@} file.
+
+@section Flags
+
+All of the original @code{ac}'s options have been implemented, and a few have
+been added.  Normally, when @code{ac} is invoked, the output looks like
+this:
+@example
+        total 93867.14
+@end example
+@noindent
+where total is the number of hours of connect time for every entry in
+the @code{@WTMP_FILE_LOC@} file.  The rest of the flags modify the
+output in one way or another.
+
+@table @code
+@item -d
+@itemx --daily-totals
+Print totals for each day rather than just one big total at the end.
+The output looks like this:
+@example
+Jul  3  total     1.17
+Jul  4  total     2.10
+Jul  5  total     8.23
+Jul  6  total     2.10
+Jul  7  total     0.30
+@end example
+
+@item -p
+@itemx --individual-totals
+Print time totals for each user in addition to the usual
+everything-lumped-into-one value.  It looks like:
+@example
+        bob       8.06
+        goff      0.60
+        maley     7.37
+        root      0.12
+        total    16.15
+@end example
+
+@item @var{people}
+Print out the sum total of the connect time used by all of the users
+included in people.  Note that people is a space separated list of valid
+user names; wildcards are not allowed.
+
+@item -f @var{filename}
+@itemx --file @var{filename}
+Read from the file @var{filename} instead of the system's
+@code{@WTMP_FILE_LOC@} file.
+
+@item --complain
+When the @code{@WTMP_FILE_LOC@} file has a problem (a time-warp, missing
+record, or whatever), print out an appropriate error.
+
+@item --reboots
+Reboot records are @emph{not} written at the time of a reboot, but when
+the system restarts; therefore, it is impossible to know @var{exactly}
+when the reboot occurred.  Users may have been logged into the system at
+the time of the reboot, and many @code{ac}'s automatically count the
+time between the login and the reboot record against the user (even
+though all of that time @emph{shouldn't} be, perhaps, if the system is
+down for a long time, for instance).  If you want to count this time,
+include the flag.  @strong{To make @code{ac} behave like the one that
+was distributed with your OS, include this flag.}
+
+@item --supplants
+Sometimes a logout record is not written for a specific terminal, so the
+time that the last user accrued cannot be calculated.  If you want to
+include the time from the user's login to the next login on the terminal
+(though probably incorrect), include this flag.  @strong{To make
+@code{ac} behave like the one that was distributed with your OS, include
+this flag.}
+
+@item --timewarps
+Sometimes, entries in a @code{@WTMP_FILE_LOC@} file will suddenly jump
+back into the past without a clock change record occurring.  It is
+impossible to know how long a user was logged in when this occurs.  If
+you want to count the time between the login and the time warp against
+the user, include this flag.  @strong{To make @code{ac} behave like the
+one that was distributed with your OS, include this flag.}
+
+@item --compatibility
+This is shorthand for typing out the three above options.
+
+@item -a
+@itemx --all-days
+If we're printing daily totals, print a record for every day instead of
+skipping intervening days where there is no login activity.  Without
+this flag, time accrued during those intervening days gets listed under
+the next day where there is login activity.
+
+@item -y
+@itemx --print-year
+Print out the year when displaying dates.
+
+@item --print-zeros
+If a total for any category (save the grand total) is zero, print it.
+The default is to suppress printing.
+
+@item --debug
+Print verbose internal information.
+
+@item --tw-leniency @var{value}
+Set the time warp leniency value (in seconds).  Records in
+@code{@WTMP_FILE_LOC@} files might be slightly out of order (most
+notably when two logins occur within a one-second period -- the second
+one gets written first).  By default, this value is set to 1 second.
+Some @code{@WTMP_FILE_LOC@}'s are really screwed up (Suns) and require a
+larger value here.  If the program notices this problem, time is not
+assigned to users unless the @code{--timewarps} flag is used.  See the
+Problems section for more information.
+
+@item --tw-suspicious @var{value}
+Set the time warp suspicious value (in seconds).  If two records in the
+@code{@WTMP_FILE_LOC@} file are farther than this number of seconds
+apart, there is a problem with the @WTMP_FILE_LOC@ file (or your machine
+hasn't been used in a year).  If the program notices this problem, time
+is not assigned to users unless the @code{--timewarps} flag is used.
+
+@item -V
+@itemx --version
+Print @code{ac}'s version number.
+
+@item -h
+@itemx --help
+Print @code{ac}'s usage string.
+@end table
+
+@section Problems
+
+For no fault of @code{ac}'s, if two logins occur at the same time
+(within a second of each other), each @code{login} process will try to
+write an entry to the @code{@WTMP_FILE_LOC@} file.  With file system
+overhead, it is forseeable that the entries would get written in the
+wrong order.  GNU @code{ac} automatically compensates for this, but some
+other @code{ac}s may not...  beware.
+
+@unnumberedsubsubsec The FTP Problem
+
+I've tested the standard @code{ac} in Ultrix 4.2 (DECstation/DECsystem),
+SunOS 4.1.1 (Sun3, Sun4, Sparc), Mach 2.5 (Omron/Luna), and DomainOS
+10.3 (DN3500).  All of these @code{ac}s have trouble parsing entries in
+which the line is @code{ftp}@var{xxxx} (@var{xxxx} being some number).
+Whenever these @code{ac}s see one of these entries, they log everyone
+out at the time of the entry.
+
+@noindent
+@strong{HOW IT HAPPENS:} if there is a user logged into the machine when
+an ftp connection occurs, (minimally) you'll get a login record for the
+user, a login record for the ftp connection, and the logouts for both
+afterwards (in either order).
+
+@noindent
+@strong{TANGIBLE RESULT:} the user who was logged in gets 'logged out'
+at the time the ftp connection begins, and none of the time spent during
+or after the ftp connection.  Therefore, when you run GNU @code{ac},
+the totals will most likely be greater than those of your system's
+@code{ac} (provided you specify the other flags that will make GNU
+@code{ac} behave like the system's).
+
+@unnumberedsubsubsec The Shutdown/Reboot Problem
+
+On Suns, @code{init} is a little screwed up.  For some reason, after a
+shutdown record is written, a reboot record is written with a time-stamp
+@emph{before} the shutdown (less than 30 seconds, usually).
+
+@noindent
+@strong{TANGIBLE RESULT:} GNU @code{ac} will notice the problem, log
+everyone out (you can specify if you want the time to be added to the
+user's total) and begin a new day entry based on the time of the
+out-of-sync record.  If you try to print out daily totals, you'll notice
+that some days might have two or more entries.
+
+@noindent
+@strong{SOLUTION:} To fix this, a timewarp leniency value has been
+implemented.  If any record is out of order by this number of seconds
+(defaults to 60) it gets ignored.  If you need to change this value (if
+you think the totals are off because the value is too high), you can
+change it using the @samp{--timewarp-value} flag.  The rationale for the
+60 second default is that of all of the machines with this problem, the
+largest timewarp was 45.
+
+@unnumberedsubsubsec Stupid System V Machines
+
+Some @code{ac}'s on System V machines (I've tried SGI Indigo & SGI Indy)
+forget to pay attention to the @code{ut_type} field in a @code{struct
+utmp}.  As such, they chalk up a lot of time to non-existant processes
+called @code{LOGIN} or @code{runlevel}.  
+
+@noindent
+@strong{TANGIBLE RESULT:} The amount of total time reported by the
+system's @code{ac} is @strong{really} off.  Often, it's several times
+greater than what it should be.
+
+@noindent
+@strong{SOLUTION:} GNU @code{ac} always pays attention to the
+@code{ut_type} record, so there's no possibility of chalking up time to
+anything but user processes.
+
+@c ----------------------------------------------------------------------
+@node accton, last, ac, Top
+@chapter @code{accton}
+
+@code{accton} turns process accounting on or off.  To save process
+accounting information in @var{accountingfile}, use:
+
+@code{accton @var{accountingfile}}
+
+If called with no arguments, it will, by default, stop process
+accounting.
+
+@section Flags
+
+@table @code
+
+@item -V
+@itemx --version
+Print @code{accton}'s version number.
+
+@item -h
+@itemx --help
+Print @code{accton}'s usage string.
+
+@end table
+
+@c ----------------------------------------------------------------------
+@node last, lastcomm, accton, Top
+@chapter @code{last}
+
+@code{last} looks through the @code{@WTMP_FILE_LOC@} file (which records
+all logins/logouts) and prints information about connect times of users.
+Records are printed from most recent to least recent.  Records can be
+specified by tty and username.  tty names can be abbreviated: @samp{last
+0} is equivalent to @samp{last tty0}.
+
+Multiple arguments can be specified: @samp{last root console} will print
+all of the entries for the user @code{root} and all entries logged in on
+the @code{console} tty.
+
+The special users @code{reboot} and @code{shutdown} log in when the
+system reboots or (surprise) shuts down.  @samp{last reboot} will
+produce a record of reboot times.
+
+If @code{last} is interrupted by a quit signal, it prints out how far
+its search in the @code{@WTMP_FILE_LOC@} file had reached and then
+quits:
+@example
+weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
+weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
+
+interrupted at Mon Feb 15 19:07:52 1993
+@end example
+
+@section Flags
+
+This program implements the features of regular u*x @code{last} with a few
+extra flags.  When @code{last} is invoked with no arguments, the output
+looks like this:
+@example
+gr151     ttyp2    ray.cs.oberlin.e Tue Feb 16 17:40   still logged in
+jhoggard  ttyp2    csts.cs.oberlin. Tue Feb 16 17:39 - 17:39  (00:00)
+jstarr    ttyp1    UNIX5.ANDREW.CMU Tue Feb 16 17:38   still logged in
+jberman   ttypb    132.162.32.25    Tue Feb 16 17:34   still logged in
+alee      ttyp7    csts.cs.oberlin. Tue Feb 16 17:34   still logged in
+jbrick    ttyp2    ocvaxa.cc.oberli Tue Feb 16 17:33 - 17:36  (00:03)
+mbastedo  ttypc    ocvaxa.cc.oberli Tue Feb 16 17:25 - 17:26  (00:01)
+rgoodste  ttypb    ocvaxa.cc.oberli Tue Feb 16 17:22 - 17:26  (00:03)
+huttar    ttyp9    lobby.ti.com     Tue Feb 16 17:19   still logged in
+klutz     ttyp3    132.162.32.25    Tue Feb 16 17:14   still logged in
+@end example
+
+@table @code
+@item --no-truncate-ftp-entries
+When printing out the information, don't chop the number part off of
+@code{ftp}@var{xxxx} entries.
+
+@item -@var{number}
+@itemx -n @var{number}
+@itemx --lines @var{number}
+Limit the number of lines that @code{last} prints.
+
+@item -f @var{filename}
+@itemx --file @var{filename}
+Read from the file @var{filename} instead of the system's
+@code{@WTMP_FILE_LOC@} file.
+
+@item -y
+@itemx --print-year
+Print out the year when displaying dates.
+
+@item -s
+@itemx --print-seconds
+Print out seconds when displaying dates and durations.
+
+@item --complain
+When the @code{@WTMP_FILE_LOC@} file has a problem (a time-warp, missing
+record, or whatever), print out an appropriate error.
+
+@item -x
+@itemx --more-records
+Print out run level changes, shutdowns, and time changes in addition to
+the normal records.
+
+@item -a
+@itemx --all-records
+Print out all records in the @code{@WTMP_FILE_LOC@} file.
+
+@item -i
+@itemx --ip-address
+Some machines store the IP address of a connection in a utmp record.
+Enabling this option makes @code{last} print the IP address instead of
+the hostname.
+
+@item --tw-leniency @var{value}
+Set the time warp leniency value (in seconds).  See the @code{ac}
+chapter for information.
+
+@item --tw-suspicious @var{value}
+Set the time warp suspicious value (in seconds).  See the @code{ac}
+chapter for information.
+
+@item --debug
+Print verbose internal information.
+
+@item -V
+@itemx --version
+Print @code{last}'s version number.
+
+@item -h
+@itemx --help
+Print @code{last}'s usage string.
+@end table
+
+@section Problems
+
+@unnumberedsubsubsec The Clock Change Problem
+
+Of the @code{last}s I've tried, all of them have had problems parsing a
+system clock change.  Instead of modifying the entries that have been
+read, they just ignore the change and give you incorrect values.  GNU
+@code{last} knows about clock changes and prints the correct times.
+
+@noindent
+@strong{TANGIBLE RESULT:} if you @code{diff} the output of your
+@code{last} and GNU @code{last}, entries after (before, rather) a clock
+change will be off by the amount of the clock change.
+
+@unnumberedsubsubsec The Ftp Problem
+
+Most @code{last}s that I've examined have the same problem here as
+@code{ac} does---they log everyone out as soon as they see an ftp entry.
+
+@noindent
+@strong{TANGIBLE RESULT:} GNU @code{last} will reflect the correct time
+spent in an ftp session, so the totals that it gives will most likely be
+greater than those given by the system @code{last}.
+
+@c ----------------------------------------------------------------------
+@node lastcomm, sa, last, Top
+@chapter @code{lastcomm}
+
+@code{lastcomm} prints out information about previously executed
+commands.  If no arguments are specified, @code{lastcomm} will print
+info about all of the commands in the @code{@ACCT_FILE_LOC@} file (the
+record file).  If called with a command name, user name, or tty name,
+only records containing those items will be displayed.  For example, to
+find out which users used command @samp{a.out} and which users were
+logged into @samp{tty0}, type:
+
+@code{lastcomm a.out tty0}
+
+This will print any entry for which @samp{a.out} or @samp{tty0} matches
+in any of the record's fields (command, name, or tty).  If you want to
+find only items that match ALL of the arguments on the command line, you
+must use the '--strict-match' option.  For example, to list all of the
+executions of command @samp{a.out} by user @samp{root} on terminal
+@samp{tty0}, type:
+
+@code{lastcomm --strict-match a.out root tty0}
+
+The order of the arguments is not important.
+
+For each entry the following information is printed:
+
+@itemize @bullet
+@item
+command name of the process
+@item
+flags, as recorded by the system accounting routines:
+@itemize @minus
+@item
+@strong{S} command executed by super-user
+@item
+@strong{F} command executed after a fork but without a following exec
+@item
+@strong{C} command run in PDP-11 compatibility mode (VAX only)
+@item
+@strong{D} command terminated with the generation of a core file
+@item
+@strong{X} command was terminated with the signal SIGTERM
+@end itemize
+@item
+the name of the user who ran the process
+@item
+time the process exited
+@end itemize
+
+@section Flags
+
+This program implements the features of regular u*x lastcomm with a few
+extra flags.  When @code{lastcomm} is invoked without arguments, the
+output looks like this:
+@example
+nslookup         jberman  ttypb      0.03 secs Tue Feb 16 19:23
+comsat           root     __         0.03 secs Tue Feb 16 19:19
+uptime           ctilburg __         0.11 secs Tue Feb 16 19:23
+sh          F    ctilburg __         0.02 secs Tue Feb 16 19:23
+sleep            ctilburg __         0.02 secs Tue Feb 16 19:22
+ls               noel     ttyp4      0.19 secs Tue Feb 16 19:23
+@end example
+
+@table @code
+@item --strict-match
+Print only entries that match @emph{all} of the arguments on the command
+line.
+
+@item --user @var{name}
+List records for user with @var{name}.  This is useful if you're trying
+to match a username that happens to be the same as a command (e.g.,
+@code{ed}).
+
+@item --command @var{name}
+List records for command @var{name}.
+
+@item --tty @var{name}
+List records for tty @var{name}.
+
+@item -f @var{filename}
+@itemx --file @var{filename}
+Read from the file @var{filename} instead of the system's
+@code{@ACCT_FILE_LOC@} file.
+
+@item --debug
+Print verbose internal information.
+
+@item --version
+Print @code{lastcomm}'s version number.
+
+@item --help
+Print @code{lastcomm}'s usage string.
+@end table
+
+@c ----------------------------------------------------------------------
+@node sa,  , lastcomm, Top
+@chapter @code{sa}
+
+@code{sa} summarizes information about previously executed commands as
+recorded in the @code{acct} file.  In addition, it condenses this data
+into the @code{@SAVACCT_FILE_LOC@} summary file, which contains the
+number of times the command was called and the system resources used.
+The information can also be summarized on a per-user basis; @code{sa}
+will save this information into @code{@USRACCT_FILE_LOC@}.  Usage:
+
+@code{sa [@var{opts}] [@var{file}]}
+
+If no arguments are specified, @code{sa} will print information about
+all of the commands in the @code{@ACCT_FILE_LOC@} file.  If command
+names have unprintable characters, or are only called once, @code{sa}
+will sort them into a group called @code{***other}.
+
+If called with a file name as the last argument, @code{sa} will use that
+file instead of @code{@ACCT_FILE_LOC@}.
+
+By default, @code{sa} will sort the output by sum of user and system
+time.
+
+The output fields are labeled as follows:
+
+@table @code
+
+@item cpu
+sum of system and user time in cpu seconds
+
+@item re
+``real time'' in cpu seconds
+
+@item k
+cpu-time averaged core usage, in 1k units
+
+@item avio
+average number of I/O operations per execution
+
+@item tio
+total number of I/O operations
+
+@item k*sec
+cpu storage integral (kilo-core seconds)
+
+@item u
+user cpu time in cpu seconds
+
+@item s
+system time in cpu seconds
+
+@end table
+
+An asterisk will appear after the name of commands that forked but
+didn't call @code{exec}.
+
+@section Flags
+
+@table @code
+
+@item -a
+@itemx --list-all-names
+Force @code{sa} not to sort those command names with unprintable
+characters and those used only once into the `@code{***other}' group.
+
+@item -b
+@itemx --sort-sys-user-div-calls
+Sort the output by the sum of user and system time divided by the number
+of calls.
+
+@item -c
+@itemx --percentages
+Print percentages of total time for the command's user, system, and real
+time values.
+
+@item -d
+@itemx --sort-avio
+Sort the output by the average number of disk I/O operations.
+
+@item -D
+@itemx --sort-tio
+Print and sort the output by the total number of disk I/O operations.
+
+@item -f
+@itemx --not-interactive
+When using the @code{--threshold} option, assume that all answers to
+interactive queries will be affirmative.
+
+@item -i
+@itemx --dont-read-summary-file
+Don't read the information in @code{@SAVACCT_FILE_LOC@}.
+
+@item -j
+@itemx --print-seconds
+Instead of printing total minutes for each category, print seconds per
+call.
+
+@item -k
+@itemx --sort-cpu-avmem
+Sort the output by cpu time average memory usage.
+
+@item -K
+@itemx --sort-ksec
+Print and sort the output by the cpu-storage integral.
+
+@item -l
+@itemx --separate-times
+Print separate columns for system and user time; usually the two are
+added together and listed as @code{cpu}.
+
+@item -m
+@itemx --user-summary
+Print the number of processes and number of CPU minutes on a per-user
+basis.
+
+@item -n
+@itemx --sort-num-calls
+Sort the output by the number of calls.  This is the default sorting
+method.
+
+@item -r
+@itemx --reverse-sort
+Sort output items in reverse order.
+
+@item -s
+@itemx --merge
+Merge the summarized accounting data into the summary files
+@code{@SAVACCT_FILE_LOC@} and @code{@USRACCT_FILE_LOC@}.
+
+@item -t
+@itemx --print-ratio
+For each entry, print the ratio of real time to the sum of system and
+user times.  If the sum of system and user times is too small to
+report---the sum is zero---@code{*ignore*} will appear in this field.
+
+@item -u
+@itemx --print-users
+For each command in the accounting file, print the userid and command
+name.  After printing all entries, quit.  @strong{Note}: this flag
+supersedes all others.
+
+@item -v @var{num}
+@itemx --threshold @var{num}
+Print commands which were executed @var{num} times or fewer and await a
+reply from the terminal.  If the response begins with @code{y}, add the
+command to the @code{**junk**} group.
+
+@item --separate-forks
+It really doesn't make any sense to me that the stock version of
+@code{sa} separates statistics for a particular executable depending on
+whether or not that command forked.  Therefore, GNU @code{sa} lumps this
+information together unless this option is specified.
+
+@item --sort-real-time
+Sort the output by the ``real time'' (elapsed time) for each command.
+
+@item --debug
+Print verbose internal information.
+
+@item -V
+@itemx --version
+Print @code{sa}'s version number.
+
+@item -h
+@itemx --help
+Print @code{sa}'s usage string.
+@end table
+
+@strong{Note}: if more than one sorting option is specified, the list
+will be sorted by the one specified last on the command line.
+
+@section Problems
+
+I haven't been able to test this on many different machines because the
+data files grow so big in a short time; our sysadmin would rather save
+the disk space.
+
+Most versions of @code{sa} that I've tested don't pay attention to flags
+like @code{--print-seconds} and @code{--sort-num-calls} when printing
+out commands when combined with the @code{--user-summary} or
+@code{--print-users} flags.  GNU @code{sa} pays attention to these flags
+if they are applicable.
+
+@subsection mips sa
+
+The average memory use is stored as a short rather than a double, so we
+suffer from round-off errors.  GNU @code{sa} uses double the whole way
+through.
+
+
+@c ----------------------------------------------------------------------
+@c @node Index,  , sa, Top
+@c @unnumbered Index
+@c 
+@c @printindex cp
+@c 
+
+@contents
+
+@bye

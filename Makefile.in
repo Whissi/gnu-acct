@@ -1,0 +1,294 @@
+# Makefile for GNU acct utils
+
+srcdir = @srcdir@
+VPATH = $(srcdir)
+
+prefix = /usr/local
+
+CC = @CC@
+LIBS = @LIBS@
+
+CFLAGS = @CFLAGS@ @DEFS@
+LDFLAGS = $(CFLAGS)
+INCLUDES = -I. -I$(srcdir)
+
+SHELL = /bin/sh
+MV = mv
+MAKEINFO = makeinfo
+TEXI2DVI = texi2dvi
+
+#
+# generic rules
+#
+
+all: dump-utmp ac last @PACCT_PROGS@
+
+clean:
+	$(RM) dump-utmp ac last dump-acct lastcomm sa accton *.o
+	$(RM) core mktime
+	$(RM) mon.out *.Addrs *.Counts *.pixie
+	$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	$(RM) accounting.info
+	$(RM) *.sys *.gnu tests-ac tests-last tests-lastcomm tests-sa
+
+mostlyclean: clean
+
+distclean: mostlyclean
+	$(RM) config.status Makefile config.h config.cache files.h stamp-h
+	$(RM) ac.1 accton.8 last.1 lastcomm.1 sa.8 accounting.texi
+	$(RM) TAGS
+
+maintainer-clean: distclean
+
+.PHONY: TAGS
+TAGS:
+	etags *.c
+
+
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+
+#
+# programs
+#
+
+AC_SRCS = ac.c common.c file_rd.c getopt.c getopt1.c hashtab.c @MKTIME_C@ \
+          utmp_rd.c
+AC_OBJS = ac.o common.o getopt.o getopt1.o hashtab.o @MKTIME_O@ \
+          file_rd.o utmp_rd.o
+
+ac: $(AC_SRCS) $(AC_OBJS)
+	$(CC) $(LDFLAGS) $(AC_OBJS) -o ac $(LIBS)
+
+
+DU_SRCS = dump-utmp.c common.c getopt.c getopt1.c file_rd.c utmp_rd.c
+DU_OBJS = dump-utmp.o common.o getopt.o getopt1.o file_rd.o utmp_rd.o
+
+dump-utmp: $(DU_OBJS) $(DU_SRCS)
+	$(CC) $(LDFLAGS) $(DU_OBJS) -o dump-utmp $(LIBS)
+
+
+DA_SRCS = dump-acct.c common.c getopt.c getopt1.c file_rd.c pacct_rd.c
+DA_OBJS = dump-acct.o common.o getopt.o getopt1.o file_rd.o pacct_rd.o
+
+dump-acct: $(DA_OBJS) $(DA_SRCS)
+	$(CC) $(LDFLAGS) $(DA_OBJS) -o dump-acct $(LIBS)
+
+
+ACCTON_SRCS = accton.c common.c getopt.c getopt1.c
+ACCTON_OBJS = accton.o common.o getopt.o getopt1.o
+
+accton: $(ACCTON_SRCS) $(ACCTON_OBJS)
+	$(CC) $(LDFLAGS) $(ACCTON_OBJS) -o accton $(LIBS)
+
+
+LAST_SRCS = last.c common.c file_rd.c getopt.c getopt1.c \
+            hashtab.c utmp_rd.c
+LAST_OBJS = last.o common.o file_rd.o getopt.o getopt1.o \
+            hashtab.o utmp_rd.o
+
+last: $(LAST_SRCS) $(LAST_OBJS)
+	$(CC) $(LDFLAGS) $(LAST_OBJS) -o last $(LIBS)
+
+
+LASTCOMM_SRCS = lastcomm.c common.c dev_hash.c file_rd.c getopt.c getopt1.c \
+                hashtab.c pacct_rd.c uid_hash.c
+LASTCOMM_OBJS = lastcomm.o common.o dev_hash.o getopt.o getopt1.o \
+                file_rd.o hashtab.o pacct_rd.o uid_hash.o
+
+lastcomm: $(LASTCOMM_SRCS) $(LASTCOMM_OBJS)
+	$(CC) $(LDFLAGS) $(LASTCOMM_OBJS) -o lastcomm $(LIBS)
+
+
+SA_SRCS = sa.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
+          pacct_rd.c uid_hash.c
+SA_OBJS = sa.o common.o file_rd.o getopt.o getopt1.o hashtab.o \
+          pacct_rd.o uid_hash.o
+
+sa: $(SA_SRCS) $(SA_OBJS)
+	$(CC) $(LDFLAGS) $(SA_OBJS) -o sa $(LIBS)
+
+
+#
+# documentation
+#
+
+info: accounting.info
+
+accounting.info: accounting.texi
+	$(MAKEINFO) accounting.texi
+
+dvi: accounting.dvi
+
+accounting.dvi: accounting.texi
+	$(TEXI2DVI) accounting.texi
+
+ 
+#
+# debugging targets
+#
+
+mktime: mktime.c
+	$(CC) $(LDFLAGS) -DDEBUG mktime.c -o mktime
+
+
+#
+# testing
+#
+
+.PHONY: tests-ac tests-last tests-lastcomm tests-sa
+
+check: tests-ac tests-last tests-lastcomm tests-sa
+
+SYS_LAST = @SYS_LAST@
+SYS_LASTCOMM = @SYS_LASTCOMM@
+SYS_AC = @SYS_AC@
+SYS_SA = @SYS_SA@
+
+WTMP_FILE_LOC = @WTMP_FILE_LOC@
+ACCT_FILE_LOC = @ACCT_FILE_LOC@
+SAVACCT_FILE_LOC = @SAVACCT_FILE_LOC@
+USRACCT_FILE_LOC = @USRACCT_FILE_LOC@
+
+tests-ac: ac
+	@echo
+	@echo "Running tests for ac"
+	@echo "The total times for each user will probably" > tests-ac
+	@echo "differ between your system's ac and GNU ac," >> tests-ac
+	@echo "owing to the fact that many stock ac's don't" >> tests-ac
+	@echo "expect errors in the wtmp file.  See the" >> tests-ac
+	@echo "documentation for more information." >> tests-ac
+	@echo >> tests-ac
+	@echo "invoking the system ac..." | tee -a tests-ac
+	@-time $(SYS_AC) -p 2>> tests-ac | sort > ac.sys
+	@echo >> tests-ac
+	@echo "invoking GNU ac..." | tee -a tests-ac
+	@-time ./ac -p --compatibility 2>> tests-ac | sort > ac.gnu
+	@echo >> tests-ac
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> tests-ac
+	@-diff -b ac.sys ac.gnu >> tests-ac
+	@echo "removing temporary files..."
+	@$(RM) ac.gnu ac.sys
+	@echo "Results are in the file tests-ac"
+	@echo
+
+tests-last: last
+	@echo
+	@echo "Running tests for last"
+	@echo "If you see differing 'ftp' entries, don't worry." > tests-last
+	@echo "Most system lasts report the incorrect time for" >> tests-last
+	@echo "ftp connections.  See the documentation for more" >> tests-last
+	@echo "information." >> tests-last
+	@echo >> tests-last
+	@echo "invoking the system last..." | tee -a tests-last
+	@-time $(SYS_LAST) -5000 2>> tests-last > last.sys
+	@echo >> tests-last
+	@echo "invoking GNU last..." | tee -a tests-last
+	@-time ./last -5000 2>> tests-last > last.gnu
+	@echo >> tests-last
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> tests-last
+	@-diff -b last.sys last.gnu >> tests-last
+	@echo "removing temporary files..."
+	@$(RM) last.gnu last.sys
+	@echo "Results are in the file tests-last"
+	@echo
+
+tests-lastcomm: lastcomm
+	@echo
+	@echo "Running tests for lastcomm"
+	@echo "If, in the diff of the outputs, you see some" > tests-lastcomm
+	@echo "extra stuff that's only in the file produced" >> tests-lastcomm
+	@echo "by GNU lastcomm, don't worry about it.  Those" >> tests-lastcomm
+	@echo "are just the commands executed while this" >> tests-lastcomm
+	@echo "script was running." >> tests-lastcomm
+	@echo >> tests-lastcomm
+	@echo "invoking the system lastcomm..." | tee -a tests-lastcomm
+	@-time $(SYS_LASTCOMM) 2>> tests-lastcomm | head -5000 > lastcomm.sys
+	@echo >> tests-lastcomm
+	@echo "invoking GNU lastcomm..." | tee -a tests-lastcomm
+	@-time ./lastcomm 2>> tests-lastcomm | head -5000 > lastcomm.gnu
+	@echo >> tests-lastcomm
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> tests-lastcomm
+	@-diff -b lastcomm.sys lastcomm.gnu >> tests-lastcomm
+	@echo "removing temporary files..."
+	@$(RM) lastcomm.gnu lastcomm.sys
+	@echo "Results are in the file tests-lastcomm"
+	@echo
+
+tests-sa: sa
+	@echo
+	@echo "Running tests for sa"
+	@echo "If, in the diff of the outputs, you see that the" > tests-sa
+	@echo "numbers generated by GNU sa are larger than those" >> tests-sa
+	@echo "of the system, don't worry.  The numbers just" >> tests-sa
+	@echo "reflect those commands which happened while this" >> tests-sa
+	@echo "script was running." >> tests-sa
+	@echo >> tests-sa
+	@echo "invoking the system sa..." | tee -a tests-sa
+	@-time $(SYS_SA) -acilnt 2>> tests-sa > sa.sys
+	@echo >> tests-sa
+	@echo "invoking GNU sa..." | tee -a tests-sa
+	@-time ./sa -acilnt --separate-forks 2>> tests-sa > sa.gnu
+	@echo >> tests-sa
+	@echo "diffing..."
+	@echo "diff -b <sys> <GNU>" >> tests-sa
+	@-diff -b sa.sys sa.gnu >> tests-sa
+	@echo "Removing temporary files..."
+	@$(RM) sa.gnu sa.sys
+	@echo "Results are in the file tests-sa"
+	@echo
+
+
+
+# autoconf & autoheader used to happen automatically, but they make it
+# a pain for those people who don't have them.
+
+#$(srcdir)/configure: configure.in stamp-h.in #aclocal.m4
+#	cd $(srcdir) && autoconf
+
+# autoheader might not change config.h.in, so touch a stamp file.
+#$(srcdir)/config.h.in: stamp-h.in
+#$(srcdir)/stamp-h.in: configure.in acconfig.h #aclocal.m4 config.h.top config.h.bot
+#	cd $(srcdir) && autoheader
+#	echo timestamp > $(srcdir)/stamp-h.in
+
+config.h: stamp-h
+stamp-h: config.h.in config.status files.h.in
+	./config.status
+
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
+depend:
+	sed '/^\#* \A\U\T\O/,$$d' Makefile > __crunkfile__
+	echo "######## AUTO-GENERATED DEPENDENCIES -- DO NOT MODIFY BELOW THIS LINE ########" >> __crunkfile__
+	echo >> __crunkfile__
+	for i in *.c; do crunk=`echo $$i | sed 's#\.c#.o#'`; echo -n "$$crunk :"; awk '{ if ($$1 == "#include" && substr ($$2, 1, 1) == "\"") printf (" %s", substr ($$2, 2, length ($$2) - 2)) }' $$i; echo ; done >> __crunkfile__
+	-mv -f __crunkfile__ Makefile
+	-$(RM) __crunkfile__
+
+######## AUTO-GENERATED DEPENDENCIES -- DO NOT MODIFY BELOW THIS LINE ########
+
+ac.o : config.h utmp_rd.h common.h getopt.h hashtab.h version.h al_share.cpp
+accton.o : config.h common.h getopt.h version.h
+common.o : config.h common.h
+dev_hash.o : config.h common.h hashtab.h dev_hash.h
+dump-acct.o : pacct_rd.h common.h getopt.h
+dump-utmp.o : utmp_rd.h common.h getopt.h
+file_rd.o : config.h file_rd.h common.h
+getopt.o : config.h getopt.h
+getopt1.o : config.h getopt.h
+hashtab.o : config.h hashtab.h common.h
+last.o : config.h utmp_rd.h common.h getopt.h hashtab.h version.h al_share.cpp
+lastcomm.o : config.h uid_hash.h dev_hash.h pacct_rd.h hashtab.h common.h getopt.h version.h
+mktime.o :
+pacct_rd.o : config.h file_rd.h pacct_rd.h common.h
+sa.o : config.h pacct_rd.h utmp_rd.h common.h getopt.h uid_hash.h version.h
+uid_hash.o : config.h common.h hashtab.h uid_hash.h
+utmp_rd.o : config.h file_rd.h utmp_rd.h common.h

@@ -1,0 +1,205 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl $Id: configure.in,v 1.21 1996/04/19 07:23:48 noel Exp $
+AC_INIT(ac.c)
+AC_CONFIG_HEADER(config.h)
+AC_PROG_CC
+if test $ac_cv_prog_gcc_g = yes; then
+  CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
+fi
+AC_PROG_CPP
+AC_GCC_TRADITIONAL
+AC_PROG_INSTALL
+AC_AIX
+AC_MINIX
+AC_ISC_POSIX
+AC_ALLOCA
+AC_RETSIGTYPE
+dnl AC_MAJOR_HEADER
+MKTIME_C="mktime.c" MKTIME_O="mktime.o"
+AC_FUNC_CHECK(mktime,
+              AC_DEFINE(HAVE_MKTIME)
+              MKTIME_C="" MKTIME_O="" )
+AC_FUNC_CHECK(getpagesize, AC_DEFINE(HAVE_GETPAGESIZE))
+AC_FUNC_CHECK(rename, AC_DEFINE(HAVE_RENAME))
+AC_CHECK_HEADERS(limits.h stdlib.h unistd.h string.h)
+dnl
+dnl crunky time stuff
+dnl
+AC_HEADER_TIME
+AC_CHECK_HEADERS(sys/time.h)
+dnl
+dnl find out where various programs reside on this system
+dnl
+AC_PATH_PROGS(SYS_LAST, last, echo, /bin /etc /sbin /usr/bin /usr/etc /usr/sbin /usr/ucb /usr/local/bin /usr/local/etc /usr/local/sbin )
+AC_PATH_PROGS(SYS_LASTCOMM, lastcomm, echo, /bin /etc /sbin /usr/bin /usr/etc /usr/sbin /usr/ucb /usr/local/bin /usr/local/etc /usr/local/sbin )
+AC_PATH_PROGS(SYS_AC, ac, echo, /bin /etc /sbin /usr/bin /usr/etc /usr/sbin /usr/ucb /usr/local/bin /usr/local/etc /usr/local/sbin )
+AC_PATH_PROGS(SYS_SA, sa, echo, /bin /etc /sbin /usr/bin /usr/etc /usr/sbin /usr/ucb /usr/local/bin /usr/local/etc /usr/local/sbin )
+dnl
+dnl find out what fields are valid in utmp.h
+dnl
+AC_HEADER_EGREP(ut_id, utmp.h, AC_DEFINE(HAVE_UT_ID), )
+AC_HEADER_EGREP(ut_pid, utmp.h, AC_DEFINE(HAVE_UT_PID), )
+AC_HEADER_EGREP(ut_host, utmp.h, AC_DEFINE(HAVE_UT_HOST), )
+AC_HEADER_EGREP(ut_addr, utmp.h, AC_DEFINE(HAVE_UT_ADDR), )
+AC_HEADER_EGREP(ut_type, utmp.h, AC_DEFINE(HAVE_UT_TYPE), )
+dnl
+dnl figure out where acct.h lives
+dnl and whether fields are int/comp_t
+dnl
+AC_CHECK_HEADER(sys/acct.h,
+                AC_DEFINE(HAVE_SYS_ACCT_H)
+                PACCT_PROGS="dump-acct accton lastcomm sa"
+	        AC_HEADER_EGREP(ac_utime, sys/acct.h,
+				AC_DEFINE(HAVE_ACUTIME)
+                                AC_HEADER_EGREP(comp_t.*ac_utime, sys/acct.h,
+				                AC_DEFINE(ACUTIME_COMPT))
+		)
+	        AC_HEADER_EGREP(ac_stime, sys/acct.h,
+				AC_DEFINE(HAVE_ACSTIME)
+				AC_HEADER_EGREP(comp_t.*ac_stime, sys/acct.h,
+						AC_DEFINE(ACSTIME_COMPT))
+		)
+	        AC_HEADER_EGREP(ac_etime, sys/acct.h,
+				AC_DEFINE(HAVE_ACETIME)
+				AC_HEADER_EGREP(comp_t.*ac_etime, sys/acct.h,
+						AC_DEFINE(ACETIME_COMPT))
+		)
+	        AC_HEADER_EGREP(ac_io,    sys/acct.h,
+				AC_DEFINE(HAVE_ACIO)
+				AC_HEADER_EGREP(comp_t.*ac_io,    sys/acct.h,
+						AC_DEFINE(ACIO_COMPT))
+		)
+	        AC_HEADER_EGREP(ac_mem,   sys/acct.h,
+				AC_DEFINE(HAVE_ACMEM)
+				AC_HEADER_EGREP(comp_t.*ac_mem,   sys/acct.h,
+						AC_DEFINE(ACMEM_COMPT))
+		)
+	        AC_HEADER_EGREP(comp_t,   sys/acct.h, AC_DEFINE(HAVE_COMP_T))
+                ,
+dnl -- This is a bit of a yucky thing, but it works.  Since linux doesn't
+dnl -- have a sys/acct.h yet, I've just copied the sys/acct.h stuff and
+dnl -- made changes to linux/acct.h.  This code will execute only if
+dnl -- autoconf doesn't find sys/acct.h.
+  AC_CHECK_HEADER(linux/acct.h,
+		  AC_DEFINE(HAVE_LINUX_ACCT_H)
+		  PACCT_PROGS="dump-acct accton lastcomm sa"
+		  AC_HEADER_EGREP(ac_utime, linux/acct.h,
+				  AC_DEFINE(HAVE_ACUTIME)
+				  AC_HEADER_EGREP(comp_t.*ac_utime,
+                                                  linux/acct.h,
+						  AC_DEFINE(ACUTIME_COMPT))
+		  )
+		  AC_HEADER_EGREP(ac_stime, linux/acct.h,
+				  AC_DEFINE(HAVE_ACSTIME)
+				  AC_HEADER_EGREP(comp_t.*ac_stime,
+                                                  linux/acct.h,
+						  AC_DEFINE(ACSTIME_COMPT))
+		  )
+		  AC_HEADER_EGREP(ac_etime, linux/acct.h,
+				  AC_DEFINE(HAVE_ACETIME)
+				  AC_HEADER_EGREP(comp_t.*ac_etime,
+                                                  linux/acct.h,
+						  AC_DEFINE(ACETIME_COMPT))
+		  )
+		  AC_HEADER_EGREP(ac_io,    linux/acct.h,
+				  AC_DEFINE(HAVE_ACIO)
+				  AC_HEADER_EGREP(comp_t.*ac_io, linux/acct.h,
+						  AC_DEFINE(ACIO_COMPT))
+		  )
+		  AC_HEADER_EGREP(ac_mem,   linux/acct.h,
+				  AC_DEFINE(HAVE_ACMEM)
+				  AC_HEADER_EGREP(comp_t.*ac_mem, linux/acct.h,
+						  AC_DEFINE(ACMEM_COMPT))
+		  )
+		  AC_HEADER_EGREP(comp_t,   linux/acct.h, AC_DEFINE(HAVE_COMP_T))
+		  , )
+)
+dnl
+dnl find out where utmp/pacct are stored
+dnl
+AC_TRY_RUN(
+[
+#include <stdio.h>
+#include <sys/types.h>
+#ifdef HAVE_LINUX_ACCT_H
+# include <linux/acct.h>
+#else
+# include <sys/acct.h>
+#endif
+#include <utmp.h>
+
+#ifndef WTMP_FILE
+  #if defined(__FreeBSD__) || defined (__NetBSD__) || defined(__linux__)
+    #define WTMP_FILE "/var/log/wtmp"
+  #elif defined(sun) || defined(AMIX)
+    #define WTMP_FILE "/var/adm/wtmp"
+  #elif defined(sgi) || defined(SVR4)
+    #define WTMP_FILE "/usr/adm/wtmp"
+  #else
+    #define WTMP_FILE "/usr/adm/wtmp"
+  #endif
+#endif
+
+#ifndef ACCT_FILE
+  #if defined(__FreeBSD__) || defined(__linux__)
+    #define ACCT_FILE "/var/account/pacct"
+  #elif defined(__NetBSD__)
+    #define ACCT_FILE "/var/account/acct"
+  #elif defined(sun) || defined(AMIX)
+    #define ACCT_FILE "/var/adm/pacct"
+  #elif defined(sgi) || defined(SVR4) || defined(M_XENIX)
+    #define ACCT_FILE "/usr/adm/pacct"
+  #else
+    #define ACCT_FILE "/usr/adm/acct"
+  #endif
+#endif
+
+#ifndef SAVACCT_FILE
+  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+    #define SAVACCT_FILE "/var/account/savacct"
+  #elif defined(sun) || defined(AMIX)
+    #define SAVACCT_FILE "/var/adm/savacct"
+  #elif defined(sgi) || defined(SVR4)
+    #define SAVACCT_FILE "/usr/adm/savacct"
+  #else
+    #define SAVACCT_FILE "/usr/adm/savacct"
+  #endif
+#endif
+
+#ifndef USRACCT_FILE
+  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+    #define USRACCT_FILE "/var/account/usracct"
+  #elif defined(sun) || defined(AMIX)
+    #define USRACCT_FILE "/var/adm/usracct"
+  #elif defined(sgi) || defined(SVR4)
+    #define USRACCT_FILE "/usr/adm/usracct"
+  #else
+    #define USRACCT_FILE "/usr/adm/usracct"
+  #endif
+#endif
+
+main ()
+{
+  FILE *fp;
+  fp = fopen ("locs", "w");
+  fputs ("WTMP_FILE_LOC=" WTMP_FILE "\n", fp);
+  fputs ("ACCT_FILE_LOC=" ACCT_FILE "\n", fp);
+  fputs ("SAVACCT_FILE_LOC=" SAVACCT_FILE "\n", fp);
+  fputs ("USRACCT_FILE_LOC=" USRACCT_FILE "\n", fp);
+  fclose (fp);
+  exit (0);
+}
+], . locs; rm locs )
+AC_PID_T dnl for sys/acct.h
+AC_UID_T dnl same as above
+AC_SIZE_T
+AC_HEADER_DIRENT
+echo checking for kitchen sink... You find a ring in the sink!
+AC_SUBST(PACCT_PROGS)
+AC_SUBST(MKTIME_C)
+AC_SUBST(MKTIME_O)
+AC_SUBST(WTMP_FILE_LOC)
+AC_SUBST(ACCT_FILE_LOC)
+AC_SUBST(SAVACCT_FILE_LOC)
+AC_SUBST(USRACCT_FILE_LOC)
+AC_OUTPUT(Makefile files.h accounting.texi ac.1 accton.8 last.1 lastcomm.1 sa.8, echo timestamp > stamp-h)

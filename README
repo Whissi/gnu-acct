@@ -1,0 +1,117 @@
+Welcome to the GNU Accounting Utilities package!
+
+Things haven't changed very much, save a few bug-fixes and better
+autoconf-iscation.  The package should now build whether or not you
+have process accounting available on your system.  Check the file
+`ChangeLog' for an up-to-date list of source modifications.
+
+A big thanks to Dirk Eddelbuettel <edd@econ.queensu.ca> for
+motivation!
+
+This package contains:
+
+	ac:           summarizes login accounting
+	accton:       turn accounting on or off
+	last:         show the people who have logged in
+	lastcomm:     show which commands have been used
+	sa:           summarizes process accounting
+
+	dump-utmp:    print a utmp file in a human-readble format
+	dump-acct:    same as above for acct/pacct files
+
+See the file `INSTALL' for generic instructions on how to compile and
+install this software.
+
+NOTE: if you're installing this package to replace your system's
+accounting utilities, you need to delete the "usracct" and "savacct"
+files written by your system's sa, as GNU sa is not able to read them
+(their format varies too greatly between systems).
+
+----------------------------------------------------------------------
+
+Newest, hottest, latest:
+
+  * Hey!  We're on prep.ai.mit.edu!
+
+  * Renamed long option `--year' to `--print-year' in both the ac and
+  last programs.
+
+  * Added a `--print-seconds' (or `-s') flag to last, for those who
+  really want the nitty-gritty.
+
+  * Added a `--sort-real-time' option to sa for those who want to sort
+  the output by "real" (elapsed) time.
+
+  * Fixed a buffer overrun error in sa which was preventing it from
+  sorting the username list correctly.
+
+The usual:
+
+  * the intro to the documentation is a joke.  Any factual information
+  about history of the original accounting utilities is welcome.
+
+  * If you run into a bug, please send a "good" bug report -- a
+  message that contains detailed instructions that allow me to
+  reproduce the bug.
+
+  * If you can make a patch for a particular problem, great!  But if
+  you modify more than 10 lines, I need to worry about disclaimers and
+  copyright stuff.  Let's try this: if you find a bug and report
+  it, I'll try to fix the problem first.  If I can't, I'll take a
+  patch.  Plus, I want to save you work on your end.
+
+  * Straightforward testing: "./configure; make check" and check the
+  output files in the source directory (should show times and etc.).
+
+  * If this package isn't finding your utmp/pacct files correctly,
+  check the file configure.in script (files.h is now automatically
+  generated from the results of that script).
+
+  * Any suggestions for better output from the dump-acct and dump-utmp
+  programs?  I'm not sure what format will be easiest to parse.
+
+  * If you see slightly different numbers for output with GNU sa
+  compared with your system's sa, it's probably due to round-off
+  error.  Check it, however, and send me a report.
+
+  * PLEASE SUGGEST FEATURES THAT YOU WOULD LIKE!  I realize that the
+  standard options aren't great, so I'm looking for suggestions to
+  make the output more digestible.  Would anyone be interested in
+  scripts/options to produce graphic output (postscript, xplot,
+  gnuplot, etc.)?
+
+Coming up:
+
+  * The next major release will introduce utmpx support for those of
+  you lucky enough to have it.
+
+  * I'm going to try and include ansi2knr in the next minor release
+  for those of you on systems without gcc; I have no clue how
+  successful that will be.
+
+It's good to know that people are willing to donate their time and
+effort to getting the GNU Accounting Utilities up and working on many
+machines.  Thanks a lot for the help!
+
+-Noel
+
+Noel Cragg \\ 6244 Aberdeen Avenue \\ Goleta CA 93117-2002 \\ 805 964 1892
+     noel@cs.oberlin.edu \\ noel@red-bean.com \\ noel@gnu.ai.mit.edu
+
+----------------------------------------------------------------------
+
+The GNU Accounting Utilities are Copyright (C) 1993--7 Free
+Software Foundation, Inc.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; version 2 dated June, 1991.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program;  if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave., Cambridge, MA 02139, USA.

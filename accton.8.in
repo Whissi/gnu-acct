@@ -1,0 +1,26 @@
+.TH ACCTON 8 "1995 October 31"
+.SH NAME
+accton \-  turns process accounting on or off
+.SH SYNOPSIS
+.B accton
+[
+.I filename
+]
+.SH DESCRIPTION
+.LP
+.B accton " accountingfile"
+turns on process accounting.  If called with no arguments,
+it will, by default, stop process accounting.
+.br
+.SH FILES
+.TP
+.I @ACCT_FILE_LOC@
+The system wide process accounting file. 
+.LP
+.SH AUTHOR
+The GNU accounting utilities were written by Noel Cragg
+<noel@gnu.ai.mit.edu>. The man page was adapted from the accounting
+texinfo page by Susan Kleinmann <sgk@sgk.tiac.net>.
+.SH "SEE ALSO"
+.BR acct (5),
+.BR ac (8)
