@@ -17,19 +17,19 @@
 /* Set up a file reader. */
 
 struct file_rd_info *
-file_reader_init (int record_size, int buffered_records, int backwards)
-{
-  struct file_rd_info *new;
+      file_reader_init (int record_size, int buffered_records, int backwards)
+  {
+    struct file_rd_info *new;
 
-  new = (struct file_rd_info *) xmalloc (sizeof (struct file_rd_info));
-  memset (new, 0, sizeof (struct file_rd_info));
-  new->record_size = record_size;
-  new->buffered_records = buffered_records;
-  new->buffer = (char *) xmalloc (record_size * buffered_records);
-  new->backwards = backwards;
+    new = (struct file_rd_info *) xmalloc (sizeof (struct file_rd_info));
+    memset (new, 0, sizeof (struct file_rd_info));
+    new->record_size = record_size;
+    new->buffered_records = buffered_records;
+    new->buffer = (char *) xmalloc (record_size * buffered_records);
+    new->backwards = backwards;
 
-  return new;
-}
+    return new;
+  }
 
 
 /* Add a file to the list of files to process */
@@ -38,7 +38,7 @@ void
 file_reader_add_file (struct file_rd_info *fri, char *name)
 {
   /* SNOC this file onto our list so that we process them in order. */
-  
+
   struct file_list *np, *new;
 
   new = (struct file_list *) xmalloc (sizeof (struct file_list));
@@ -72,114 +72,114 @@ file_reader_get_entry (struct file_rd_info *fri)
 
   /* If RECS_LEFT == 0, there's nothing in the buffer, so read another
      block of records from the file. */
-  
+
   if (fri->recs_left == 0)
     {
       while (1)
-	{
-	  /* If there's no file open, we should do so. */
-      
-	  if (fri->fp == NULL)
-	    {
-	      /* Open up the next file!  First, check to see that there IS
-		 another file... */
-	  
-	      if (fri->the_files == NULL)
-		return 0;		/* no more files == no more records */
+        {
+          /* If there's no file open, we should do so. */
 
-	      fri->fp = file_open (fri->the_files->name, 0);
-	      if (fri->fp == NULL)
-		{
-		  /* make sure to free this list entry */
-		  goto no_more_records_no_close;
-		}
-	      
-	      if (fri->backwards)
-		fseek (fri->fp, 0, SEEK_END);	/* go to end of file */
+          if (fri->fp == NULL)
+            {
+              /* Open up the next file!  First, check to see that there IS
+              another file... */
 
-	      fri->rec_number = 0;	/* start over! */
-	      fri->name = fri->the_files->name;
-	    }
+              if (fri->the_files == NULL)
+                return 0;		/* no more files == no more records */
 
-	  /* We have to do things differently depending on our
-             direction of reading */
-	  
-	  if (fri->backwards)
-	    {
-	      long offset, max_recs, recs_to_read;
+              fri->fp = file_open (fri->the_files->name, 0);
+              if (fri->fp == NULL)
+                {
+                  /* make sure to free this list entry */
+                  goto no_more_records_no_close;
+                }
 
-	      if ((offset = ftell (fri->fp)) <= 0)
-		goto no_more_records;
+              if (fri->backwards)
+                fseek (fri->fp, 0, SEEK_END);	/* go to end of file */
 
-	      /* Read as many records as possible, up to
-                 FRI->BUFFERED_RECORDS */
-      
-	      max_recs = offset / (long) fri->record_size;
-  
-	      recs_to_read = ((max_recs < fri->buffered_records)
-			      ? max_recs
-			      : fri->buffered_records);
-	      
-	      /* Move back in the file */
+              fri->rec_number = 0;	/* start over! */
+              fri->name = fri->the_files->name;
+            }
 
-	      fseek (fri->fp, -fri->record_size * recs_to_read,
-		     SEEK_CUR);
-      
-	      if (debugging_enabled)
-		{
-		  long new_offset = ftell (fri->fp);
-		  fprintf (stddebug, "Did seek in file %ld --> %ld\n",
-			   offset, new_offset);
-		}
-      
-	      if (fread ((void *) fri->buffer, fri->record_size,
-			 recs_to_read, fri->fp) == -1)
-		fatal ("get_entry: couldn't read from file");
-      
-	      if (debugging_enabled)
-		fprintf (stddebug, "Got %ld records from file\n",
-			 recs_to_read);
-  
-	      /* don't need to check this, because the above read was fine */
+          /* We have to do things differently depending on our
+                   direction of reading */
 
-	      fseek (fri->fp, -fri->record_size * recs_to_read, SEEK_CUR);
-      
-	      /* Set up buffer position variables */
+          if (fri->backwards)
+            {
+              long offset, max_recs, recs_to_read;
 
-	      fri->recs_read = recs_to_read;
-	      fri->recs_left = recs_to_read;
+              if ((offset = ftell (fri->fp)) <= 0)
+                goto no_more_records;
 
-	      break;		/* get out of this WHILE loop */
-	    }
-	  else
-	    {
-	      /* Reading forwards in the file */
+              /* Read as many records as possible, up to
+                       FRI->BUFFERED_RECORDS */
 
-	      int retval;
-	      
-	      retval = fread ((void *) fri->buffer, fri->record_size,
-			      fri->buffered_records, fri->fp);
-	      
-	      if (retval == -1)
-		fatal ("get_entry: couldn't read from file");
-	      else if (retval != 0)
-		{
-		  fri->recs_read = retval;
-		  fri->recs_left = retval;
-		  break;	/* get out of this loop */
-		}
-	    }
-	  
-	  /* If we got here, there were no more records in the file.
-             Close it, delete it from our list, and try again. */
-	  
-	no_more_records:
-	  fclose (fri->fp);
-	no_more_records_no_close:
-	  fri->fp = NULL;
-	  fri->the_files = fri->the_files->next;
-	}
-    }	 
+              max_recs = offset / (long) fri->record_size;
+
+              recs_to_read = ((max_recs < fri->buffered_records)
+                              ? max_recs
+                              : fri->buffered_records);
+
+              /* Move back in the file */
+
+              fseek (fri->fp, -fri->record_size * recs_to_read,
+                     SEEK_CUR);
+
+              if (debugging_enabled)
+                {
+                  long new_offset = ftell (fri->fp);
+                  fprintf (stddebug, "Did seek in file %ld --> %ld\n",
+                           offset, new_offset);
+                }
+
+              if (fread ((void *) fri->buffer, fri->record_size,
+                         recs_to_read, fri->fp) == -1)
+                fatal ("get_entry: couldn't read from file");
+
+              if (debugging_enabled)
+                fprintf (stddebug, "Got %ld records from file\n",
+                         recs_to_read);
+
+              /* don't need to check this, because the above read was fine */
+
+              fseek (fri->fp, -fri->record_size * recs_to_read, SEEK_CUR);
+
+              /* Set up buffer position variables */
+
+              fri->recs_read = recs_to_read;
+              fri->recs_left = recs_to_read;
+
+              break;		/* get out of this WHILE loop */
+            }
+          else
+            {
+              /* Reading forwards in the file */
+
+              int retval;
+
+              retval = fread ((void *) fri->buffer, fri->record_size,
+                              fri->buffered_records, fri->fp);
+
+              if (retval == -1)
+                fatal ("get_entry: couldn't read from file");
+              else if (retval != 0)
+                {
+                  fri->recs_read = retval;
+                  fri->recs_left = retval;
+                  break;	/* get out of this loop */
+                }
+            }
+
+          /* If we got here, there were no more records in the file.
+                   Close it, delete it from our list, and try again. */
+
+no_more_records:
+          fclose (fri->fp);
+no_more_records_no_close:
+          fri->fp = NULL;
+          fri->the_files = fri->the_files->next;
+        }
+    }
 
   {
     char *rec;
@@ -188,7 +188,7 @@ file_reader_get_entry (struct file_rd_info *fri)
       rec = (char *) fri->buffer + (--fri->recs_left * fri->record_size);
     else
       rec = (char *) fri->buffer + ((fri->recs_read - fri->recs_left--)
-				    * fri->record_size);
+                                    * fri->record_size);
 
     fri->rec_number++;
 

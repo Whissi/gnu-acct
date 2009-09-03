@@ -1,13 +1,13 @@
 /* common.c */
 
-/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997, 2008 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
 The GNU Accounting Utilities are free software; you can redistribute
 them and/or modify them under the terms of the GNU General Public
 License as published by the Free Software Foundation; either version
-2, or (at your option) any later version.
+3, or (at your option) any later version.
 
 The GNU Accounting Utilities are distributed in the hope that they will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -25,11 +25,11 @@ MA 02139, USA.  */
 #ifdef __GNUC__
 # define alloca __builtin_alloca
 #else
-# if HAVE_ALLOCA_H
+# ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
 # else
 #  ifdef _AIX
- #pragma alloca
+#pragma alloca
 #  else
 #   ifndef alloca /* predefined by HP cc +Olibcalls */
 char *alloca ();
@@ -118,47 +118,50 @@ file_open (char *file_name, int write_flag)
 int
 rename (char *from, char *to)
 {
-	struct stat sbfrom, sbto;
+  struct stat sbfrom, sbto;
 
-	/*
-	 * just try the link(2), if it fails with EEXIST, we'll try plan B.
-	 */
-	if (link(from, to) == 0) {
-		(void) unlink(from);	/* XXX what if we can't remove it? */
-		return 0;
-	}
-	if (errno != EEXIST)
-		return -1;
+  /*
+   * just try the link(2), if it fails with EEXIST, we'll try plan B.
+   */
+  if (link(from, to) == 0)
+    {
+      (void) unlink(from);	/* XXX what if we can't remove it? */
+      return 0;
+    }
+  if (errno != EEXIST)
+    return -1;
 
-	/*
-	 * Careful now!  The following is full of race conditions.
-	 * However, we only want to check for a cross device link and
-	 * should be resonably safe.
-	 */
-	if (stat(from, &sbfrom) < 0)
-		return -1;
-	if (stat(to, &sbto) < 0)
-		return -1;
-	if (sbfrom.st_dev != sbto.st_dev) {
-		errno = EXDEV;
-		return -1;
-	}
+  /*
+   * Careful now!  The following is full of race conditions.
+   * However, we only want to check for a cross device link and
+   * should be resonably safe.
+   */
+  if (stat(from, &sbfrom) < 0)
+    return -1;
+  if (stat(to, &sbto) < 0)
+    return -1;
+  if (sbfrom.st_dev != sbto.st_dev)
+    {
+      errno = EXDEV;
+      return -1;
+    }
 
-	/*
-	 * OK, this isn't going to be across file systems,
-	 * therefore its safe to try to remove "to."
-	 */
-	if (unlink(to) < 0)
-		return -1;
-	/*
-	 * Bug: if the system crashes, "to" is nonexistent.  That's
-	 * not compatible, but there's nothing we can do about it.
-	 */
-	if (link(from, to) == 0) {
-		(void) unlink(from);	/* XXX what if we can't remove it? */
-		return 0;
-	}
-	return -1;
+  /*
+   * OK, this isn't going to be across file systems,
+   * therefore its safe to try to remove "to."
+   */
+  if (unlink(to) < 0)
+    return -1;
+  /*
+   * Bug: if the system crashes, "to" is nonexistent.  That's
+   * not compatible, but there's nothing we can do about it.
+   */
+  if (link(from, to) == 0)
+    {
+      (void) unlink(from);	/* XXX what if we can't remove it? */
+      return 0;
+    }
+  return -1;
 }
 
 #endif
@@ -170,7 +173,7 @@ void
 print_wtmp_file_location (void)
 {
   printf ("\nThe system's default login accounting file is %s.\n",
-	  WTMP_FILE_LOC);
+          WTMP_FILE_LOC);
 }
 
 
@@ -180,7 +183,7 @@ void
 print_acct_file_location (void)
 {
   printf ("\nThe system's default process accounting file is %s.\n",
-	  ACCT_FILE_LOC);
+          ACCT_FILE_LOC);
 }
 
 

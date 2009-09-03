@@ -13,11 +13,11 @@
 #include <ctype.h>
 #include <sys/types.h>
 
-#if TIME_WITH_SYS_TIME
+#ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
 #else
-# if HAVE_SYS_TIME_H
+# ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
@@ -41,7 +41,7 @@ void
 utmp_init (int backwards)
 {
   utmp_info = file_reader_init (sizeof (struct utmp), BUFFERED_RECS,
-				backwards);
+                                backwards);
 }
 
 
@@ -58,10 +58,10 @@ add_utmp_file (char *name)
    Return 0 if no more entries. */
 
 struct utmp *
-utmp_get_entry (void)
-{
-  return (struct utmp *) file_reader_get_entry (utmp_info);
-}
+      utmp_get_entry (void)
+  {
+    return (struct utmp *) file_reader_get_entry (utmp_info);
+  }
 
 
 void
@@ -70,8 +70,8 @@ print_utmp_record (struct utmp *rec, FILE *out)
   if (rec)
     {
       fprintf (out, "%-*.*s|%-*.*s|",
-	       NAME_LEN, NAME_LEN, rec->ut_name,
-	       TTY_LEN, TTY_LEN, rec->ut_line);
+               NAME_LEN, NAME_LEN, rec->ut_name,
+               TTY_LEN, TTY_LEN, rec->ut_line);
 
 #ifdef HAVE_UT_TYPE
       fprintf (out, "%1d|", rec->ut_type);
@@ -79,25 +79,25 @@ print_utmp_record (struct utmp *rec, FILE *out)
 
 #ifdef HAVE_UT_ID
       {
-	int i;
-	for (i = 0; i < ID_LEN; i++)
-	  {
-	    char c = rec->ut_id[i];
-	    if (c == '\0')
-	      {
-		fprintf (out, "%-*.*s", ID_LEN - i, ID_LEN - i, "");
-		break;
-	      }
-	    else if (! isprint (c))
-	      {
-		fputc ('?', out);
-	      }
-	    else
-	      {
-		fputc (c, out);
-	      }
-	  }
-	fputc ('|', out);
+        int i;
+        for (i = 0; i < ID_LEN; i++)
+          {
+            char c = rec->ut_id[i];
+            if (c == '\0')
+              {
+                fprintf (out, "%-*.*s", ID_LEN - i, ID_LEN - i, "");
+                break;
+              }
+            else if (! isprint (c))
+              {
+                fputc ('?', out);
+              }
+            else
+              {
+                fputc (c, out);
+              }
+          }
+        fputc ('|', out);
       }
 #endif
 
@@ -107,10 +107,10 @@ print_utmp_record (struct utmp *rec, FILE *out)
 
 #ifdef HAVE_UT_ADDR
       {
-	struct in_addr a;
-	a.s_addr = rec->ut_addr;
-	fprintf (out, "%-15.15s|",
-		 (rec->ut_addr) ? inet_ntoa (a) : "");
+        struct in_addr a;
+        a.s_addr = rec->ut_addr;
+        fprintf (out, "%-15.15s|",
+                 (rec->ut_addr) ? inet_ntoa (a) : "");
       }
 #endif
 
@@ -152,17 +152,17 @@ fix_ut_type_field (struct utmp *rec)
   else if (rec->ut_line[0] == BOOT_TIME_CHAR)
     {
       if ((strncmp (rec->ut_name, "reboot", NAME_LEN) == 0)
-	  && (rec->ut_type != BOOT_TIME))
-	mods = 1, rec->ut_type = BOOT_TIME;
+          && (rec->ut_type != BOOT_TIME))
+        mods = 1, rec->ut_type = BOOT_TIME;
 #ifdef RUN_LVL
       else if ((strncmp (rec->ut_name, "shutdown", NAME_LEN) == 0)
-	       && (rec->ut_type != RUN_LVL))
-	mods = 1, rec->ut_type = RUN_LVL;
+               && (rec->ut_type != RUN_LVL))
+        mods = 1, rec->ut_type = RUN_LVL;
 #else
       /* If we don't have RUN_LVL, set the type to BOOT_TIME and the
-         bsd side will catch it. */
+      bsd side will catch it. */
       else if ((strncmp (rec->ut_name, "shutdown", NAME_LEN) == 0)
-	       && (rec->ut_type != BOOT_TIME))
+               && (rec->ut_type != BOOT_TIME))
         mods = 1, rec->ut_type = BOOT_TIME;
 #endif
     }
@@ -196,12 +196,12 @@ fix_ut_type_field (struct utmp *rec)
   if ((rec->ut_type < 1) || (rec->ut_type > UTMAXTYPE))
     {
       if (rec->ut_line[0] != '\0')
-	{
-	  if (rec->ut_name[0] != '\0')
-	    mods = 1, rec->ut_type = USER_PROCESS;
-	  else
-	    mods = 1, rec->ut_type = DEAD_PROCESS;
-	}
+        {
+          if (rec->ut_name[0] != '\0')
+            mods = 1, rec->ut_type = USER_PROCESS;
+          else
+            mods = 1, rec->ut_type = DEAD_PROCESS;
+        }
     }
 #endif
 
@@ -225,7 +225,7 @@ bad_utmp_record (struct utmp *rec)
       && (rec->ut_line[0] == '\0')
       && (rec->ut_time == 0))
     return 1;
-  
+
 #endif
 
   return 0;

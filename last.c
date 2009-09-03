@@ -1,13 +1,11 @@
-/* last.c */
-
-/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997, 2003, 2008 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
 The GNU Accounting Utilities are free software; you can redistribute
 them and/or modify them under the terms of the GNU General Public
 License as published by the Free Software Foundation; either version
-2, or (at your option) any later version.
+3, or (at your option) any later version.
 
 The GNU Accounting Utilities are distributed in the hope that they will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -34,11 +32,11 @@ MA 02139, USA.  */
 
 #include <sys/types.h>
 
-#if TIME_WITH_SYS_TIME
+#ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
 #else
-# if HAVE_SYS_TIME_H
+# ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
@@ -53,7 +51,11 @@ MA 02139, USA.  */
 
 #include "common.h"
 #include "utmp_rd.h"
-#include "getopt.h"
+#ifdef HAVE_GETOPT_LONG
+#include <getopt.h>
+#else
+#include "getopt_long.h"
+#endif
 #include "hashtab.h"
 #include "version.h"
 
@@ -121,6 +123,18 @@ int print_which_recs = 0;	/* If 0, only print the usual.  If 1,
 int print_addresses = 0;	/* should we print the ut_addr field? */
 #endif
 
+/* Some systems (like Linux with the newer glibc) have very long field
+   lengths for usernames, ttys, and hostnames.  While it's useful to
+   print out the entire values from time to time, the casual browser
+   doesn't care (and it screws up the 80-column formatting).  Keep
+   track of desired field widths with these variables. */
+
+#define my_min(x,y) ((x) < (y) ? (x) : (y))
+int print_name_len = my_min (NAME_LEN, 8);
+int print_tty_len = my_min (TTY_LEN, 12);
+int print_host_len = my_min (HOST_LEN, 16);
+#undef my_min
+
 
 /* A table of names/ttys that the user wants to know about.  */
 
@@ -131,10 +145,11 @@ struct hashtab *names = NULL;
 
 struct hashtab *login_table = NULL;
 
-struct login_data {
-  time_t time;
-  short fake_entry;
-};
+struct login_data
+  {
+    time_t time;
+    short fake_entry;
+  };
 
 
 /* prototypes */
@@ -146,7 +161,7 @@ void update_system_time PARAMS((time_t));
 void log_out PARAMS((struct utmp *entry, short fake_flag));
 void log_in PARAMS((struct utmp *));
 void print_record PARAMS((struct utmp *, time_t logout_time,
-			  char *, char *, char *));
+                          char *, char *, char *));
 void display_date PARAMS((time_t now));
 
 #if defined (SVR4) && !defined (_POSIX_SOURCE)
@@ -155,12 +170,9 @@ RETSIGTYPE handler PARAMS((int, int, struct sigcontext *));
 RETSIGTYPE handler PARAMS((int));
 #endif
 
-
-
-
 /* code */
 
-void
+int
 main (int argc, char *argv[])
 {
   int c;
@@ -168,7 +180,7 @@ main (int argc, char *argv[])
 					`-f' or `--file' flags */
 
   program_name = argv[0];
-  
+
   /* Tell the utmp reader that we want to do things backwards! */
 
   utmp_init (1);
@@ -182,144 +194,155 @@ main (int argc, char *argv[])
   for (c = 1; c < argc; c++)
     {
       if (argv[c][0] == '-' && isdigit (argv[c][1]))
-	{
-	  /* This looks like an old-style option -- read the number! */
-	  int d;
+        {
+          /* This looks like an old-style option -- read the number! */
+          int d;
 
-	  num_lines_to_print = atol (argv[c] + 1);
-	  if (num_lines_to_print < 1)
-	    fatal ("number of lines to print must be positive and non-zero");
-	  
-	  /* renumber the argv options */
-	  for (d = c; d; d--)
-	    argv[d] = argv[d - 1];
-	  
-	  argc--;
-	  argv++;
-	  c--;
-	}
+          num_lines_to_print = atol (argv[c] + 1);
+          if (num_lines_to_print < 1)
+            fatal ("number of lines to print must be positive and non-zero");
+
+          /* renumber the argv options */
+          for (d = c; d; d--)
+            argv[d] = argv[d - 1];
+
+          argc--;
+          argv++;
+          c--;
+        }
     }
 
   while (1)
     {
       int option_index = 0;
-      
-      static struct option long_options[] = {
-	{ "complain", no_argument, NULL, 1 },
-	{ "lines", required_argument, NULL, 3 },
-	{ "debug", no_argument, NULL, 4 },
-	{ "tw-leniency", required_argument, NULL, 5 },
-	{ "version", no_argument, NULL, 6 },
-	{ "help", no_argument, NULL, 7 },
-	{ "file", required_argument, NULL, 8 },
-	{ "no-truncate-ftp-entries", no_argument, NULL, 9 },
+
+      static struct option long_options[] =
+        {
+          { "complain", no_argument, NULL, 1
+          },
+          { "lines", required_argument, NULL, 3 },
+          { "debug", no_argument, NULL, 4 },
+          { "tw-leniency", required_argument, NULL, 5 },
+          { "version", no_argument, NULL, 6 },
+          { "help", no_argument, NULL, 7 },
+          { "file", required_argument, NULL, 8 },
+          { "no-truncate-ftp-entries", no_argument, NULL, 9 },
 #ifdef HAVE_UT_TYPE
-	{ "all-records", no_argument, NULL, 10 },
+          { "all-records", no_argument, NULL, 10 },
 #endif
 #ifdef HAVE_UT_ADDR
-	{ "ip-address", no_argument, NULL, 11 },
+          { "ip-address", no_argument, NULL, 11 },
 #endif
-	{ "print-year", no_argument, NULL, 12 },
+          { "print-year", no_argument, NULL, 12 },
 #ifdef HAVE_UT_TYPE
-	{ "more-records", no_argument, NULL, 13 },
+          { "more-records", no_argument, NULL, 13 },
 #endif
-	{ "tw-suspicious", required_argument, NULL, 14 },
-	{ "print-seconds", no_argument, NULL, 15 },
-	{ 0, 0, 0, 0 }
-      };
+          { "tw-suspicious", required_argument, NULL, 14 },
+          { "print-seconds", no_argument, NULL, 15 },
+          { "wide", no_argument, NULL, 16 },
+          { 0, 0, 0, 0 }
+        };
 
       c = getopt_long (argc, argv,
 #ifdef HAVE_UT_TYPE
-		       "a"
+                       "a"
 #endif
 #ifdef HAVE_UT_ADDR
-		        "i"
+                       "i"
 #endif
-                         "f:n:s"
+                       "f:n:s"
 #ifdef HAVE_UT_TYPE
-		              "x"
+                       "x"
 #endif
-		               "yV",
-		       long_options, &option_index);
-      
+                       "wyV",
+                       long_options, &option_index);
+
       if (c == EOF)
-	break;
+        break;
 
       switch (c)
-	{
-	case 1:
-	  print_file_problems = 1;
-	  break;
-	case 'n':
-	case 3:
-	  num_lines_to_print = atol (optarg);
-	  if (num_lines_to_print < 1)
-	    fatal ("number of lines to print must be positive and non-zero");
-	  break;
-	case 4:
-	  debugging_enabled = 1;
-	  print_file_problems = 1;
-	  break;
-	case 5:
-	  time_warp_leniency = atol (optarg);
-	  if (time_warp_leniency < 0)
-	    fatal ("time warp leniency value has to be non-negative");
-	  break;
-	case 'V':
-	case 6:
-	  printf ("%s: GNU Accounting Utilities (release %s)\n",
-		  program_name, VERSION_STRING);
-	  exit (0);
-	  break;
-	case 'f':
-	case 8:
-	  add_utmp_file (optarg);
-	  other_wtmp_file_specified = 1;
-	  break;
-	case 9:
-	  truncate_ftp_entries = 0;
-	  break;
+        {
+        case 1:
+          print_file_problems = 1;
+          break;
+        case 'n':
+        case 3:
+          num_lines_to_print = atol (optarg);
+          if (num_lines_to_print < 1)
+            fatal ("number of lines to print must be positive and non-zero");
+          break;
+        case 4:
+          debugging_enabled = 1;
+          print_file_problems = 1;
+          break;
+        case 5:
+          time_warp_leniency = atol (optarg);
+          if (time_warp_leniency < 0)
+            fatal ("time warp leniency value has to be non-negative");
+          break;
+        case 'V':
+        case 6:
+          printf ("%s: GNU Accounting Utilities (release %s)\n",
+                  program_name, VERSION_STRING);
+          exit (0);
+          break;
+        case 'f':
+        case 8:
+          add_utmp_file (optarg);
+          other_wtmp_file_specified = 1;
+          break;
+        case 9:
+          truncate_ftp_entries = 0;
+          break;
 #ifdef HAVE_UT_TYPE
-	case 'a':
-	case 10:
-	  print_which_recs = 2;
-	  break;
+        case 'a':
+        case 10:
+          print_which_recs = 2;
+          break;
 #endif
 #ifdef HAVE_UT_ADDR
-	case 'i':
-	case 11:
-	  print_addresses = 1;
-	  break;
+        case 'i':
+        case 11:
+          print_addresses = 1;
+          break;
 #endif
-	case 'y':
-	case 12:
-	  print_year = 1;
-	  break;
+        case 'y':
+        case 12:
+          print_year = 1;
+          break;
 #ifdef HAVE_UT_TYPE
-	case 'x':
-	case 13:
-	  print_which_recs = 1;
-	  break;
+        case 'x':
+        case 13:
+          print_which_recs = 1;
+          break;
 #endif
-	case 14:
-	  time_warp_suspicious = atol (optarg);
-	  if (time_warp_suspicious < 0)
-	    fatal ("time warp suspicious value has to be non-negative");
-	  if (time_warp_suspicious <= time_warp_leniency)
-	    fatal ("time warp suspicious value has to greater than the time warp leniency value");
-	  break;
-	case 's':
-	case 15:
-	  print_seconds = 1;
-	  break;
-	case 'h':
-	case 7:
-	  /* This should fall through to default! */
-	default:
-	  give_usage ();
-	  exit (1);
-	  break;
-	}
+        case 14:
+          time_warp_suspicious = atol (optarg);
+          if (time_warp_suspicious < 0)
+            fatal ("time warp suspicious value has to be non-negative");
+          if (time_warp_suspicious <= time_warp_leniency)
+            fatal ("time warp suspicious value has to greater than the time warp leniency value");
+          break;
+        case 's':
+        case 15:
+          print_seconds = 1;
+          break;
+        case 'w':
+        case 16:
+          /* Print the entire field widths, rather than our
+                   conservative, 80-column defaults */
+          print_name_len = NAME_LEN;
+          print_tty_len = TTY_LEN;
+          print_host_len = HOST_LEN;
+          break;
+        case 'h':
+        case 7:
+          /* This should fall through to default! */
+        default:
+          give_usage ();
+          exit (1);
+          break;
+        }
     }
 
   /* Init the hash table for usernames.  Don't init it if we don't
@@ -331,44 +354,44 @@ main (int argc, char *argv[])
       names = hashtab_init (0);
 
       while (optind < argc)
-	{
-	  char *string;
-      
-	  /* add the username/tty as-is */
+        {
+          char *string;
 
-	  hashtab_create (names, argv[optind], 0);
-      
-	  /* add the name as "tty<name>" for u*x compatibilty */
+          /* add the username/tty as-is */
 
-	  string = (char *) xmalloc ((strlen (argv[optind]) + 4)
-				     * sizeof (char));
-	  sprintf (string, "tty%s", argv[optind]);
-	  hashtab_create (names, string, 0);
-	  free (string);
+          hashtab_create (names, argv[optind], 0);
 
-	  optind++;
+          /* add the name as "tty<name>" for u*x compatibilty */
+
+          string = (char *) xmalloc ((strlen (argv[optind]) + 4)
+                                     * sizeof (char));
+          sprintf (string, "tty%s", argv[optind]);
+          hashtab_create (names, string, 0);
+          free (string);
+
+          optind++;
 
 #ifdef HAVE_UT_TYPE
-	  if (!print_which_recs)
-	    print_which_recs = 1;
+          if (!print_which_recs)
+            print_which_recs = 1;
 #endif
-	}
-  
+        }
+
       if (debugging_enabled)
-	hashtab_dump_keys (names, stddebug);
+        hashtab_dump_keys (names, stddebug);
     }
-  
+
   if (! other_wtmp_file_specified)
     add_utmp_file (WTMP_FILE_LOC);
-  
+
   /* Create hash table for logins. */
 
   login_table = hashtab_init (0);
-  
+
   /* Go! */
 
   parse_entries ();
-  
+
   fputs ("\nwtmp begins ", stdout);
   display_date (last_time);
   fputc ('\n', stdout);
@@ -383,31 +406,31 @@ void
 give_usage ()
 {
   char *usage = "\
-Usage: %s [-"
+                Usage: %s [-"
 #ifdef HAVE_UT_TYPE
-           "a"
+                "a"
 #endif
 #ifdef HAVE_UT_ADDR
-            "i"
+                "i"
 #endif
-             "hs"
+                "hs"
 #ifdef HAVE_UT_TYPE
-              "x"
+                "x"
 #endif
-               "yV] [-<lines>] [-n <lines>] [-f <file>] [people] [ttys] ...\n\
-       [--lines <num>] [--file <file>] [--complain] [--debug]\n\
-       [--version] [--tw-leniency <value>] [--tw-suspicious <value>]\n\
-       [--no-truncate-ftp-entries] [--print-year] [--print-seconds]\n\
-       "
+                "yV] [-<lines>] [-n <lines>] [-f <file>] [people] [ttys] ...\n\
+                [--lines <num>] [--file <file>] [--complain] [--debug]\n\
+                [--version] [--tw-leniency <value>] [--tw-suspicious <value>]\n\
+                [--no-truncate-ftp-entries] [--print-year] [--print-seconds]\n\
+                "
 #ifdef HAVE_UT_TYPE
-      "[--more-records] [--all-records] "
+                "[--more-records] [--all-records] "
 #endif
 #ifdef HAVE_UT_ADDR
-                                       "[--ip-address] "
+                "[--ip-address] "
 #endif
-                                                      "[--help]\n"
-;
-  
+                "[--help]\n"
+                ;
+
   printf (usage, program_name);
   print_wtmp_file_location ();
 }
@@ -415,20 +438,20 @@ Usage: %s [-"
 
 
 /* Since the routines in ac & last are so similar, just include them
-   from another file. */
+from another file. */
 
 #define BACKWARDS
 #include "al_share.cpp"
 
 
 /* since the sys clock has changed, each entry's login time has to be
- * adjusted...  */
+* adjusted...  */
 void
 update_system_time (time_t the_time)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
-  
+
   for (he = hashtab_first (login_table, &ho);
        he != NULL;
        he = hashtab_next (&ho))
@@ -446,7 +469,7 @@ log_everyone_in (time_t the_time)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
-  
+
   for (he = hashtab_first (login_table, &ho);
        he != NULL;
        he = hashtab_next (&ho))
@@ -454,19 +477,19 @@ log_everyone_in (time_t the_time)
       struct login_data *l = hashtab_get_value (he);
 
       /* If there was a real log out record present in the file
-         without a corresponding login, we should print it. */
+      without a corresponding login, we should print it. */
 
       if (debugging_enabled && (! l->fake_entry))
-	{
-	  struct utmp this;
-	  char *ttyname = hashtab_get_key (he);
+        {
+          struct utmp this;
+          char *ttyname = hashtab_get_key (he);
 
-	  memset (&this, 0, sizeof (this));
-	  strncpy (this.ut_line, ttyname, TTY_LEN);
-	  this.ut_time = the_time;
-	  
-	  print_record (&this, l->time, NULL, NULL, "unpaired");
-	}
+          memset (&this, 0, sizeof (this));
+          strncpy (this.ut_line, ttyname, TTY_LEN);
+          this.ut_time = the_time;
+
+          print_record (&this, l->time, NULL, NULL, "unpaired");
+        }
 
       hashtab_delete (he);
     }
@@ -479,15 +502,14 @@ void
 log_out (struct utmp *entry, short fake_flag)
 {
   struct hashtab_elem *he;
-  
+
   if (entry->ut_line[0] == '\0')
     {
       if (print_file_problems)
-	{
-	  utmp_print_file_and_line (stddebug);
-	  fprintf (stddebug,
-		   ": problem: trying to hash rec with ut_line == NULL\n");
-	}
+        {
+          utmp_print_file_and_line (stddebug);
+          fprintf (stddebug, ": problem: trying to hash rec with ut_line == NULL\n");
+        }
       return;
     }
 
@@ -500,13 +522,12 @@ log_out (struct utmp *entry, short fake_flag)
       struct login_data *l = hashtab_get_value (he);
 
       if ((! l->fake_entry) && print_file_problems)
-	{
-	  char *ttyname = hashtab_get_key (he);
-	  utmp_print_file_and_line (stddebug);
-	  fprintf (stddebug, ": problem: duplicate record for line `%.*s'\n",
-		   TTY_LEN, ttyname);
-	}
-	  
+        {
+          char *ttyname = hashtab_get_key (he);
+          utmp_print_file_and_line (stddebug);
+          fprintf (stddebug, ": problem: duplicate record for line `%.*s'\n", TTY_LEN, ttyname);
+        }
+
       /* Write over the old values. */
 
       l->time = entry->ut_time;
@@ -517,7 +538,7 @@ log_out (struct utmp *entry, short fake_flag)
   else
     {
       /* If we get here, we didn't find the entry in the list, so add
-         a new one. */
+      a new one. */
 
       struct login_data l;
 
@@ -540,11 +561,11 @@ log_in (struct utmp *entry)
   if (entry->ut_line[0] == '\0')
     {
       if (print_file_problems)
-	{
-	  utmp_print_file_and_line (stddebug);
-	  fprintf (stddebug,
-		   ": problem: trying to hash rec with ut_line == NULL\n");
-	}
+        {
+          utmp_print_file_and_line (stddebug);
+          fprintf (stddebug,
+                   ": problem: trying to hash rec with ut_line == NULL\n");
+        }
       return;
     }
 
@@ -555,15 +576,15 @@ log_in (struct utmp *entry)
       struct login_data *l = hashtab_get_value (he);
 
       if (l->fake_entry && print_file_problems)
-	{
-	  /* If this happens, we assume that the logout time for ENTRY
-	     is the the same as the next login time on the tty. */
+        {
+          /* If this happens, we assume that the logout time for ENTRY
+             is the the same as the next login time on the tty. */
 
-	  utmp_print_file_and_line (stddebug);
-	  fprintf (stddebug, ": problem: missing logout record for `%.*s'\n",
-		   TTY_LEN, entry->ut_line);
-	}
-	  
+          utmp_print_file_and_line (stddebug);
+          fprintf (stddebug, ": problem: missing logout record for `%.*s'\n",
+                   TTY_LEN, entry->ut_line);
+        }
+
       print_record (entry, l->time, NULL, NULL, NULL);
 
       hashtab_delete (he);
@@ -571,15 +592,15 @@ log_in (struct utmp *entry)
   else
     {
       /* We didn't find any corresponding logout, so either the person
-	 it still logged in or there's a problem with the wtmp file
-	 (logout without login). */
+      it still logged in or there's a problem with the wtmp file
+      (logout without login). */
 
       print_record (entry, 0, NULL, NULL, NULL);
     }
-  
+
   /* Make another logout entry at the current time (a fake one) so we
      can detect wtmp file errors (logins without logouts). */
-	  
+
   log_out (entry, TRUE);
 }
 
@@ -592,8 +613,8 @@ log_in (struct utmp *entry)
 
 void
 print_record (struct utmp *login, time_t logout_time,
-	      char *replacement_name, char *replacement_tty,
-	      char *special_message)
+              char *replacement_name, char *replacement_tty,
+              char *special_message)
 {
   char *print_name;
   char *print_tty;
@@ -603,8 +624,8 @@ print_record (struct utmp *login, time_t logout_time,
      items. */
 
   if (! ((names == NULL)
-	 || hashtab_find (names, login->ut_name, NAME_LEN)
-	 || hashtab_find (names, login->ut_line, TTY_LEN)))
+         || hashtab_find (names, login->ut_name, NAME_LEN)
+         || hashtab_find (names, login->ut_line, TTY_LEN)))
     return;			/* don't want to print this record */
 
 
@@ -616,14 +637,14 @@ print_record (struct utmp *login, time_t logout_time,
     print_tty = replacement_tty;
   else
 #endif
-       if (truncate_ftp_entries && (strncmp (login->ut_line, "ftp", 3) == 0))
-    print_tty = "ftp";		/* strip number from "ftpxxx" entry */
-  else
-    print_tty = login->ut_line;
+    if (truncate_ftp_entries && (strncmp (login->ut_line, "ftp", 3) == 0))
+      print_tty = "ftp";		/* strip number from "ftpxxx" entry */
+    else
+      print_tty = login->ut_line;
 
   print_name = (replacement_name ? replacement_name : login->ut_name);
 
-  
+
   /* Sanitize the tty name (get rid of control characters) */
 
   {
@@ -631,8 +652,8 @@ print_record (struct utmp *login, time_t logout_time,
 
     for (i = 0; (print_tty[i] != '\0') && (i < TTY_LEN); i++)
       sanitized_tty[i] = (isprint (print_tty[i]) && isascii (print_tty[i])
-			  ? print_tty[i]
-			  : '?');
+                          ? print_tty[i]
+                          : '?');
     if (i < TTY_LEN)
       sanitized_tty[i] = '\0';
   }
@@ -640,8 +661,8 @@ print_record (struct utmp *login, time_t logout_time,
   /* Print the name and tty. */
 
   printf ("%-*.*s %-*.*s ",
-	  NAME_LEN, NAME_LEN, print_name,
-	  TTY_LEN, TTY_LEN, sanitized_tty);
+          print_name_len, print_name_len, print_name,
+          print_tty_len, print_tty_len, sanitized_tty);
 
 
 #ifdef HAVE_UT_ADDR
@@ -659,7 +680,7 @@ print_record (struct utmp *login, time_t logout_time,
          beyond 80 characters in width. */
   if (!print_addresses)
 #endif
-    printf ("%-*.*s ", HOST_LEN, HOST_LEN, login->ut_host);
+    printf ("%-*.*s ", print_host_len, print_host_len, login->ut_host);
 #endif
 
   display_date (login->ut_time);
@@ -673,11 +694,11 @@ print_record (struct utmp *login, time_t logout_time,
       int diff, use_last_event = 0;
 
       if (logout_time == 0)
-	{
-	  logout_time = last_event_time;
-	  use_last_event = 1;
-	}
-	  
+        {
+          logout_time = last_event_time;
+          use_last_event = 1;
+        }
+
       diff = (int) logout_time - login->ut_time;
       days = (int) (diff / 86400);
       diff -= 86400 * days;
@@ -686,51 +707,51 @@ print_record (struct utmp *login, time_t logout_time,
       minutes = (int) (diff / 60);
       diff -= 60 * minutes;
       seconds = diff;
-	  
+
       if (days)
-	{
-	  if (print_seconds)
-	    sprintf (temp_str, "(%d+%02d:%02d:%02d)",
-		     days, hours, minutes, seconds);
-	  else
-	    sprintf (temp_str, "(%d+%02d:%02d)", days, hours, minutes);
-	}
+        {
+          if (print_seconds)
+            sprintf (temp_str, "(%d+%02d:%02d:%02d)",
+                     days, hours, minutes, seconds);
+          else
+            sprintf (temp_str, "(%d+%02d:%02d)", days, hours, minutes);
+        }
       else
-	{
-	  if (print_seconds)
-	    sprintf (temp_str, " (%02d:%02d:%02d)",
-		     hours, minutes, seconds);
-	  else
-	    sprintf (temp_str, " (%02d:%02d)", hours, minutes);
-	}
+        {
+          if (print_seconds)
+            sprintf (temp_str, " (%02d:%02d:%02d)",
+                     hours, minutes, seconds);
+          else
+            sprintf (temp_str, " (%02d:%02d)", hours, minutes);
+        }
 
       if (use_last_event)
-	{
-	  if (last_event == NULL)
+        {
+          if (last_event == NULL)
 
-	    fputs ("  still logged in\n", stdout);
-	  else
-	    printf ("- %-5.5s %s\n", last_event, temp_str);
-	}
+            fputs ("  still logged in\n", stdout);
+          else
+            printf ("- %-5.5s %s\n", last_event, temp_str);
+        }
       else
-	{
-	  struct tm *tmptr;
-	  time_t temp_time = logout_time;
-	  tmptr = localtime (&temp_time);
-	  if (print_seconds)
-	    printf ("- %02d:%02d:%02d %s\n",
-		    tmptr->tm_hour, tmptr->tm_min, tmptr->tm_sec, temp_str);
-	  else
-	    printf ("- %02d:%02d %s\n",
-		    tmptr->tm_hour, tmptr->tm_min, temp_str);
-	}
+        {
+          struct tm *tmptr;
+          time_t temp_time = logout_time;
+          tmptr = localtime (&temp_time);
+          if (print_seconds)
+            printf ("- %02d:%02d:%02d %s\n",
+                    tmptr->tm_hour, tmptr->tm_min, tmptr->tm_sec, temp_str);
+          else
+            printf ("- %02d:%02d %s\n",
+                    tmptr->tm_hour, tmptr->tm_min, temp_str);
+        }
     }
 
   if (num_lines_to_print > -1)
     {
       num_lines_to_print--;
       if (num_lines_to_print == 0)    /* max lines printed */
-	exit (0);
+        exit (0);
     }
 }
 
@@ -759,7 +780,7 @@ void
 display_date (time_t now)
 {
   char *ct = ctime (&now);
-  
+
   printf ("%-10.10s ", ct);
 
   if (print_year)

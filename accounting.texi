@@ -6,7 +6,8 @@
 
 @ifinfo
 GNU Accounting Utilities
-Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
+Copyright (C) 1993, 1996, 1997, 1998, 2005, 2008, 2009 
+Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -38,7 +39,7 @@ approved by the Foundation.
 @page
 
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1993, 1996, 1997 Free Software Foundation,
+Copyright @copyright{} 1993, 1996, 1997, 1998, 2005 Free Software Foundation,
 Inc.
 
 Permission is granted to make and distribute verbatim copies of
@@ -78,6 +79,7 @@ Utilities.
 * last::                        list last logins of users and terms
 * lastcomm::                    list last commands executed
 * sa::                          print accounting statistics
+* dump-acct::                   print accounting file in human-readable form
 
 @end menu
 
@@ -171,6 +173,40 @@ manual will refer to the login accounting file as @code{wtmp} and the
 process accounting files as @code{acct}, @code{savacct}, and
 @code{usracct}.
 
+@unnumberedsec Support for Multiple Accounting File Formats under Linux
+
+The detailed format of the @code{acct} file written by the Linux kernel
+varies depending on the kernel's version and configuration:
+Linux kernels 2.6.7 and earlier write a v0 format @code{acct} file
+which unfortunately cannot store user and group ids (@code{uid}/@code{gid})
+larger than 65535.
+Kernels 2.6.8 and later write the @code{acct} file in v1, v2 or v3 formats.
+(v3 if @code{BSD_PROCESS_ACCT_V3} is selected in the kernel configuration,
+otherwise v1 if on the m68k architecture or v2 everywhere else).
+
+Since version 6.4 the GNU accounting utilities on Linux systems are
+able to read all of the v0, v2 and v3 file formats (v1 is not supported).
+Thus you do not need to worry about the details given above. You can even
+read @code{acct} files where different records were written by differently
+configured kernels (you can find out about the format of each entry by
+using the @code{dump-acct} utility). In case you ever need to convert
+an @code{acct} file to a different format, the @code{--raw} option of
+@code{dump-acct} does that together with the new @code{--format} and
+@code{--byteswap} options that determine format and byte order of the
+output file.
+
+Multiformat support under Linux is intended to be a temporary solution
+to aid in switching to the v3 @code{acct} file format. So do not expect
+GNU acct 6.5 to still contain Multiformat support. In a few years
+time, when everybody uses the v3 format, the ability to read multiple
+formats at runtime will probably be dropped again from the GNU accounting
+utilities.
+This does not, however, affect the ability to adapt to the @code{acct} file
+format at compile time (when @code{./configure} is run). Even GNU acct 6.3.5
+(that does not know about multiple file formats) will yield working binary
+programs when compiled under a (as yet hypothetical) Linux kernel 2.6.31
+that is only able to write the v3 format.
+
 @unnumberedsec History of the Accounting Utilities
 
 I don't have any idea who originally wrote these utilities.  If anybody
@@ -198,6 +234,9 @@ and output optimizations.
 @item Michael Calwas <calwas@@ttd.teradyne.com>
 Fixed bugs in mktime.c.
 
+@item Derek Clegg <dclegg@@apple.com>
+Suggested the simple, elegant fix for *_rd_never_used brain-damage.
+
 @item Alan Cox <iiitac@@pyr.swan.ac.uk>
 Original Linux kernel accounting patches.
 
@@ -205,7 +244,7 @@ Original Linux kernel accounting patches.
 Suggested idea behind @code{--sort-real-time} for @code{sa}.
 
 @item Solar Designer <solar@@false.com>
-Fixed off-by one error in allocations in @code{sa}.
+Added code for @code{--ahz} flag in @code{lastcomm} and @code{sa}.
 
 @item Dirk Eddelbuettel <edd@@miles.econ.queensu.ca>
 Managed bug-fixes & etc. for Debian distribution, as well as the
@@ -223,6 +262,9 @@ K&R C support.
 @item Susan Kleinmann <sgk@@sgk.tiac.net>
 Contributed excellent man pages!
 
+@item Alexander Kourakos <Alexander@@Kourakos.com>
+Inspired the @code{--wide} option for @code{last}.
+
 @item Marek Michalkiewicz <marekm@@i17linuxb.ists.pwr.wroc.pl>
 Suggested the @code{--ip-address} flag for @code{last}.
 
@@ -236,6 +278,12 @@ Makefile.in.
 @item Ian Murdock <imurdock@@gnu.ai.mit.edu> 
 Tracked down miscellaneous bugs in sa.c under Linux.  Added Debian
 package maintenance files.
+
+@item Tuomo Pyhala <tuomo@@lesti.kpnet.fi>
+Reported buggy @code{--strict-match} flag in @code{lastcomm}.
+
+@item Tim Schmielau <tim@@physik3.uni-rostock.de>
+Added Linux multiformat support.
 
 @item Luc I. Suryo <root@@patriots.nl.mugnet.org>
 Suggested the @code{--user} flag for @code{lastcomm}.
@@ -590,6 +638,12 @@ chapter for information.
 Set the time warp suspicious value (in seconds).  See the @code{ac}
 chapter for information.
 
+@item -w
+@itemx --wide
+By default, @code{last} tries to print each entry within in 80 columns.
+Use this option to instruct @code{last} to print out the fields in the
+@code{wtmp} file with full field widths.
+
 @item --debug
 Print verbose internal information.
 
@@ -712,6 +766,16 @@ List records for tty @var{name}.
 Read from the file @var{filename} instead of the system's
 @code{acct} file.
 
+@item --ahz @var{hz}
+Use this flag to tell the program what @code{AHZ} should be (in hertz).
+This option is useful if you are trying to view an @code{acct} file
+created on another machine which has the same byte order and file format
+as your current machine, but has a different value for @code{AHZ}.
+
+@item -p
+@itemx --show-paging
+Print paging statistics
+
 @item --debug
 Print verbose internal information.
 
@@ -724,7 +788,7 @@ files to standard output.
 @end table
 
 @c ----------------------------------------------------------------------
-@node sa,  , lastcomm, Top
+@node sa, dump-acct, lastcomm, Top
 @chapter @code{sa}
 
 @code{sa} summarizes information about previously executed commands as
@@ -739,7 +803,8 @@ will save this information into @code{usracct}.  Usage:
 If no arguments are specified, @code{sa} will print information about
 all of the commands in the @code{acct} file.  If command
 names have unprintable characters, or are only called once, @code{sa}
-will sort them into a group called @code{***other}.
+will sort them into a group called @code{***other}.  Overall totals for
+each field are gathered and printed with a blank command name.
 
 If called with a file name as the last argument, @code{sa} will use that
 file instead of @code{acct}.
@@ -777,10 +842,25 @@ system time in cpu seconds
 
 @end table
 
+Note that these column titles do not appear in the first row of the
+table, but after each numeric entry (as units of measurement) in every
+row.  For example, you might see @code{79.29re}, meaning 79.29 cpu
+seconds of ``real time.''
+
 An asterisk will appear after the name of commands that forked but
 didn't call @code{exec}.
 
 @section Flags
+
+The availability of these program options depends on your operating
+system.  In specific, the members that appear in the @code{struct acct}
+of your system's process accounting header file (usually @code{acct.h})
+determine which flags will be present.  For example, if your system's
+@code{struct acct} doesn't have the @code{ac_mem} field, the installed
+version of @code{sa} will not support the @code{--sort-cpu-avmem},
+@code{--sort-ksec}, @code{-k}, or @code{-K} options.
+
+In short, all of these flags may not be available on your machine.
 
 @table @code
 
@@ -844,6 +924,15 @@ basis.
 Sort the output by the number of calls.  This is the default sorting
 method.
 
+@item -p
+@itemx --show-paging
+Print the number of minor and major pagefaults and swaps.
+
+@item -P
+@itemx --show-paging-avg
+Print the number of minor and major pagefaults and swaps divided by
+the number of calls.
+
 @item -r
 @itemx --reverse-sort
 Sort output items in reverse order.
@@ -879,6 +968,12 @@ information together unless this option is specified.
 
 @item --sort-real-time
 Sort the output by the ``real time'' (elapsed time) for each command.
+
+@item --ahz @var{hz}
+Use this flag to tell the program what @code{AHZ} should be (in hertz).
+This option is useful if you are trying to view an @code{acct} file
+created on another machine which has the same byte order and file format
+as your current machine, but has a different value for @code{AHZ}.
 
 @item --debug
 Print verbose internal information.
@@ -916,7 +1011,111 @@ through.
 
 
 @c ----------------------------------------------------------------------
-@c @node Index,  , sa, Top
+@node dump-acct, , sa, Top
+@chapter @code{dump-acct}
+
+@code{dump-acct} dumps some of the contents of one or more @code{acct}
+files in human readable form.  Usage:
+
+@code{dump-acct [@var{opts}] @var{files}}
+
+Unless called with the @code{--raw} option, it prints a table with the
+following fields, separated by vertical bars(@code{|}):
+
+@table @code
+
+@item ac_comm
+name of the executed program
+
+@item ac_version
+version of the @code{acct} file format
+
+@item ac_utime
+user time
+
+@item ac_stime
+system time
+
+@item ac_etime
+elapsed time
+
+@item ac_uid
+user id
+
+@item ac_gid
+group id
+
+@item ac_mem
+(average) memory usage
+
+@item ac_io
+number of characters transferred on input/output
+
+@item ac_pid
+process id
+
+@item ac_ppid
+parent's process id
+
+@end table
+
+All times will be given in platform dependent units (``@code{AHZ}'').
+Not all of the above columns will actually appear, depending on what
+information your operating system provides in it's @code{struct acct}.
+
+@section Flags
+
+@table @code
+
+@item --ahz @var{hz}
+Use this flag to tell the program what @code{AHZ} should be (in Hertz).
+This option is useful if you are trying to view an @code{acct} file
+created on another machine which has a different value for @code{AHZ}.
+
+@item --byteswap
+Swap the bytes (relative to your system's native byte order) in
+@code{--raw} output.
+
+@item --format
+Set output format with @code{--raw} option.
+
+@item -n @var{num}
+@itemx --num @var{num}
+Limit the number of lines (or records with @code{--raw}) to print.
+
+@item -r
+@itemx --reverse
+Read the accounting file backwards (print latest record first).
+
+@item -R
+@itemx --raw
+Don't print human readable output, dump the raw record instead.
+Useful to convert between different Linux file formats (see below).
+
+@item -h
+@itemx --help
+Print @code{dump-acct}'s usage string and default location of
+the accouning file to standard output.
+
+@end table
+
+@code{--byteswap} and @code{--format} options are only available with
+Linux multiformat support. They only affect @emph{output} with
+the @code{--raw} option, format and byte order of the input are
+automatically detected.
+Thus they are useful to convert between different file formats.
+
+The @code{--ahz} option affects input and output (except for v3 file
+format, which by definition is fixed to @code{AHZ=100}).
+If you ever need to convert between different @code{AHZ} values,
+use a two-step process:
+First convert to v3 format with the @emph{old} @code{AHZ} value, then
+convert to the desired output format with the @emph{new} @code{AHZ}
+setting.
+
+
+@c ----------------------------------------------------------------------
+@c @node Index,  , dump-acct, Top
 @c @unnumbered Index
 @c 
 @c @printindex cp

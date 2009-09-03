@@ -1,4 +1,4 @@
-Welcome to the GNU Accounting Utilities package!           -*-text-*-
+Welcome to the GNU Accounting Utilities package!
 
 This is a set of utilities which reports and summarizes data about
 user connect times and process execution statistics under u*x.  This
@@ -82,18 +82,18 @@ Noel Cragg \\ 6244 Aberdeen Avenue \\ Goleta CA 93117-2002 \\ 805 964 1892
 
 ----------------------------------------------------------------------
 
-The GNU Accounting Utilities are Copyright (C) 1993, 1996, 1997 Free
-Software Foundation, Inc.
+The GNU Accounting Utilities are Copyright (C) 1993, 1996, 1997, 2008
+ Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; version 2 dated June, 1991.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program;  if not, write to the Free Software
-   Foundation, Inc., 675 Mass Ave., Cambridge, MA 02139, USA.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

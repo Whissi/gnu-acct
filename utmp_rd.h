@@ -14,7 +14,7 @@
 
 /* This looks strange, but it's real ANSI C. */
 
-static struct utmp utmp_rd_never_used;
+extern struct utmp utmp_rd_never_used;
 
 #define NAME_LEN ((int) sizeof (utmp_rd_never_used.ut_name))
 #define TTY_LEN ((int) sizeof (utmp_rd_never_used.ut_line))
@@ -47,7 +47,7 @@ static struct utmp utmp_rd_never_used;
 
 #ifndef UTMAXTYPE
 #define UTMAXTYPE 8		/* FIXME: is there a better way to do
-				   this? */
+this? */
 #endif
 
 #else

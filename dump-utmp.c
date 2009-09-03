@@ -1,6 +1,8 @@
-/* dump-utmp.c
- *
- * print a utmp file in human-readable format. */
+/* Copright Free Software Foundation 1997, 2003
+   This file is part of the GNU Accounting Utils and is released
+   under the terms of the GNU General Public License */
+
+/* print a utmp file in human-readable format. */
 
 #include "config.h"
 
@@ -12,28 +14,30 @@
 
 #include "common.h"
 #include "utmp_rd.h"
-#include "getopt.h"
-
+#ifdef HAVE_GETOPT_LONG
+#include <getopt.h>
+#else
+#include "getopt_long.h"
+#endif
 
 char *program_name;
 int debugging_enabled = 0;	/* no -- we don't care about bad
 				   records or the file-reading
 				   algorithms. */
 
-void main PARAMS((int argc, char *argv[]));
 
 static
 void
 give_usage (void)
 {
   printf ("Usage: %s [-hrR] [-n <recs>] <files>\n\
-       [--num <recs>] [--raw] [--reverse] [--help]\n",
-	  program_name);
+          [--num <recs>] [--raw] [--reverse] [--help]\n",
+          program_name);
   print_wtmp_file_location ();
 }
 
 
-void
+int
 main (int argc, char *argv[])
 {
   int c;
@@ -46,42 +50,44 @@ main (int argc, char *argv[])
   while (1)
     {
       int option_index = 0;
-      
-      static struct option long_options[] = {
-	{ "reverse", no_argument, NULL, 1 },
-	{ "help", no_argument, NULL, 2 },
-	{ "num", required_argument, NULL, 3 },
-	{ "raw", no_argument, NULL, 4 },
-	{ 0, 0, 0, 0 },
-      };
+
+      static struct option long_options[] =
+        {
+          { "reverse", no_argument, NULL, 1
+          },
+          { "help", no_argument, NULL, 2 },
+          { "num", required_argument, NULL, 3 },
+          { "raw", no_argument, NULL, 4 },
+          { 0, 0, 0, 0 },
+        };
 
       c = getopt_long (argc, argv, "rhn:R", long_options, &option_index);
 
       if (c == EOF)
-	break;
+        break;
 
       switch (c)
-	{
-	case 'r':
-	case 1:
-	  backwards_flag = 1;
-	  break;
-	case 'h':
-	case 2:
-	  give_usage ();
-	  exit (1);
-	  break;
-	case 'n':
-	case 3:
-	  num_lines_to_print = atol (optarg);
-	  if (num_lines_to_print < 1)
-	    fatal ("number of lines to print must be positive and non-zero");
-	  break;
-	case 'R':
-	case 4:
-	  raw = 1;
-	  break;
-	}
+        {
+        case 'r':
+        case 1:
+          backwards_flag = 1;
+          break;
+        case 'h':
+        case 2:
+          give_usage ();
+          exit (1);
+          break;
+        case 'n':
+        case 3:
+          num_lines_to_print = atol (optarg);
+          if (num_lines_to_print < 1)
+            fatal ("number of lines to print must be positive and non-zero");
+          break;
+        case 'R':
+        case 4:
+          raw = 1;
+          break;
+        }
     }
 
   if (optind >= argc)
@@ -91,7 +97,7 @@ main (int argc, char *argv[])
       give_usage ();
       exit (1);
     }
-  
+
   /* Init the file reader */
 
   utmp_init (backwards_flag);
@@ -107,17 +113,17 @@ main (int argc, char *argv[])
     struct utmp *rec;
     while ((rec = utmp_get_entry ()) != NULL)
       {
-	if (raw)
-	  fwrite (rec, sizeof (struct utmp), 1, stdout);
-	else
-	  print_utmp_record (rec, stdout);
+        if (raw)
+          fwrite (rec, sizeof (struct utmp), 1, stdout);
+        else
+          print_utmp_record (rec, stdout);
 
-	if (num_lines_to_print > -1)
-	  {
-	    num_lines_to_print--;
-	    if (num_lines_to_print == 0)    /* max lines printed */
-	      exit (0);
-	  }
+        if (num_lines_to_print > -1)
+          {
+            num_lines_to_print--;
+            if (num_lines_to_print == 0)    /* max lines printed */
+              exit (0);
+          }
       }
   }
 

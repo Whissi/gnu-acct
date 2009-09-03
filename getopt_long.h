@@ -1,9 +1,13 @@
 /* Declarations for getopt.
-   Copyright (C) 1989, 1990, 1991, 1992, 1993 Free Software Foundation, Inc.
+   Copyright 1989, 1990, 1991, 1992, 1993, 1994, 1996, 1997, 1998, 2000
+   Free Software Foundation, Inc.
+
+   NOTE: The canonical source of this file is maintained with the GNU C Library.
+   Bugs can be reported to bug-glibc@gnu.org.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
-   Free Software Foundation; either version 2, or (at your option) any
+   Free Software Foundation; either version 3, or (at your option) any
    later version.
 
    This program is distributed in the hope that it will be useful,
@@ -13,15 +17,38 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   USA.  */
 
 #ifndef _GETOPT_H
 #define _GETOPT_H 1
+
+#include <config.h>
+
+#if HAVE_UNISTD_H
+/* Declares getopt, if present */
+#include <unistd.h>
+#endif
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
+/* We're building this with a C++ compiler, essentially.  Such
+   compilers are not required to define __STDC__, but the path we
+   should follow, below, is indeed that marked by __STDC__.  We don't
+   want to force a definition of __STDC__ (though that works), because
+   (a) that feels bad, and (b) some compilers perfectly reasonable
+   complain bitterly about it.  So define THIS_IS__STDC__, and replace
+   occurrences of __STDC__ throughout with that.
+
+   That means that all of the occurrences of THIS_IS__STDC__ in this
+   file and in getopt_long.c are redundant, but I'm leaving them here
+   in case it becomes necessary to do cleverer things with it than
+   simply define it to be 1, and also as a sort of warped documentation. */
+#define THIS_IS__STDC__ 1
+
+#if !HAVE_DECL_GETOPT
 /* For communication from `getopt' to the caller.
    When `getopt' finds an option that takes an argument,
    the argument value is returned here.
@@ -36,7 +63,7 @@ extern char *optarg;
 
    On entry to `getopt', zero means this is the first call; initialize.
 
-   When `getopt' returns EOF, this is the index of the first of the
+   When `getopt' returns -1, this is the index of the first of the
    non-option elements that the caller should itself scan.
 
    Otherwise, `optind' communicates from one call to the next
@@ -53,6 +80,9 @@ extern int opterr;
 
 extern int optopt;
 
+#endif /* ifndef HAVE_DECL_GETOPT */
+
+#if !HAVE_DECL_GETOPT_LONG
 /* Describe the long-named options requested by the application.
    The LONG_OPTIONS argument to getopt_long or getopt_long_only is a vector
    of `struct option' terminated by an element containing a name which is
@@ -76,7 +106,7 @@ extern int optopt;
 
 struct option
 {
-#if	__STDC__
+#if defined (THIS_IS__STDC__) && THIS_IS__STDC__
   const char *name;
 #else
   char *name;
@@ -94,15 +124,25 @@ struct option
 #define required_argument	1
 #define optional_argument	2
 
-#if __STDC__
-#if defined(__GNU_LIBRARY__)
+#endif /* #if !HAVE_DECL_GETOPT_LONG */
+
+#if defined (THIS_IS__STDC__) && THIS_IS__STDC__
+/* HAVE_DECL_* is a three-state macro: undefined, 0 or 1.  If it is
+   undefined, we haven't run the autoconf check so provide the
+   declaration without arguments.  If it is 0, we checked and failed
+   to find the declaration so provide a fully prototyped one.  If it
+   is 1, we found it so don't provide any declaration at all.  */
+#if defined (__GNU_LIBRARY__) || (defined (HAVE_DECL_GETOPT) && !HAVE_DECL_GETOPT)
 /* Many other libraries have conflicting prototypes for getopt, with
    differences in the consts, in stdlib.h.  To avoid compilation
    errors, only prototype getopt for the GNU C library.  */
 extern int getopt (int argc, char *const *argv, const char *shortopts);
 #else /* not __GNU_LIBRARY__ */
+# if !defined (HAVE_DECL_GETOPT)
 extern int getopt ();
-#endif /* not __GNU_LIBRARY__ */
+# endif
+#endif /* __GNU_LIBRARY__ */
+#if !HAVE_DECL_GETOPT_LONG
 extern int getopt_long (int argc, char *const *argv, const char *shortopts,
 		        const struct option *longopts, int *longind);
 extern int getopt_long_only (int argc, char *const *argv,
@@ -114,16 +154,22 @@ extern int _getopt_internal (int argc, char *const *argv,
 			     const char *shortopts,
 		             const struct option *longopts, int *longind,
 			     int long_only);
-#else /* not __STDC__ */
+#endif /* HAVE_DECL_GETOPT_LONG */
+#else /* not THIS_IS__STDC__ */
+#if !HAVE_DECL_GETOPT
 extern int getopt ();
+#endif /* HAVE_DECL_GETOPT */
+#if !HAVE_DECL_GETOPT_LONG
 extern int getopt_long ();
 extern int getopt_long_only ();
 
 extern int _getopt_internal ();
-#endif /* not __STDC__ */
+#endif /* HAVE_DECL_GETOPT_LONG */
+#endif /* THIS_IS__STDC__ */
+
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif /* _GETOPT_H */
+#endif /* getopt.h */

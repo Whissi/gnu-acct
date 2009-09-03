@@ -1,4 +1,197 @@
+Mon Aug 24 00:01:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
+	
+	* Major overhaul, releasing GNU Acct 6.5.
+
+Sat Jan 07 23:10:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* NEWS: document changes in the upcoming 6.4 release.
+
+Sat Jan 07 22:40:00 2006 <cian@gmail.com>
+
+	* accounting.texi: clarify sa sum line.
+	* accounting.info: regenerated.
+
+Sat Jan 07 22:10:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* Makefile.am: reflect earlier ToDo -> TODO change.
+
+	* config.guess: added.
+	* config.sub: added.
+	* depcomp: added.
+	* texinfo.tex: added.
+
+	* INSTALL: regenerated.
+	* Makefile.in: regenerated.
+	* aclocal.m4: regenerated.
+	* ansi2knr.c: regenerated.
+	* config.h.in: regenerated.
+	* configure: regenerated.
+	* install-sh: regenerated.
+	* mdate-sh: regenerated.
+	* missing: regenerated.
+	* mkinstalldirs: regenerated.
+
+	* accounting.info: regenerated.
+	* config.h: regenerated.
+	* stamp-vti: regenerated.
+	* version.texi: regenerated.
+
+Sat Jan 07 22:00:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* accounting.texi: document dump-acct command.
+	document new options (paging stats) for sa and lastcomm.
+	Mention Linux multiformat support. Update copyright.
+
+	* accton.c: fix incomplete prototypes.
+
+	* lastcomm.c: Simplify #ifdef AC*_COMPT constructs and
+	Fix HAVE_PAGING usage.
+	* sa.c: same.
+	* pacct_rd.c: same.
+	* configure.in: same. Also add comments from former acconfig.h file.
+	* common.h: same.
+
+	* lastcomm.1: Document new paging stats options.
+	* lastcomm.c: same.
+	* sa.8: same.
+	* sa.c: same.
+
+	* configure.in: Drop support for <linux/acct.h>, only look for
+	<sys/acct.h>.
+
+	* acconfig.h: removed.
+	* configure.in: re-add comments from the removed acconfig.h.
+	* ac.c: replace some '#if's with '#ifdef's because of above change.
+	* common.c: same.
+	* dev_hash.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* mktime.c: same.
+	* pacct_rd.c: same.
+	* sa.c: same.
+	* utmp_rd.c: same.
+	* al_share.cpp: same.
+
+	* pacct_rd.c: Actually use file parameter given to print_pacct_record.
+
+Sat Jan 07 21:30:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* pacct_rd.c: Add Linux multiformat support.
+	* pacct_rd.h: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+	* dump-acct.c: same.
+	* configure.in: same.
+	* files.h.in: same.
+	* Makefile.am: same.
+	* linux-acct.h: added.
+
+Fri Feb 04 18:30:00 2005 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* configure.in: Modernize AM_INIT_AUTOMAKE, Don't call AC_ARG_PROGRAM,
+	which already is invoked by AM_INIT_AUTOMAKE. Add quote to prevent
+	broken configure file.
+
+	* Makefile.am: Remove forbidden substitution and clean up generated
+	stamp-h file.
+
+	* lastcomm.c: Fix call to ctime for 64bit architectures.
+	* pacct_rd.c: likewise.
+
+	* lastcomm.c: Use AC[US]TIME_COMPT instead of HAVE_COMP_T.
+
+Fri Oct 10 01:00:00 2003  Ciaran O'Riordan <ciaran@member.fsf.org>
+
+	* lastcomm.c: integrated patch from Paul Jones which adds
+	paging and swapping support to lastcomm and sa
+	* sa.c: same as lastcomm.c
+	
+Thu Jun  5 17:55:14 2003  Ciaran O'Riordan <ciaran@member.fsf.org>
+
+	* AUTHORS: added my name as new maintainer
+	* TODO: updated info (and renamed file from ToDo)
+	
+Tue May 26 21:59:50 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: reverted below change to acct.h search.
+  	Incremented version number to 6.3.5.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+
+Tue May 26 15:51:41 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: changed the order in which configure looks for the
+ 	acct.h file from sys->linux to linux->sys.  This will help out the
+ 	linux 2.1.xx folks use the newer definitions.  Also incremented
+ 	version to 6.3.4.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+	
+	* accounting.texi (sa): make a note that column titles appear like
+ 	units of measurement and not as headings in the first row only.
+  	Also add a note about which options may be available on a given
+ 	system based on the members in struct acct.
+	* sa.8: same.
+
+Wed Apr  8 16:03:31 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: increment version to 6.3.3.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+
+	* Makefile.am (EXTRA_DIST): add ToDo and mktime.c.
+	* Makefile.in: regenerated.
+
+	* accounting.texi (Preface): add Tuomo Pyhala to contributors.
+
+	* lastcomm.c (main): when using the `--strict-match' flag, make
+ 	sure that the user doesn't specify more than one item in each
+ 	category (tty, dev, comm), since no records would ever be matched.
+	(desired_entry): when using the `--strict-match' flag, match all
+ 	items in all_list to the current entry.
+
+	* hashtab.c (get_key_len): fix typo in error message.
+
+Sun Mar 22 21:44:20 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* accounting.texi (Preface): add Alexander Kourakos and Derek
+ 	Clegg to contributors.
+
+	* utmp_rd.h: change utmp_rd_never_used's type to extern, since we
+ 	really don't need any of this data -- we just use it for sizeof.
+  	Thanks to Derek Clegg.
+	* pacct_rd.h: similar deal for pacct_rd_never_used.
+
+	* last.c: added global variables to keep track of field widths
+ 	that the user desires for printing.  Added `-w' and `--wide' flags
+ 	which allow the user to specify maximum precision.  Thanks to
+ 	Alexander Kourakos for the idea.
+	* last.1: updated docs.
+	* accounting.texi (last): updated docs.
+
+	* accounting.text (lastcomm): updated docs for `--ahz' flag.
+	(sa): same.
+	* lastcomm.1: same.
+	* sa.1: same.
+	
+Tue Mar 11 23:52:00 1998  Solar Designer  <solar@false.com>
+
+	* files.h.in: add workaround for a kernel includes problem with
+ 	Linux/Alpha.
+
+	* lastcomm.c (main): add `--ahz' option which lets us select a
+ 	different AHZ if we're trying to view files created on another
+ 	system (but with the same byte order and struct utmp).
+	* sa.c (main): same.
+
+	* sa.c (parse_acct_entries): don't divide elapsed time field by
+ 	AHZ.
+
 Tue Mar 10 10:13:07 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* sa.c (print_user_list): revert Solar Designer's change, since it
+ 	wasn't necessary (it fixed the same bug that was fixed on 19 Aug
+ 	1997).
 
 	* NEWS: document new features in this release.
 
@@ -7,7 +200,7 @@ Tue Mar 10 10:13:07 1998  Noel Cragg  <noel@swish.red-bean.com>
 
 	* accounting.text: add Solar Designer to contributors.
 
-Tue Mar 10 09:54:29 1998  Solar Designer  <solar@false.com
+Tue Mar 10 09:54:29 1998  Solar Designer  <solar@false.com>
 
 	* sa.c (print_user_list): off-by one error when allocating space
  	for entry_array.

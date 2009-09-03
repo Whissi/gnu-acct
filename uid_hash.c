@@ -21,9 +21,10 @@
 
 struct hashtab *uid_table = NULL;
 
-struct uid_data {
-  char *name;			/* name of the user */
-};
+struct uid_data
+  {
+    char *name;			/* name of the user */
+  };
 
 
 /* code */
@@ -49,23 +50,23 @@ uid_name (int uid)
       struct uid_data ud;
 
       if (thispw != NULL)
-	{
-	  ud.name = (char *) xmalloc (sizeof (char)
-				       * (strlen (thispw->pw_name) + 1));
-	  strcpy (ud.name, thispw->pw_name);
-	}
+        {
+          ud.name = (char *) xmalloc (sizeof (char)
+                                      * (strlen (thispw->pw_name) + 1));
+          strcpy (ud.name, thispw->pw_name);
+        }
       else
-	{
-	  int digits, uid_copy = uid;
+        {
+          int digits, uid_copy = uid;
 
-	  /* Count the number of digits we'll need. */
-	  for (digits = 2; uid_copy; digits++, uid_copy /= 10)
-	    ;
+          /* Count the number of digits we'll need. */
+          for (digits = 2; uid_copy; digits++, uid_copy /= 10)
+            ;
 
-	  ud.name = (char *) xmalloc (sizeof (char) * digits);
-	  sprintf (ud.name, "%d", uid);
-	}
-      
+          ud.name = (char *) xmalloc (sizeof (char) * digits);
+          sprintf (ud.name, "%d", uid);
+        }
+
       he = hashtab_create (uid_table, (void *) &uid, sizeof (uid));
       hashtab_set_value (he, &ud, sizeof (ud));
     }

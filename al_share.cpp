@@ -33,7 +33,7 @@ parse_entries ()
 	  print_utmp_record (rec, stddebug);
 	}
 
-#if HAVE_UT_TYPE
+#ifdef HAVE_UT_TYPE
       if (fix_ut_type_field (rec) && debugging_enabled)
 	{
 	  fprintf (stddebug, " MUNGED REC: ");

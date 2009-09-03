@@ -40,16 +40,16 @@ hash (const char *s, unsigned int len, unsigned long hashsize)
    strings. */
 
 struct hashtab *
-hashtab_init (int numeric)
-{
-  struct hashtab *new;
+      hashtab_init (int numeric)
+  {
+    struct hashtab *new;
 
-  new = (struct hashtab *) xmalloc (sizeof (struct hashtab));
-  memset (new, 0, sizeof (struct hashtab));
-  new->numeric = numeric;
-  
-  return new;
-}
+    new = (struct hashtab *) xmalloc (sizeof (struct hashtab));
+    memset (new, 0, sizeof (struct hashtab));
+    new->numeric = numeric;
+
+    return new;
+  }
 
 
 /* Return the smaller of the length of a string or the number passed
@@ -62,22 +62,22 @@ get_key_len (char *s, unsigned int len, int numeric)
   if (numeric)
     {
       if (len == 0)
-	fatal ("hashtab.c (get_key_len): hashing a num with len == 0");
+        fatal ("hashtab.c (get_key_len): hashing a num with len == 0");
       if (len != numeric)
-	fatal ("hashtab.c (get_key_len): hashing a num with len == numeric");
+        fatal ("hashtab.c (get_key_len): hashing a num with len != numeric");
       return len;
     }
   else
     {
       if (!len)
-	return strlen (s);
+        return strlen (s);
       else
-	{
-	  unsigned int i;
-	  for (i = len; i && (*s != '\0'); s++, i--)
-	    ;
-	  return len - i;
-	}
+        {
+          unsigned int i;
+          for (i = len; i && (*s != '\0'); s++, i--)
+            ;
+          return len - i;
+        }
     }
 }
 
@@ -102,9 +102,9 @@ hashtab_resize (struct hashtab *ht)
   ht->table_size *= RESIZE_MULTIPLIER;
   ht->resize_size = ht->table_size * RESIZE_SIZE_MULTIPLIER;
   ht->table = (struct hashtab_elem **)
-    xmalloc (sizeof (struct hashtab_elem *) * ht->table_size);
+              xmalloc (sizeof (struct hashtab_elem *) * ht->table_size);
   memset (ht->table, 0, sizeof (struct hashtab_elem *) * ht->table_size);
-  
+
   /* Step through each key in the old table, re-hashing and inserting
      into the new table.  We don't use the HASHTAB_FIRST and
      HASHTAB_CREATE routines because we can do this more efficiently,
@@ -114,18 +114,18 @@ hashtab_resize (struct hashtab *ht)
   for (bucket = 0; bucket < old_size; bucket++)
     for (elt = old_table[bucket]; elt != NULL;)
       {
-	struct hashtab_elem *old_next = elt->next;
+        struct hashtab_elem *old_next = elt->next;
 
-	elt->hashval = hash (elt->key, elt->key_len, ht->table_size);
-	elt->prev = NULL;
-	elt->next = ht->table[elt->hashval];
-	if (ht->table[elt->hashval])
-	  ht->table[elt->hashval]->prev = elt;
-	ht->table[elt->hashval] = elt;
+        elt->hashval = hash (elt->key, elt->key_len, ht->table_size);
+        elt->prev = NULL;
+        elt->next = ht->table[elt->hashval];
+        if (ht->table[elt->hashval])
+          ht->table[elt->hashval]->prev = elt;
+        ht->table[elt->hashval] = elt;
 
-	elt = old_next;
+        elt = old_next;
       }
-  
+
   /* Remove the old table. */
 
   free (old_table);
@@ -138,70 +138,70 @@ hashtab_resize (struct hashtab *ht)
    bytes. */
 
 struct hashtab_elem *
-hashtab_create (struct hashtab *ht, void *key, unsigned int len)
-{
-  unsigned long hashval;
-  unsigned int key_len;
-  struct hashtab_elem *he;
-  
-  if (ht->table == NULL)
-    {
-      /* Create a fresh table. */
-      ht->table_size = INITIAL_TABLE_SIZE;
-      ht->items_hashed = 0;
-      ht->resize_size = ht->table_size * RESIZE_SIZE_MULTIPLIER;
-      ht->table = (struct hashtab_elem **)
-	xmalloc (sizeof (struct hashtab_elem *) * ht->table_size);
-      memset (ht->table, 0, sizeof (struct hashtab_elem *) * ht->table_size);
-    }
+      hashtab_create (struct hashtab *ht, void *key, unsigned int len)
+  {
+    unsigned long hashval;
+    unsigned int key_len;
+    struct hashtab_elem *he;
 
-  /* Hash the key. */
+    if (ht->table == NULL)
+      {
+        /* Create a fresh table. */
+        ht->table_size = INITIAL_TABLE_SIZE;
+        ht->items_hashed = 0;
+        ht->resize_size = ht->table_size * RESIZE_SIZE_MULTIPLIER;
+        ht->table = (struct hashtab_elem **)
+                    xmalloc (sizeof (struct hashtab_elem *) * ht->table_size);
+        memset (ht->table, 0, sizeof (struct hashtab_elem *) * ht->table_size);
+      }
 
-  key_len = get_key_len (key, len, ht->numeric);
-  hashval = hash (key, key_len, ht->table_size);
+    /* Hash the key. */
 
-  /* We could use HASHTAB_FIND, but then we'd have to call STRLEN
-     twice & etc. */
+    key_len = get_key_len (key, len, ht->numeric);
+    hashval = hash (key, key_len, ht->table_size);
 
-  for (he = ht->table[hashval]; he != NULL; he = he->next)
-    {
-      if ((he->key_len == key_len) && (memcmp (he->key, key, key_len) == 0))
-	{
-	  /* Clear the existing data and return the entry. */
-	  he->data = NULL;
-	  return he;
-	}
-    }
+    /* We could use HASHTAB_FIND, but then we'd have to call STRLEN
+       twice & etc. */
 
-  /* Create a new entry, since we didn't find one. */
+    for (he = ht->table[hashval]; he != NULL; he = he->next)
+      {
+        if ((he->key_len == key_len) && (memcmp (he->key, key, key_len) == 0))
+          {
+            /* Clear the existing data and return the entry. */
+            he->data = NULL;
+            return he;
+          }
+      }
 
-  he = (struct hashtab_elem *) xmalloc (sizeof (struct hashtab_elem));
-  he->key_len = key_len;
-  he->key = (char *) xmalloc (sizeof (char) * (he->key_len + 1));
-  memcpy (he->key, key, key_len);
+    /* Create a new entry, since we didn't find one. */
 
-  /* Make sure the key is null-terminated -- this won't hurt if we're
-     using a numeric hash value, since the extra zero will never get
-     considered. */
+    he = (struct hashtab_elem *) xmalloc (sizeof (struct hashtab_elem));
+    he->key_len = key_len;
+    he->key = (char *) xmalloc (sizeof (char) * (he->key_len + 1));
+    memcpy (he->key, key, key_len);
 
-  ((char *) he->key)[he->key_len] = '\0';
-  he->ht = ht;
-  he->prev = NULL;
-  he->hashval = hashval;
-  he->next = ht->table[hashval];
-  if (ht->table[hashval])
-    ht->table[hashval]->prev = he;
-  ht->table[hashval] = he;
+    /* Make sure the key is null-terminated -- this won't hurt if we're
+       using a numeric hash value, since the extra zero will never get
+       considered. */
 
-  ht->items_hashed++;
+    ((char *) he->key)[he->key_len] = '\0';
+    he->ht = ht;
+    he->prev = NULL;
+    he->hashval = hashval;
+    he->next = ht->table[hashval];
+    if (ht->table[hashval])
+      ht->table[hashval]->prev = he;
+    ht->table[hashval] = he;
 
-  /* Are there too many items in the table? */
+    ht->items_hashed++;
 
-  if (ht->items_hashed > ht->resize_size)
-    hashtab_resize (ht);
+    /* Are there too many items in the table? */
 
-  return he;
-}
+    if (ht->items_hashed > ht->resize_size)
+      hashtab_resize (ht);
+
+    return he;
+  }
 
 
 /* Find KEY in HT and return the entry associated with it.  If LEN is
@@ -209,24 +209,24 @@ hashtab_create (struct hashtab *ht, void *key, unsigned int len)
    LEN bytes. */
 
 struct hashtab_elem *
-hashtab_find (struct hashtab *ht, void *key, unsigned int len)
-{
-  unsigned long hashval;
-  unsigned int key_len;
-  struct hashtab_elem *he;
-  
-  if (ht->table == NULL)
+      hashtab_find (struct hashtab *ht, void *key, unsigned int len)
+  {
+    unsigned long hashval;
+    unsigned int key_len;
+    struct hashtab_elem *he;
+
+    if (ht->table == NULL)
+      return NULL;
+
+    key_len = get_key_len (key, len, ht->numeric);
+    hashval = hash (key, key_len, ht->table_size);
+
+    for (he = ht->table[hashval]; he != NULL; he = he->next)
+      if ((he->key_len == key_len) && (memcmp (he->key, key, key_len) == 0))
+        return he;
+
     return NULL;
-
-  key_len = get_key_len (key, len, ht->numeric);
-  hashval = hash (key, key_len, ht->table_size);
-  
-  for (he = ht->table[hashval]; he != NULL; he = he->next)
-    if ((he->key_len == key_len) && (memcmp (he->key, key, key_len) == 0))
-      return he;
-
-  return NULL;
-}
+  }
 
 
 /* Return the key associated with HE. */
@@ -260,43 +260,43 @@ hashtab_set_value (struct hashtab_elem *he, void *v, unsigned int len)
 /* Return the first thing in the table. */
 
 struct hashtab_elem *
-hashtab_first (struct hashtab *ht, struct hashtab_order *ho)
-{
-  ho->which = 0;
-  ho->elem = NULL;
-  ho->ht = ht;
+      hashtab_first (struct hashtab *ht, struct hashtab_order *ho)
+  {
+    ho->which = 0;
+    ho->elem = NULL;
+    ho->ht = ht;
 
-  return hashtab_next (ho);
-}
+    return hashtab_next (ho);
+  }
 
 
 /* Given HO, return the next entry in the hash table. */
 
 struct hashtab_elem *
-hashtab_next (struct hashtab_order *ho)
-{
-  unsigned long i;
-  struct hashtab_elem *he;
+      hashtab_next (struct hashtab_order *ho)
+  {
+    unsigned long i;
+    struct hashtab_elem *he;
 
-  if (ho->elem)
-    {
-      he = ho->elem;
-      ho->elem = he->next;
-      if (he->next == NULL)
-	ho->which++;
-      return he;
-    }
-
-  for (i = ho->which; i < ho->ht->table_size; i++)
-    for (he = ho->ht->table[i]; he != NULL; he = he->next)
+    if (ho->elem)
       {
-	ho->which = (he->next ? i : i + 1);
-	ho->elem = he->next;
-	return he;
+        he = ho->elem;
+        ho->elem = he->next;
+        if (he->next == NULL)
+          ho->which++;
+        return he;
       }
 
-  return NULL;			/* nothing in the table */
-}
+    for (i = ho->which; i < ho->ht->table_size; i++)
+      for (he = ho->ht->table[i]; he != NULL; he = he->next)
+        {
+          ho->which = (he->next ? i : i + 1);
+          ho->elem = he->next;
+          return he;
+        }
+
+    return NULL;			/* nothing in the table */
+  }
 
 
 void
@@ -304,7 +304,7 @@ hashtab_dump_keys (struct hashtab *ht, FILE *out)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
-  
+
   for (he = hashtab_first (ht, &ho);
        he != NULL;
        he = hashtab_next (&ho))

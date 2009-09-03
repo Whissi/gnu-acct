@@ -1,6 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS = ansi2knr
+AUTOMAKE_OPTIONS =
+ACLOCAL_AMFLAGS = -I m4
+
+SUBDIRS = lib
 
 ## What programs do we want to build?
 
@@ -10,35 +13,28 @@ EXTRA_PROGRAMS = lastcomm dump-acct accton sa
 
 ## From what sources are those programs built?
 
-ac_SOURCES = ac.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
-  @MKTIME_C@ utmp_rd.c
-ac_LDADD = @ALLOCA@
+ac_SOURCES = ac.c common.c file_rd.c hashtab.c \
+  utmp_rd.c getopt_long.c
+  
+accton_SOURCES = accton.c common.c getopt_long.c
 
-accton_SOURCES = accton.c common.c getopt.c getopt1.c
-accton_LDADD = @ALLOCA@
+dump_acct_SOURCES = dump-acct.c common.c file_rd.c \
+  pacct_rd.c getopt_long.c
 
-dump_acct_SOURCES = dump-acct.c common.c getopt.c getopt1.c file_rd.c \
-  pacct_rd.c
-dump_acct_LDADD = @ALLOCA@
+dump_utmp_SOURCES = dump-utmp.c common.c file_rd.c \
+  utmp_rd.c getopt_long.c
 
-dump_utmp_SOURCES = dump-utmp.c common.c getopt.c getopt1.c file_rd.c \
-  utmp_rd.c
-dump_utmp_LDADD = @ALLOCA@
+last_SOURCES = last.c common.c file_rd.c hashtab.c \
+  utmp_rd.c getopt_long.c
 
-last_SOURCES = last.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
-  utmp_rd.c
-last_LDADD = @ALLOCA@
+lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c \
+  hashtab.c pacct_rd.c uid_hash.c getopt_long.c
 
-lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c getopt.c \
-  getopt1.c hashtab.c pacct_rd.c uid_hash.c
-lastcomm_LDADD = @ALLOCA@
+sa_SOURCES = sa.c common.c file_rd.c hashtab.c \
+  pacct_rd.c uid_hash.c getopt_long.c
 
-sa_SOURCES = sa.c common.c file_rd.c getopt.c getopt1.c hashtab.c \
-  pacct_rd.c uid_hash.c
-sa_LDADD = @ALLOCA@
-
-noinst_HEADERS = common.h config.h dev_hash.h file_rd.h getopt.h hashtab.h \
-  pacct_rd.h uid_hash.h utmp_rd.h al_share.cpp
+noinst_HEADERS = common.h config.h dev_hash.h file_rd.h getopt_long.h hashtab.h \
+  pacct_rd.h uid_hash.h utmp_rd.h al_share.cpp linux-acct.h
 
 # What documentation should we include?
 
@@ -50,16 +46,13 @@ info_TEXINFOS = accounting.texi
 #man_MANS = ac.1 last.1 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
 # but I had to use:
 man_MANS = ac.1 accton.8 last.1 lastcomm.1 sa.8
-EXTRA_DIST = ac.1 accton.8 last.1 lastcomm.1 sa.8
+EXTRA_DIST = ac.1 accton.8 last.1 lastcomm.1 sa.8 TODO m4/gnulib-cache.m4
 
 ## Extra stuff to remove when cleaning
 
-DISTCLEANFILES = files.h version.h
+DISTCLEANFILES = files.h version.h stamp-h
 
 ## Extra targets for debugging
-
-mktime: mktime.c
-	$(CC) $(LDFLAGS) -DDEBUG mktime.c -o mktime
 
 ## Extra targets for comparing system utilities to these utils
 

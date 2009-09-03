@@ -63,6 +63,11 @@ last \- list logins on the system
 [
 .B \-\-debug
 ]
+[
+.B \-w
+|
+.B \-\-wide
+]
 .br
 [
 .B \-s
@@ -195,6 +200,16 @@ Enabling this option makes
 .B last
 print the IP address instead of
 the hostname.
+.TP
+.B \-w, \-\-wide
+By default,
+.B last
+tries to print each entry within in 80 columns.  Use this option to
+instruct
+.B last
+to print out the fields in the
+.I wtmp
+file with full field widths.
 .TP
 .B \-\-debug
 Print verbose internal information.

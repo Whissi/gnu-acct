@@ -8,7 +8,7 @@
 
 /* This looks strange, but it's real ANSI C. */
 
-static struct acct pacct_rd_never_used;
+extern struct acct pacct_rd_never_used;
 
 #define COMM_LEN ((int) sizeof (pacct_rd_never_used.ac_comm))
 
@@ -20,4 +20,11 @@ void pacct_print_file_and_line PARAMS((FILE *out));
 
 #ifdef HAVE_COMP_T
 double comp_t_2_double PARAMS((comp_t));
+#endif
+
+#ifdef LINUX_MULTIFORMAT
+double comp2_t_2_double PARAMS((comp2_t val));
+size_t convert_acct_record_write PARAMS((struct acct *rec_in,
+                                        struct acct *rec_out,
+                                        int version, int byteswap));
 #endif

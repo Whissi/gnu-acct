@@ -1,13 +1,13 @@
 /* common.h */
 
-/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997, 2008 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
 The GNU Accounting Utilities are free software; you can redistribute
 them and/or modify them under the terms of the GNU General Public
 License as published by the Free Software Foundation; either version
-2, or (at your option) any later version.
+3, or (at your option) any later version.
 
 The GNU Accounting Utilities are distributed in the hope that they will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -55,5 +55,53 @@ int rename PARAMS((char *from, char *to));
 void print_wtmp_file_location PARAMS((void));
 void print_acct_file_location PARAMS((void));
 void print_acct_file_locations PARAMS((void));
+
+#ifdef ACUTIME_COMPT
+# define ACUTIME_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACUTIME_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACSTIME_COMPT
+# define ACSTIME_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACSTIME_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACETIME_COMPT
+# define ACETIME_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACETIME_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACIO_COMPT
+# define ACIO_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACIO_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACMEM_COMPT
+# define ACMEM_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACMEM_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACMINFLT_COMPT
+# define ACMINFLT_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACMINFLT_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACMAJFLT_COMPT
+# define ACMAJFLT_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACMAJFLT_2_DOUBLE(x) ((double)(x))
+#endif
+
+#ifdef ACSWAPS_COMPT
+# define ACSWAPS_2_DOUBLE(x) (comp_t_2_double(x))
+#else
+# define ACSWAPS_2_DOUBLE(x) ((double)(x))
+#endif
 
 #endif /* COMMON_H */

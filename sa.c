@@ -1,13 +1,13 @@
 /* sa.c -- everyone's favorite hairball */
 
-/* Copyright (C) 1993, 1996, 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1993, 1996, 1997, 2008 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
 The GNU Accounting Utilities are free software; you can redistribute
 them and/or modify them under the terms of the GNU General Public
 License as published by the Free Software Foundation; either version
-2, or (at your option) any later version.
+3, or (at your option) any later version.
 
 The GNU Accounting Utilities are distributed in the hope that they will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -25,11 +25,11 @@ MA 02139, USA.  */
 #ifdef __GNUC__
 # define alloca __builtin_alloca
 #else
-# if HAVE_ALLOCA_H
+# ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
 # else
 #  ifdef _AIX
- #pragma alloca
+#pragma alloca
 #  else
 #   ifndef alloca /* predefined by HP cc +Olibcalls */
 char *alloca ();
@@ -53,11 +53,11 @@ char *alloca ();
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if TIME_WITH_SYS_TIME
+#ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
 #else
-# if HAVE_SYS_TIME_H
+# ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
@@ -73,7 +73,11 @@ char *alloca ();
 #include "common.h"
 #include "pacct_rd.h"
 #include "utmp_rd.h"
-#include "getopt.h"
+#ifdef HAVE_GETOPT_LONG
+#include <getopt.h>
+#else
+#include "getopt_long.h"
+#endif
 #include "uid_hash.h"
 #include "hashtab.h"
 #include "version.h"
@@ -83,29 +87,36 @@ char *alloca ();
 
 /* This is the struct we read/write from/to usracct and savacct. */
 
-struct stats {
-  unsigned long num_calls;	/* how many times this command called */
+struct stats
+  {
+    unsigned long num_calls;	/* how many times this command called */
 #ifdef HAVE_ACUTIME
-  double user_time;		/* user time */
+    double user_time;		/* user time */
 #endif
 #ifdef HAVE_ACSTIME
-  double sys_time;		/* system time */
+    double sys_time;		/* system time */
 #endif
 #ifdef HAVE_ACETIME
-  double elapsed_time;		/* real time */
+    double elapsed_time;		/* real time */
 #endif
 #ifdef HAVE_ACMEM
-  double mem_usage;		/* total memory usage */
+    double mem_usage;		/* total memory usage */
 #endif
 #ifdef HAVE_ACIO
-  double disk_io;		/* how many disk I/O operations */
+    double disk_io;		/* how many disk I/O operations */
 #endif
-};  
+#ifdef HAVE_PAGING
+    double minor_faults;
+    double major_faults;
+    double swap_count;
+#endif
+  };
 
-struct usracct {
-  char name[NAME_LEN];		/* should we be using the val from utmp_rd? */
-  struct stats s;
-};
+struct usracct
+  {
+    char name[NAME_LEN];		/* should we be using the val from utmp_rd? */
+    struct stats s;
+  };
 
 #ifndef HAVE_GETPAGESIZE
 #define getpagesize() 4096
@@ -124,28 +135,32 @@ int debugging_enabled = 0;	/* print internal information relating
 
 struct hashtab *user_table;
 
-struct user_data {
-  struct stats s;
-};
+struct user_data
+  {
+    struct stats s;
+  };
 
 /* Hash table of entries broken down by command */
 
 struct hashtab *command_table;
 
-struct command_key {
-  char comm[COMM_LEN];		/* command name */
-  short fork_flag;		/* nonzero if fork but no exec */
-};
+struct command_key
+  {
+    char comm[COMM_LEN];		/* command name */
+    short fork_flag;		/* nonzero if fork but no exec */
+  };
 
-struct command_data {
-  struct stats s;
-  short junked;
-};
+struct command_data
+  {
+    struct stats s;
+    short junked;
+  };
 
-struct savacct {
-  struct command_key c;
-  struct stats s;
-};
+struct savacct
+  {
+    struct command_key c;
+    struct stats s;
+  };
 
 
 struct stats stats_totals;	/* total of all commands */
@@ -171,6 +186,7 @@ int dont_read_summary_files = 0;
 int print_users = 0;
 int percentages = 0;		/* include percentages in printout */
 int user_summary_flag = 0;	/* are we printing a user summary? */
+int ahz = AHZ;			/* for viewing logs from another system */
 
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
@@ -185,14 +201,18 @@ int print_ksec = 0;
 int print_ratio = 0;
 #endif
 
-#ifdef HAVE_ACIO  
+#ifdef HAVE_ACIO
 int total_io = 0;		/* print total disk io operations */
 #endif
+
+int show_paging = 0;            /* #ifdef makes the print function untidy ;-) */
+int paging_as_avg = 0;
 
 
 /* which field to sort by */
 
-enum {
+enum
+{
   sort_num_calls
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
   , sort_sys_plus_user
@@ -213,11 +233,11 @@ enum {
 #ifdef HAVE_ACETIME
   , sort_real_time
 #endif
-} sort_type = 
+} sort_type =
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-       sort_sys_plus_user;
+  sort_sys_plus_user;
 #else
-       sort_num_calls;		/* fallback default */
+  sort_num_calls;		/* fallback default */
 #endif
 
 
@@ -237,7 +257,6 @@ int always_yes = 0;		/* nonzero means always answer yes to
 
 /* prototypes */
 
-void main PARAMS((int, char *[]));
 void give_usage PARAMS((void));
 void write_savacct_file PARAMS((char *));
 void write_usracct_file PARAMS((char *));
@@ -250,7 +269,7 @@ void update_command_list PARAMS((char *, struct stats *, short fork_flag));
 void update_user_list PARAMS((char *, struct stats *));
 int compare_sum_entry PARAMS((struct hashtab_elem **, struct hashtab_elem **));
 int compare_user_entry PARAMS((struct hashtab_elem **,
-			       struct hashtab_elem **));
+                               struct hashtab_elem **));
 int compare_stats_entry PARAMS((struct stats *, struct stats *));
 void print_command_list PARAMS((void));
 void print_user_list PARAMS((void));
@@ -261,13 +280,13 @@ int ask_if_junkable PARAMS((char *, int));
 
 /* code */
 
-void
+int
 main (int argc, char *argv[])
 {
   int c;
 
   program_name = argv[0];
-  
+
   /* Cache the page size of the machine for the PAGES_TO_KB macro */
   system_page_size = (double) getpagesize () / 1024.0;
 
@@ -285,231 +304,265 @@ main (int argc, char *argv[])
   while (1)
     {
       int option_index = 0;
-      
-      static struct option long_options[] = {
-	{ "debug", no_argument, NULL, 1 },
-	{ "version", no_argument, NULL, 2 },
-	{ "help", no_argument, NULL, 3 },
-	{ "other-acct-file", required_argument, NULL, 4 },
-	{ "print-seconds", no_argument, NULL, 5 },
-	{ "dont-read-summary-files", no_argument, NULL, 6 },
-	{ "list-all-names", no_argument, NULL, 7 },
-	{ "other-savacct-file", 1, NULL, 9 },
-	{ "print-users", no_argument, NULL, 12 },
-	{ "percentages", no_argument, NULL, 14 },
-	{ "not-interactive", no_argument, NULL, 19 },
-	{ "user-summary", no_argument, NULL, 20 },
-	{ "reverse-sort", no_argument, NULL, 21 },
-	{ "merge", no_argument, NULL, 22 },
-	{ "threshold", required_argument, NULL, 23 },
-	{ "separate-forks", no_argument, NULL, 24 },
-	{ "other-usracct-file", required_argument, NULL, 25 },
+
+      static struct option long_options[] =
+        {
+          { "debug", no_argument, NULL, 1
+          },
+          { "version", no_argument, NULL, 2 },
+          { "help", no_argument, NULL, 3 },
+          { "other-acct-file", required_argument, NULL, 4 },
+          { "print-seconds", no_argument, NULL, 5 },
+          { "dont-read-summary-files", no_argument, NULL, 6 },
+          { "list-all-names", no_argument, NULL, 7 },
+          { "other-savacct-file", 1, NULL, 9 },
+          { "print-users", no_argument, NULL, 12 },
+          { "percentages", no_argument, NULL, 14 },
+          { "not-interactive", no_argument, NULL, 19 },
+          { "user-summary", no_argument, NULL, 20 },
+          { "reverse-sort", no_argument, NULL, 21 },
+          { "merge", no_argument, NULL, 22 },
+          { "threshold", required_argument, NULL, 23 },
+          { "separate-forks", no_argument, NULL, 24 },
+          { "other-usracct-file", required_argument, NULL, 25 },
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-	{ "separate-times", no_argument, NULL, 8 },
+          { "separate-times", no_argument, NULL, 8
+          },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-	{ "sort-ksec", no_argument, NULL, 10 },
+          { "sort-ksec", no_argument, NULL, 10
+          },
 #endif
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-	{ "print-ratio", no_argument, NULL, 11 },
+          { "print-ratio", no_argument, NULL, 11
+          },
 #endif
 
 #ifdef HAVE_ACIO
-	{ "sort-tio", no_argument, NULL, 13 },
+          { "sort-tio", no_argument, NULL, 13 },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-	{ "sort-sys-user-div-calls", no_argument, NULL, 15 },
+          { "sort-sys-user-div-calls", no_argument, NULL, 15
+          },
 #endif
 
 #ifdef HAVE_ACIO
-	{ "sort-avio", no_argument, NULL, 16 },
+          { "sort-avio", no_argument, NULL, 16 },
 #endif
 
 #ifdef HAVE_ACMEM
-	{ "sort-cpu-avmem", no_argument, NULL, 17 },
+          { "sort-cpu-avmem", no_argument, NULL, 17 },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-	/* Don't want this if it's the default */
-	{ "sort-num-calls", no_argument, NULL, 18 },
+          /* Don't want this if it's the default */
+          { "sort-num-calls", no_argument, NULL, 18
+          },
 #endif
 #ifdef HAVE_ACETIME
-	{ "sort-real-time", no_argument, NULL, 26 },
+          { "sort-real-time", no_argument, NULL, 26 },
 #endif
-	{ 0, 0, 0, 0 }
-      };
-      
+          { "ahz", required_argument, NULL, 27 },
+#ifdef HAVE_PAGING
+          { "show-paging", no_argument, NULL, 28 },
+          { "show-paging-avg", no_argument, NULL, 29 },
+#endif
+          { 0, 0, 0, 0 }
+        };
+
       c = getopt_long (argc, argv,
-		       "ahV"
+                       "ahV"
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-		       "b"
+                       "b"
 #endif
-		       "c"
+                       "c"
 #ifdef HAVE_ACIO
-		       "d"
+                       "d"
 #endif
-		       "fi"
+                       "fi"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-		       "l"
+                       "l"
 #endif
-		       "j"
+                       "j"
 #ifdef HAVE_ACMEM
-		       "k"
+                       "k"
 #endif
-		       "mnrs"
+                       "mnrs"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-		       "t"
+                       "t"
 #endif
-		       "uv:"
+                       "uv:"
 #ifdef HAVE_ACIO
-		       "D"
+                       "D"
 #endif
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-		       "K"
+                       "K"
 #endif
-		       ,
-		       long_options, &option_index);
-      
+#ifdef HAVE_PAGING
+                       "pP"
+#endif
+                       ,
+                       long_options, &option_index);
+
       if (c == EOF)
-	break;
+        break;
 
       switch (c)
-	{
-	case 1:
-	  debugging_enabled = 1;
-	  break;
-	case 'V':
-	case 2:
-	  printf ("%s: GNU Accounting Utilities (release %s)\n",
-		  program_name, VERSION_STRING);
-	  exit (0);
-	  break;
-	case 4:
-	  acct_file_name = optarg;
-	  break;
-	case 'j':
-	case 5:
-	  print_seconds = 1;
-	  break;
-	case 'i':
-	case 6:
-	  dont_read_summary_files = 1;
-	  break;
-	case 'a':
-	case 7:
-	  print_all_records = 1;
-	  break;
+        {
+        case 1:
+          debugging_enabled = 1;
+          break;
+        case 'V':
+        case 2:
+          printf ("%s: GNU Accounting Utilities (release %s)\n",
+                  program_name, VERSION_STRING);
+          exit (0);
+          break;
+        case 4:
+          acct_file_name = optarg;
+          break;
+        case 'j':
+        case 5:
+          print_seconds = 1;
+          break;
+        case 'i':
+        case 6:
+          dont_read_summary_files = 1;
+          break;
+        case 'a':
+        case 7:
+          print_all_records = 1;
+          break;
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-	case 'l':
-	case 8:
-	  separate_times = 1;
-	  break;
+        case 'l':
+        case 8:
+          separate_times = 1;
+          break;
 #endif
-	case 9:
-	  savacct_file_name = optarg;
-	  break;
+        case 9:
+          savacct_file_name = optarg;
+          break;
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-	case 'K':
-	case 10:
-	  sort_type = sort_cpu_storage;
-	  print_ksec = 1;
-	  break;
+        case 'K':
+        case 10:
+          sort_type = sort_cpu_storage;
+          print_ksec = 1;
+          break;
 #endif
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-	case 't':
-	case 11:
-	  print_ratio = 1;
-	  break;
+        case 't':
+        case 11:
+          print_ratio = 1;
+          break;
 #endif
-	case 'u':
-	case 12:
-	  print_users = 1;
-	  break;
+        case 'u':
+        case 12:
+          print_users = 1;
+          break;
 #ifdef HAVE_ACIO
-	case 'D':
-	case 13:
-	  sort_type = sort_tio;
-	  total_io = 1;
-	  break;
+        case 'D':
+        case 13:
+          sort_type = sort_tio;
+          total_io = 1;
+          break;
 #endif
-	case 'c':
-	case 14:
-	  percentages = 1;
-	  break;
+        case 'c':
+        case 14:
+          percentages = 1;
+          break;
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-	case 'b':
-	case 15:
-	  sort_type = sort_sys_plus_user_div_calls;
-	  break;
+        case 'b':
+        case 15:
+          sort_type = sort_sys_plus_user_div_calls;
+          break;
 #endif
 #ifdef HAVE_ACIO
-	case 'd':
-	case 16:
-	  sort_type = sort_avio;
-	  break;
+        case 'd':
+        case 16:
+          sort_type = sort_avio;
+          break;
 #endif
 #ifdef HAVE_ACMEM
-	case 'k':
-	case 17:
-	  sort_type = sort_cpu_mem_average;
-	  break;
+        case 'k':
+        case 17:
+          sort_type = sort_cpu_mem_average;
+          break;
 #endif
-	case 'n':
+        case 'n':
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-	case 18:
-	  sort_type = sort_num_calls;
-	  break;
+        case 18:
+          sort_type = sort_num_calls;
+          break;
 #endif
-	case 'f':
-	case 19:
-	  always_yes = 1;
-	  break;
-	case 'm':
-	case 20:
-	  user_summary_flag = 1;
-	  break;
-	case 'r':
-	case 21:
-	  reverse_sort = 1;
-	  break;
-	case 's':
-	case 22:
-	  merge_files = 1;
-	  break;
-	case 'v':
-	case 23:
-	  junk_threshold = atoi (optarg);
+        case 'f':
+        case 19:
+          always_yes = 1;
+          break;
+        case 'm':
+        case 20:
+          user_summary_flag = 1;
+          break;
+        case 'r':
+        case 21:
+          reverse_sort = 1;
+          break;
+        case 's':
+        case 22:
+          merge_files = 1;
+          break;
+        case 'v':
+        case 23:
+          junk_threshold = atoi (optarg);
 
-	  if (junk_threshold < 1)
-	    {
-	      printf ("%s: threshold must be one or greater\n", program_name);
-	      exit (1);
-	    }
+          if (junk_threshold < 1)
+            {
+              printf ("%s: threshold must be one or greater\n", program_name);
+              exit (1);
+            }
 
-	  break;
-	case 24:
-	  separate_forks = 1;
-	  break;
-	case 25:
-	  usracct_file_name = optarg;
-	  break;
+          break;
+        case 24:
+          separate_forks = 1;
+          break;
+        case 25:
+          usracct_file_name = optarg;
+          break;
 #ifdef HAVE_ACETIME
-	case 26:
-	  sort_type = sort_real_time;
-	  break;
+        case 26:
+          sort_type = sort_real_time;
+          break;
 #endif
-	case 'h':
-	case 3:
-	  /* This should fall through to default! */
-	default:
-	  give_usage ();
-	  exit (1);
-	  break;
-	}
+        case 27:
+          ahz = atoi (optarg);
+
+          if (ahz < 1)
+            {
+              printf ("%s: AHZ must be one or greater\n", program_name);
+              exit (1);
+            }
+
+          break;
+#ifdef HAVE_PAGING
+        case 'P':
+        case 29:
+          paging_as_avg = 1;
+        case 'p':
+        case 28:
+          show_paging = 1;
+          break;
+#endif
+        case 'h':
+        case 3:
+          /* This should fall through to default! */
+        default:
+          give_usage ();
+          exit (1);
+          break;
+        }
     }
 
   /* check options */
@@ -523,7 +576,7 @@ main (int argc, char *argv[])
   if (merge_files && user_summary_flag)
     {
       printf ("%s: can't specify `--user-summary' with `--merge'\n",
-	       program_name);
+              program_name);
       exit (1);
     }
 
@@ -537,21 +590,21 @@ main (int argc, char *argv[])
       printf ("%s: extra arguments ", program_name);
 
       while (optind < argc)
-	{
-	  printf ("`%s'", argv[optind++]);
-	  if (optind < argc)
-	    printf (", ");
-	}
+        {
+          printf ("`%s'", argv[optind++]);
+          if (optind < argc)
+            printf (", ");
+        }
 
       printf (" -- aborting\n");
       exit (1);
     }
-  
+
   /* Print out some debugging information. */
 
   if (debugging_enabled)
     {
-      fprintf (stddebug, "AHZ -> %d\n", AHZ);
+      fprintf (stddebug, "AHZ -> %d\n", ahz);
       fprintf (stddebug, "getpagesize() -> %d\n", getpagesize ());
       fprintf (stddebug, "system_page_size == %.2f\n", system_page_size);
     }
@@ -565,20 +618,20 @@ main (int argc, char *argv[])
 #define NEED_SAVACCT_INFO (!print_users && !user_summary_flag)
 
       if (NEED_SAVACCT_INFO)
-	if (stat (savacct_file_name, &st) == 0)
-	  parse_savacct_entries (savacct_file_name);
+        if (stat (savacct_file_name, &st) == 0)
+          parse_savacct_entries (savacct_file_name);
 
 #define NEED_USRACCT_INFO (!print_users && (merge_files || user_summary_flag))
 
       if (NEED_USRACCT_INFO)
-	if (stat (usracct_file_name, &st) == 0)
-	  parse_usracct_entries (usracct_file_name);
+        if (stat (usracct_file_name, &st) == 0)
+          parse_usracct_entries (usracct_file_name);
     }
-  
+
   /* now, do the acct file */
 
   add_pacct_file (acct_file_name);
-  
+
   parse_acct_entries ();
 
   if (print_users)
@@ -592,9 +645,9 @@ main (int argc, char *argv[])
   else
     {
       if (user_summary_flag)
-	print_user_list ();
+        print_user_list ();
       else
-	print_command_list ();
+        print_command_list ();
     }
 
   exit (0);			/* guarantee the proper return value */
@@ -606,77 +659,86 @@ void
 give_usage (void)
 {
   char *usage = "\n\
-Usage: %s [ options ] [ file ]\n\
-\n\
-       options: [-a"
+                Usage: %s [ options ] [ file ]\n\
+                \n\
+                options: [-a"
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-                  "b"
+                "b"
 #endif
-                   "c"
+                "c"
 #ifdef HAVE_ACIO
-                    "d"
+                "d"
 #endif
-                     "fi"
+                "fi"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-                       "l"
+                "l"
 #endif
-                        "j"
+                "j"
 #ifdef HAVE_ACMEM
-                         "k"
+                "k"
 #endif
-                          "mnrs"
+                "mn"
+#ifdef HAVE_PAGING
+                "p"
+#endif
+                "rs"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-                              "t"
+                "t"
 #endif
-                               "u"
+                "u"
 #ifdef HAVE_ACIO
-                                "D"
+                "D"
 #endif
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-                                 "K"
+                "K"
 #endif
-                                  "] [-v <num>] [--version] [--help]\n\
-       [--other-acct-file <name>] [--other-usracct-file <name>]\n\
-       [--print-seconds] [--dont-read-summary-files] [--debug]\n\
-      "
+#ifdef HAVE_PAGING
+                "P"
+#endif
+                "] [-v <num>] [--version] [--help]\n\
+                [--other-acct-file <name>] [--other-usracct-file <name>]\n\
+                [--print-seconds] [--dont-read-summary-files] [--debug]\n\
+                "
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-     " [--separate-times]"
+                " [--separate-times]"
 #endif
-                        " [--other-savacct-file <name>] [--percentages]\n\
-      "
+                " [--other-savacct-file <name>] [--percentages]\n\
+                "
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-     " [--print-ratio]"
+                " [--print-ratio]"
 #endif
-                     " [--print-users] [--merge] [--user-summary]\n\
-       [--list-all-names] [--not-interactive] [--threshold <num>]\n\
-      "
+                " [--print-users] [--merge] [--user-summary]\n\
+                [--list-all-names] [--not-interactive] [--threshold <num>]\n\
+                "
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-     " [--sort-ksec]"
+                " [--sort-ksec]"
 #endif
 #ifdef HAVE_ACIO
-                   " [--sort-tio]"
+                " [--sort-tio]"
 #endif
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-                                " [--sort-sys-user-div-calls]"
+                " [--sort-sys-user-div-calls]"
 #endif
 #ifdef HAVE_ACIO
-                                                            " [--sort-avio]"
+                " [--sort-avio]"
 #endif
-                                                                          "\n\
-      "
+                "\n\
+                "
 #ifdef HAVE_ACMEM
-     " [--sort-cpu-avmem]"
+                " [--sort-cpu-avmem]"
 #endif
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-                        " [--sort-num-calls]"
+                " [--sort-num-calls]"
 #endif
 #ifdef HAVE_ACETIME
-                                           " [--sort-real-time]"
+                " [--sort-real-time]"
 #endif
-                                                              "\n\
-\n\
-";
-  
+                "\n"
+#ifdef HAVE_PAGING
+                "       [--show-paging] [--show-paging-avg]\n"
+#endif
+                "\n";
+
   printf (usage, program_name);
   print_acct_file_locations ();
 }
@@ -703,6 +765,11 @@ add_stats (struct stats *accum, struct stats *s)
 #ifdef HAVE_ACMEM
   ADDIT (mem_usage);
 #endif
+#ifdef HAVE_PAGING
+  ADDIT (minor_faults);
+  ADDIT (major_faults);
+  ADDIT (swap_count);
+#endif
   ADDIT (num_calls);
 }
 
@@ -712,40 +779,40 @@ void
 print_stats_raw (struct stats *s, FILE *out)
 {
   fprintf (out,
-	   "%10ld"
+           "%10ld"
 #ifdef HAVE_ACUTIME
-	   " %10.2fu"
+           " %10.2fu"
 #endif
 #ifdef HAVE_ACSTIME
-	   " %10.2fs"
+           " %10.2fs"
 #endif
 #ifdef HAVE_ACETIME
-	   " %10.2fe"
+           " %10.2fe"
 #endif
 #ifdef HAVE_ACIO
-	   " %10.2fio"
+           " %10.2fio"
 #endif
 #ifdef HAVE_ACMEM
-	   " %10.2fmem"
+           " %10.2fmem"
 #endif
-	   "\n",
-	   s->num_calls
+           "\n",
+           s->num_calls
 #ifdef HAVE_ACUTIME
-	   , s->user_time
+           , s->user_time
 #endif
 #ifdef HAVE_ACSTIME
-	   , s->sys_time
+           , s->sys_time
 #endif
 #ifdef HAVE_ACETIME
-	   , s->elapsed_time
+           , s->elapsed_time
 #endif
 #ifdef HAVE_ACIO
-	   , s->disk_io
+           , s->disk_io
 #endif
 #ifdef HAVE_ACMEM
-	   , s->mem_usage
+           , s->mem_usage
 #endif
-	   );
+          );
 }
 
 
@@ -785,6 +852,12 @@ print_stats_nicely (struct stats *s)
 #define K s->mem_usage
 #endif
 
+#ifdef HAVE_PAGING
+#define MIN s->minor_faults
+#define MAJ s->major_faults
+#define SWP s->swap_count
+#endif
+
 #define S_NC stats_totals.num_calls
 #define S_DNC ((double) S_NC)
 
@@ -794,37 +867,36 @@ print_stats_nicely (struct stats *s)
       fprintf (stddebug, "raw:");
       print_stats_raw (s, stddebug);
     }
-  
+
   /* FIXME should we check to see if (S_NC == 0) ? */
 
   if (NC == 0)
     {
-      printf ("%s: ERROR -- print_stats_nicely called with num_calls == 0\n",
-	      program_name);
+      printf ("%s: ERROR -- print_stats_nicely called with num_calls == 0\n", program_name);
       exit (1);
     }
 
   /* print it out */
-  
+
   printf ("%8ld ", NC);
-  
+
   if (percentages)
     printf ("%7.2f%% ", (S_NC
-			 ? (DNC / S_DNC) * 100.0
-			 : 0.0));
+                         ? (DNC / S_DNC) * 100.0
+                         : 0.0));
 
   /* We don't need to check to see that DNC != 0 since it is simply NC
-     cast to a double, which we have checked before to be nonzero. */
+  cast to a double, which we have checked before to be nonzero. */
 
-#ifdef HAVE_ACETIME  
+#ifdef HAVE_ACETIME
   printf ("%10.2fre ", (RE / (print_seconds
-			      ? DNC
-			      : 60.0)));
-  
+                              ? DNC
+                              : 60.0)));
+
   if (percentages)
     printf ("%7.2f%% ", (S_RE
-			 ? (RE / S_RE) * 100.0
-			 : 0.0));
+                         ? (RE / S_RE) * 100.0
+                         : 0.0));
 #endif
 
 
@@ -834,24 +906,24 @@ print_stats_nicely (struct stats *s)
 #endif
 #ifdef HAVE_ACUTIME
       printf ("%10.2fu ", (U / (print_seconds
-				? DNC
-				: 60.0)));
-	  
+                                ? DNC
+                                : 60.0)));
+
       if (percentages)
-	printf ("%7.2f%% ", (S_U
-			     ? (U / S_U) * 100.0
-			     : 0.0));
+        printf ("%7.2f%% ", (S_U
+                             ? (U / S_U) * 100.0
+                             : 0.0));
 #endif
-      
+
 #ifdef HAVE_ACSTIME
       printf ("%10.2fs", (S / (print_seconds
-			       ? DNC
-			       : 60.0)));
-	  
+                               ? DNC
+                               : 60.0)));
+
       if (percentages)
-	printf (" %7.2f%%", (S_S
-			     ? (S / S_S) * 100.0
-			     : 0.0));
+        printf (" %7.2f%%", (S_S
+                             ? (S / S_S) * 100.0
+                             : 0.0));
 #endif
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
@@ -859,68 +931,91 @@ print_stats_nicely (struct stats *s)
   else
     {
       printf ("%10.2fcp", (CP / (print_seconds
-				 ? DNC
-				 : 60.0)));
-	  
+                                 ? DNC
+                                 : 60.0)));
+
       if (percentages)
-	printf (" %7.2f%%", (S_CP
-			     ? (CP / S_CP) * 100.0
-			     : 0.0));
+        printf (" %7.2f%%", (S_CP
+                             ? (CP / S_CP) * 100.0
+                             : 0.0));
     }
 #endif
-  
+
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
   if (print_ratio)
     {
       if (CP == 0.0)
-	fputs ("*ignore*", stdout);
+        fputs ("*ignore*", stdout);
       else
-	printf ("%8.1f", (CP ? RE / CP : 0.0));
-	  
+        printf ("%8.1f", (CP ? RE / CP : 0.0));
+
       fputs ("re/cp", stdout);
     }
 #endif
 
-#ifdef HAVE_ACIO  
-  if (total_io)
-    printf ("%10.0ftio ", IO);
-  else
-    printf ("%10.0favio ", IO / DNC);
+  if ( show_paging == 0 )
+    {
+#ifdef HAVE_ACIO
+      if (total_io)
+        printf ("%10.0ftio ", IO);
+      else
+        printf ("%10.0favio ", IO / DNC);
 #endif
-  
+
 #if 0
-  /* Old code, to which Christoph says: BAD. */
-  if (print_ksec)
-    printf ("%9.0fk*sec", K);
-  else
-    printf ("%9ldk", (long) (CP ? K / CP : 0.0));
+      /* Old code, to which Christoph says: BAD. */
+      if (print_ksec)
+        printf ("%9.0fk*sec", K);
+      else
+        printf ("%9ldk", (long) (CP ? K / CP : 0.0));
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
 
-  /* Christoph Badura <bad@flatlin.ka.sub.org> says: 
-   *
-   * The k*sec statistic is computed as
-   * ((ac_utime+ac_stime)*pages_to_kbytes(ac_mem))/AHZ.  Of course you
-   * need to expand the comp_t values. 
-   *
-   * PAGES_TO_KBYTES(x) simply divides x by (getpagesize()/1024).  Of
-   * course, getpagesize()/1024 is precomputed and stored in a
-   * variable.  There are no special cases for other machines, but
-   * then my version is from the original VAX distribution so there
-   * weren't any other machines.
-   *
-   * I don't understand why this works.  ac_mem is in pages, isn't it,
-   * and dividing that by the number of KB per page can't give the
-   * right number, i.e ac_mem=10 and getpagesize=4096 then
-   * 10/(4096/1024) == 10/4 = 2.5 and not 40 KB.  Or am I missing
-   * something? */
-  
-  if (print_ksec)
-    printf ("%9.0fk*sec", (CP ? ((K * CP) / DNC) : K));
-  else
-    printf ("%9.0fk", K / DNC);
+      /* Christoph Badura <bad@flatlin.ka.sub.org> says:
+      *
+      * The k*sec statistic is computed as
+      * ((ac_utime+ac_stime)*pages_to_kbytes(ac_mem))/AHZ.  Of course you
+      * need to expand the comp_t values.
+      *
+      * PAGES_TO_KBYTES(x) simply divides x by (getpagesize()/1024).  Of
+      * course, getpagesize()/1024 is precomputed and stored in a
+      * variable.  There are no special cases for other machines, but
+      * then my version is from the original VAX distribution so there
+      * weren't any other machines.
+      *
+      * I don't understand why this works.  ac_mem is in pages, isn't it,
+      * and dividing that by the number of KB per page can't give the
+      * right number, i.e ac_mem=10 and getpagesize=4096 then
+      * 10/(4096/1024) == 10/4 = 2.5 and not 40 KB.  Or am I missing
+      * something? */
+
+      if (print_ksec)
+        printf ("%9.0fk*sec", (CP ? ((K * CP) / DNC) : K));
+      else
+        printf ("%9.0fk", K / DNC);
 #endif
+    }
+  else
+    {
+#ifdef HAVE_PAGING
+      if ( paging_as_avg == 0 )
+        {
+          printf ("%10.0fmin ", MIN);
+          printf ("%10.0fmaj ", MAJ);
+          printf ("%10.0fswp ", SWP);
+        }
+      else
+        {
+          printf ("%5.0fmin/c ", (NC==0)?0:MIN/NC);
+          printf ("%5.0fmaj/c ", (NC==0)?0:MAJ/NC);
+          printf ("%5.0fswp/c ", (NC==0)?0:SWP/NC);
+        }
+#else
+      printf ("Paging report not enabled!");
+#endif
+    }
+
 }
 
 
@@ -954,11 +1049,11 @@ write_savacct_file (char *filename)
       memcpy (&(sa.s), &(cd->s), sizeof (sa.s));
 
       if (fwrite (&sa, sizeof (sa), 1, fp) == 0)
-	{
-	  printf ("%s (write_savacct_file): probs writing to file `%s'\n",
-		  program_name, s);
-	  exit (1);
-	}
+        {
+          printf ("%s (write_savacct_file): probs writing to file `%s'\n",
+                  program_name, s);
+          exit (1);
+        }
     }
 
   if (rename (s, filename) != 0)
@@ -999,11 +1094,11 @@ write_usracct_file (char *filename)
       memcpy (&(ua.s), &(ud->s), sizeof (ua.s));
 
       if (fwrite (&ua, sizeof (ua), 1, fp) == 0)
-	{
-	  printf ("%s (write_usracct_file): probs writing to file `%s'\n",
-		  program_name, s);
-	  exit (1);
-	}
+        {
+          printf ("%s (write_usracct_file): probs writing to file `%s'\n",
+                  program_name, s);
+          exit (1);
+        }
     }
 
   if (rename (s, filename) != 0)
@@ -1035,10 +1130,10 @@ parse_savacct_entries (char *filename)
 
   if (debugging_enabled)
     fprintf (stddebug, "\
-----------------------------------------------------------------------\n\
-savacct entries in `%s'\n\
-----------------------------------------------------------------------\n\
-", filename);
+             ----------------------------------------------------------------------\n\
+             savacct entries in `%s'\n\
+             ----------------------------------------------------------------------\n\
+             ", filename);
 
   while (fread (&rec, sizeof (struct savacct), 1, fp))
     {
@@ -1063,21 +1158,21 @@ parse_usracct_entries (char *filename)
 
   if (debugging_enabled)
     fprintf (stddebug, "\
-----------------------------------------------------------------------\n\
-usracct entries in `%s'\n\
-----------------------------------------------------------------------\n\
-", filename);
+             ----------------------------------------------------------------------\n\
+             usracct entries in `%s'\n\
+             ----------------------------------------------------------------------\n\
+             ", filename);
 
   while (fread (&rec, sizeof (struct usracct), 1, fp))
     {
       update_user_list (rec.name, &(rec.s));
 
       /* only add these records to the total when we're doing a
-         per-user summary of the data, because it will only screw up
-         the percentages if we view a breakdown by command name */
+      per-user summary of the data, because it will only screw up
+      the percentages if we view a breakdown by command name */
 
       if (user_summary_flag)
-	update_totals (&(rec.s));
+        update_totals (&(rec.s));
     }
 
   fclose (fp);
@@ -1090,112 +1185,109 @@ void
 parse_acct_entries (void)
 {
   struct acct *rec;             /* the current record */
+#if defined(LINUX_MULTIFORMAT)
+# define CURR_AHZ ((double)(rec->ac_ahz))
+#else
+# define CURR_AHZ ((double)(ahz))
+#endif
+
 
   if (debugging_enabled)
     fprintf (stddebug, "\
-----------------------------------------------------------------------\n\
-acct entries\n\
-----------------------------------------------------------------------\n\
-");
+             ----------------------------------------------------------------------\n\
+             acct entries\n\
+             ----------------------------------------------------------------------\n\
+             ");
 
   /* loop while there are entries to be had */
   while ((rec = pacct_get_entry ()) != NULL)
     {
 #ifdef HAVE_ACUTIME
-# ifdef ACUTIME_COMPT
-      double ut = comp_t_2_double (rec->ac_utime) / (double) AHZ;
-# else
-      double ut = (double) rec->ac_utime / (double) AHZ;
-# endif
+      double ut = comp_t_2_double (rec->ac_utime) / CURR_AHZ;
 #endif
 
 #ifdef HAVE_ACSTIME
-# ifdef ACSTIME_COMPT
-      double st = comp_t_2_double (rec->ac_stime) / (double) AHZ;
-# else
-      double st = (double) rec->ac_stime / (double) AHZ;
-# endif
+      double st = comp_t_2_double (rec->ac_stime) / CURR_AHZ;
 #endif
 
 #ifdef HAVE_ACETIME
-# ifdef ACETIME_COMPT
-      double et = comp_t_2_double (rec->ac_etime) / (double) AHZ;
-# else
-      double et = (double) rec->ac_etime / (double) AHZ;
-# endif
+      double et = ACETIME_2_DOUBLE (rec->ac_etime) / CURR_AHZ;
 #endif
 
 #ifdef HAVE_ACIO
-# ifdef ACIO_COMPT
-      double di = comp_t_2_double (rec->ac_io) / (double) AHZ;
-# else
-      double di = (double) rec->ac_io / (double) AHZ;
-# endif
+      double di = comp_t_2_double (rec->ac_io) / CURR_AHZ;
 #endif
 
 #ifdef HAVE_ACMEM
-# ifdef ACMEM_COMPT
-      double mu = PAGES_TO_KB (comp_t_2_double (rec->ac_mem));
-# else
-      double mu = PAGES_TO_KB (rec->ac_mem);
-# endif
+      double mu = PAGES_TO_KB (ACMEM_2_DOUBLE (rec->ac_mem));
+#endif
+
+#ifdef HAVE_PAGING
+      double minflt = ACMINFLT_2_DOUBLE (rec->ac_minflt);
+      double majflt = ACMAJFLT_2_DOUBLE (rec->ac_majflt);
+      double swaps  = ACSWAPS_2_DOUBLE (rec->ac_swaps);
 #endif
 
       if (print_users)
-	{
-	  printf ("%-8.8s"
+        {
+          printf ("%-8.8s"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-		  " %6.2f cpu"
+                  " %6.2f cpu"
 #endif
 #if defined(HAVE_ACMEM)
-		  " %8.0fk mem"
+                  " %8.0fk mem"
 #endif
 #ifdef HAVE_ACIO
-		  " %6.0f io"
+                  " %6.0f io"
 #endif
-		  " %-*.*s%s\n",
-		  uid_name (rec->ac_uid),
+                  " %-*.*s%s\n",
+                  uid_name (rec->ac_uid),
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-		  ut + st,
+                  ut + st,
 #endif
 #if defined(HAVE_ACMEM)
-		  mu,
+                  mu,
 #endif
 #ifdef HAVE_ACIO
-		  di,
+                  di,
 #endif
-		  COMM_LEN, COMM_LEN, rec->ac_comm,
-		  (rec->ac_flag & AFORK) ? "*" : "");
-	}
+                  COMM_LEN, COMM_LEN, rec->ac_comm,
+                  (rec->ac_flag & AFORK) ? "*" : "");
+        }
       else
-	{
-	  struct stats s;
+        {
+          struct stats s;
 
-	  s.num_calls = 1;
+          s.num_calls = 1;
 #ifdef HAVE_ACUTIME
-	  s.user_time = ut;
+          s.user_time = ut;
 #endif
 #ifdef HAVE_ACSTIME
-	  s.sys_time = st;
+          s.sys_time = st;
 #endif
 #ifdef HAVE_ACETIME
-	  s.elapsed_time = et;
+          s.elapsed_time = et;
 #endif
 #ifdef HAVE_ACIO
-	  s.disk_io = di;
+          s.disk_io = di;
 #endif
 #ifdef HAVE_ACMEM
-	  s.mem_usage = mu;
+          s.mem_usage = mu;
 #endif
-	  
-	  if (NEED_SAVACCT_INFO)
-	    update_command_list (rec->ac_comm, &s, (rec->ac_flag & AFORK));
+#ifdef HAVE_PAGING
+          s.minor_faults = minflt;
+          s.major_faults = majflt;
+          s.swap_count   = swaps;
+#endif
 
-	  if (NEED_USRACCT_INFO)
-	    update_user_list (uid_name (rec->ac_uid), &s);
-	  
-	  update_totals (&s);
-	}
+          if (NEED_SAVACCT_INFO)
+            update_command_list (rec->ac_comm, &s, (rec->ac_flag & AFORK));
+
+          if (NEED_USRACCT_INFO)
+            update_user_list (uid_name (rec->ac_uid), &s);
+
+          update_totals (&s);
+        }
     }
 }
 
@@ -1204,7 +1296,7 @@ void
 update_command_list (char *comm, struct stats *s, short fork_flag)
 {
   /* Look for the command in the list.  If found, add the stats.  If
-     not found, create a new entry and add the stats. */
+  not found, create a new entry and add the stats. */
 
   struct hashtab_elem *he;
   struct command_key ck;
@@ -1212,10 +1304,10 @@ update_command_list (char *comm, struct stats *s, short fork_flag)
   if (debugging_enabled)
     {
       fprintf (stddebug, "+:%-*.*s%s ",
-	       COMM_LEN, COMM_LEN, comm, (fork_flag) ? "*" : " ");
+               COMM_LEN, COMM_LEN, comm, (fork_flag) ? "*" : " ");
       print_stats_raw (s, stddebug);
     }
-  
+
   memset (&ck, 0, sizeof (ck));
   strncpy (ck.comm, comm, COMM_LEN);
   ck.fork_flag = fork_flag;
@@ -1231,14 +1323,14 @@ update_command_list (char *comm, struct stats *s, short fork_flag)
 
   {
     struct command_data *cd = hashtab_get_value (he);
-    
+
     add_stats (&(cd->s), s);
 
 #if 0
     /* we want to OR the old value of AP->FORK_FLAG because we might
-       not be separating statistics based on whether or not the
-       command forked.  In that case, we want to record the fact that
-       some of the commands forked without calling exec. */
+    not be separating statistics based on whether or not the
+    command forked.  In that case, we want to record the fact that
+    some of the commands forked without calling exec. */
 
     cd->fork_flag |= fork_flag;
 #endif
@@ -1247,13 +1339,13 @@ update_command_list (char *comm, struct stats *s, short fork_flag)
 
 
 /* Add the amount of time and resources used for the per-user
-   summary. */
+summary. */
 
 void
 update_user_list (char *name, struct stats *s)
 {
   /* Look for the user in the list.  If found, add the stats.  If not
-     found, create a new entry and add the stats. */
+  found, create a new entry and add the stats. */
 
   struct hashtab_elem *he;
 
@@ -1281,8 +1373,8 @@ update_user_list (char *name, struct stats *s)
 
 
 /* compare two entries, returning an int less than, equal to, or
- * greater than zero reflecting whether s1 is less than, equal to, or
- * greater than s2. */
+* greater than zero reflecting whether s1 is less than, equal to, or
+* greater than s2. */
 
 int
 compare_stats_entry (struct stats *s1, struct stats *s2)
@@ -1322,25 +1414,25 @@ compare_stats_entry (struct stats *s1, struct stats *s2)
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
     case sort_cpu_storage:
       v1 = ((s1->user_time + s1->sys_time)
-	    ? (s1->user_time + s1->sys_time) * s1->mem_usage
-	    : s1->mem_usage);
+            ? (s1->user_time + s1->sys_time) * s1->mem_usage
+            : s1->mem_usage);
       v2 = ((s2->user_time + s2->sys_time)
-	    ? (s2->user_time + s2->sys_time) * s2->mem_usage
-	    : s2->mem_usage);
+            ? (s2->user_time + s2->sys_time) * s2->mem_usage
+            : s2->mem_usage);
       break;
 #endif
 #ifdef HAVE_ACETIME
     case sort_real_time:
       if (print_seconds)
-	{
-	  v1 = s1->elapsed_time / (double) s1->num_calls;
-	  v2 = s2->elapsed_time / (double) s2->num_calls;
-	}
+        {
+          v1 = s1->elapsed_time / (double) s1->num_calls;
+          v2 = s2->elapsed_time / (double) s2->num_calls;
+        }
       else
-	{
-	  v1 = s1->elapsed_time;
-	  v2 = s2->elapsed_time;
-	}
+        {
+          v1 = s1->elapsed_time;
+          v2 = s2->elapsed_time;
+        }
       break;
 #endif
     case sort_num_calls:
@@ -1355,9 +1447,9 @@ compare_stats_entry (struct stats *s1, struct stats *s2)
   if (v1 > v2) return ((reverse_sort) ? 1 : -1);
 
 #define compareit(x); \
-  if (s1->x < s2->x) return ((reverse_sort) ? -1 : 1); \
-  if (s1->x > s2->x) return ((reverse_sort) ? 1 : -1);
-  
+if (s1->x < s2->x) return ((reverse_sort) ? -1 : 1); \
+if (s1->x > s2->x) return ((reverse_sort) ? 1 : -1);
+
   compareit (num_calls);
 #ifdef HAVE_ACUTIME
   compareit (user_time);
@@ -1405,7 +1497,7 @@ void
 print_user_list (void)
 {
   /* even though the BSD version of sa doesn't support sorting of the
-     user summary list, why can't we? */
+  user summary list, why can't we? */
 
   struct hashtab_order ho;
   struct hashtab_elem *he, **entry_array, user_totals;
@@ -1414,24 +1506,24 @@ print_user_list (void)
   char * const empty_string = "";
 
   /* Make the summary record.  FIXME -- we need some functions so we
-     can fabricate these entries without playing with the structure
-     internals. */
+  can fabricate these entries without playing with the structure
+  internals. */
 
   user_totals_ud.s = stats_totals;
   user_totals.key = empty_string;
   user_totals.data = &user_totals_ud;
 
   /* Count the number of users in the hash table. */
-  
+
   for (he = hashtab_first (user_table, &ho), num_users = 0;
        he != NULL;
        he = hashtab_next (&ho), num_users++)
     ;
-      
+
   num_users++;			/* one for the summary entry */
 
   entry_array = (struct hashtab_elem **)
-    xmalloc (sizeof (struct hashtab_elem *) * (num_users + 1));
+                xmalloc (sizeof (struct hashtab_elem *) * num_users);
 
   which = 0;
   entry_array[which++] = &user_totals;
@@ -1442,12 +1534,12 @@ print_user_list (void)
     {
       entry_array[which++] = he;
     }
-  
+
   /* The summary entry should always be first, so don't sort it.
-     Remember to correct the number of elements to adjust... */
+  Remember to correct the number of elements to adjust... */
 
   qsort (entry_array + 1, (size_t) num_users - 1,
-	 sizeof (struct hashtab_elem *), (int (*)()) compare_user_entry);
+         sizeof (struct hashtab_elem *), (int (*)()) compare_user_entry);
 
   /* Now we've got a sorted list of user entries. */
 
@@ -1463,10 +1555,10 @@ print_user_list (void)
       s = &(ud->s);
 
       if (debugging_enabled)
-	{
-	  fprintf (stddebug, "t:%-10.10s ", name);
-	  print_stats_raw (s, stddebug);
-	}
+        {
+          fprintf (stddebug, "t:%-10.10s ", name);
+          print_stats_raw (s, stddebug);
+        }
 
       printf ("%-*.*s ", NAME_LEN, NAME_LEN, name);
       print_stats_nicely (s);
@@ -1485,9 +1577,9 @@ non_printable (char *s, int len)
   for (a = 0; (a < len) && (s[a] != '\0'); a++)
     {
       if (!isprint (s[a]))
-	return 1;
+        return 1;
     }
-  
+
   return 0;
 }
 
@@ -1503,10 +1595,10 @@ ask_if_junkable (char *s, int len)
 
   printf ("Junk `%*s'? ", len, s);
   fflush (stdout);
-  
+
   fgets (line, 1000, stdin);
   sscanf (line, " %s ", word);
-  
+
   if ((word[0] == 'y') || (word[0] == 'Y'))
     return 1;
 
@@ -1526,8 +1618,8 @@ print_command_list (void)
   int num_in_other_category, num_in_junk_category;
 
   /* Make the summary records.  FIXME -- we need some functions so we
-     can fabricate these entries without playing with the structure
-     internals. */
+  can fabricate these entries without playing with the structure
+  internals. */
 
   memset (&sum_totals_cd, 0, sizeof (sum_totals_cd));
   memset (&sum_totals_ck, 0, sizeof (sum_totals_ck));
@@ -1550,45 +1642,45 @@ print_command_list (void)
   /* Count the number of commands in the table. */
 
   for (he = hashtab_first (command_table, &ho), num_commands = 0,
-	 num_in_other_category = 0, num_in_junk_category = 0;
+       num_in_other_category = 0, num_in_junk_category = 0;
        he != NULL;
        he = hashtab_next (&ho))
     {
       if (print_all_records)
-	num_commands++;
+        num_commands++;
       else
-	{
-	  struct command_key *ck = hashtab_get_key (he);
-	  struct command_data *cd = hashtab_get_value (he);
-	  
-	  /* if we're junking stuff and the number of calls is
-	     under the threshold, do it... */
+        {
+          struct command_key *ck = hashtab_get_key (he);
+          struct command_data *cd = hashtab_get_value (he);
 
-	  if (junk_threshold
-	      && (cd->s.num_calls <= junk_threshold)
-	      && ask_if_junkable (ck->comm, COMM_LEN))
-	    {
-	      num_in_junk_category++;
-	      cd->junked = 1;
-	      add_stats (&(junk_totals_cd.s), &(cd->s));
-	      junk_totals_ck.fork_flag |= ck->fork_flag;
-	    }
+          /* if we're junking stuff and the number of calls is
+          under the threshold, do it... */
 
-	  /* if the number of calls is one or the characters in
-                 the filename are non-printing, we have to add this to
-                 the "***other" category */
-	      
-	  else if ((cd->s.num_calls == 1)
-		   || non_printable (ck->comm, COMM_LEN))
-	    {
-	      num_in_other_category++;
-	      cd->junked = 1;
-	      add_stats (&(other_totals_cd.s), &(cd->s));
-	      other_totals_ck.fork_flag |= ck->fork_flag;
-	    }
-	  else
-	    num_commands++;
-	}
+          if (junk_threshold
+              && (cd->s.num_calls <= junk_threshold)
+              && ask_if_junkable (ck->comm, COMM_LEN))
+            {
+              num_in_junk_category++;
+              cd->junked = 1;
+              add_stats (&(junk_totals_cd.s), &(cd->s));
+              junk_totals_ck.fork_flag |= ck->fork_flag;
+            }
+
+          /* if the number of calls is one or the characters in
+                       the filename are non-printing, we have to add this to
+                       the "***other" category */
+
+          else if ((cd->s.num_calls == 1)
+                   || non_printable (ck->comm, COMM_LEN))
+            {
+              num_in_other_category++;
+              cd->junked = 1;
+              add_stats (&(other_totals_cd.s), &(cd->s));
+              other_totals_ck.fork_flag |= ck->fork_flag;
+            }
+          else
+            num_commands++;
+        }
     }
 
   if (num_commands == 0)
@@ -1601,7 +1693,7 @@ print_command_list (void)
     num_commands++;		/* one for the `***junk' category */
 
   entry_array = (struct hashtab_elem **)
-    xmalloc (sizeof (struct hashtab_elem *) * num_commands);
+                xmalloc (sizeof (struct hashtab_elem *) * num_commands);
 
   which = 0;
   entry_array[which++] = &sum_totals;
@@ -1617,26 +1709,26 @@ print_command_list (void)
        he = hashtab_next (&ho))
     {
       if (print_all_records)
-	entry_array[which++] = he;
+        entry_array[which++] = he;
       else
-	{
-	  struct command_data *cd = hashtab_get_value (he);
+        {
+          struct command_data *cd = hashtab_get_value (he);
 
-	  if (cd->junked)
-	    {
-	      /* skip this one */
-	    }
-	  else
-	    entry_array[which++] = he;
-	}
+          if (cd->junked)
+            {
+              /* skip this one */
+            }
+          else
+            entry_array[which++] = he;
+        }
     }
-  
+
   /* the summary entry should always be first, so don't sort it --
      therefore, pass location 1 of the array to qsort and one less
      than the number of commands */
 
   qsort (entry_array + 1, (size_t) num_commands - 1,
-	 sizeof (struct hashtab_entry *), (int (*)()) compare_sum_entry);
+         sizeof (struct hashtab_entry *), (int (*)()) compare_sum_entry);
 
   for (temp = 0; temp < num_commands; temp++)
     {
@@ -1650,12 +1742,12 @@ print_command_list (void)
       print_stats_nicely (&(cd->s));
 
       if (ck->comm[0] != '\0')
-	{
-	  printf ("   %-.*s", COMM_LEN, ck->comm);
-	  
-	  if (ck->fork_flag)
-	    putchar ('*');
-	}
+        {
+          printf ("   %-.*s", COMM_LEN, ck->comm);
+
+          if (ck->fork_flag)
+            putchar ('*');
+        }
       putchar ('\n');
     }
 

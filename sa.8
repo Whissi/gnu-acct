@@ -80,6 +80,17 @@ sa \-  summarizes accounting information
 ]
 .br
 [
+.B \-p
+|
+.B \-\-show-paging
+]
+[
+.B \-P
+|
+.B \-\-show-paging-avg
+]
+.br
+[
 .B \-r
 |
 .B \-\-reverse-sort
@@ -126,6 +137,9 @@ sa \-  summarizes accounting information
 .br
 [
 .BI "\-\-other-usracct-file " filename
+]
+[
+.BI \-\-ahz " hz"
 ]
 .br
 [
@@ -200,6 +214,11 @@ The output fields are labeled as follows:
 .I s
  system time in cpu seconds
 .LP
+Note that these column titles do not appear in the first row of the
+table, but after each numeric entry (as units of measurement) in every
+row.  For example, you might see `79.29re', meaning 79.29 cpu seconds
+of "real time".
+.LP
 An asterisk will appear after the name of commands that forked but didn't call 
 .B exec.
 .LP
@@ -220,8 +239,23 @@ in some round-off errors.  GNU
 .B sa 
 uses double the whole way through.
 .SH OPTIONS
-.PD 0
+.LP
+The availability of these program options depends on your operating
+system.  In specific, the members that appear in the
+.B struct acct
+of your system's process accounting header file (usually 
+.I acct.h
+) determine which flags will be present.  For example, if your system's
+.B struct acct
+doesn't have the `ac_mem' field, the installed
+version of
+.B sa
+will not support the `\-\-sort-cpu-avmem', `\-\-sort-ksec', `\-k', or
+`\-K' options.
+.LP
+In short, all of these flags may not be available on your machine.
 .TP
+.PD 0
 .B \-a, \-\-list-all-names
 Force 
 .B sa 
@@ -273,6 +307,13 @@ per-user basis.
 .B \-n, \-\-sort-num-calls
 Sort the output by the number of calls.  This is the default sorting method.
 .TP
+.B \-p, \-\-show-paging
+Print the number of minor and major pagefaults and swaps.
+.TP
+.B \-P, \-\-show-paging-avg
+Print the number of minor and major pagefaults and swaps divided by
+the number of calls.
+.TP
 .B \-r, \-\-reverse-sort
 Sort output items in reverse order.
 .TP
@@ -306,6 +347,16 @@ separates statistics for a particular executable depending on
 whether or not that command forked.  Therefore, GNU 
 .B sa 
 lumps this information together unless this option is specified.
+.TP
+.BI \-\-ahz " hz"
+Use this flag to tell the program what
+.B AHZ
+should be (in hertz).  This option is useful if you are trying to view
+an
+.I acct
+file created on another machine which has the same byte order and file
+format as your current machine, but has a different value for
+.B AHZ.
 .TP
 .B \-\-debug
 Print verbose internal information.

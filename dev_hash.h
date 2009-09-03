@@ -2,4 +2,4 @@
  *
  * protos for functions that lookup device names */
 
-char *devname PARAMS((long dev_num));
+char *dev_gnu_name PARAMS((long dev_num));
