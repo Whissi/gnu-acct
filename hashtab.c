@@ -1,6 +1,8 @@
 /* hashtab.c
  *
- * generic hash table routines */
+ * generic hash table routines
+ *
+ */
 
 #include "config.h"
 
@@ -39,8 +41,7 @@ hash (const char *s, unsigned int len, unsigned long hashsize)
    to be hashed are numeric and shouldn't be truncated like
    strings. */
 
-struct hashtab *
-      hashtab_init (int numeric)
+struct hashtab *hashtab_init(int numeric)
   {
     struct hashtab *new;
 
@@ -51,13 +52,10 @@ struct hashtab *
     return new;
   }
 
-
 /* Return the smaller of the length of a string or the number passed
    in.  If 0 is passed, return the string length unconditionally. */
 
-static
-unsigned int
-get_key_len (char *s, unsigned int len, int numeric)
+static unsigned int get_key_len(char *s, unsigned int len, int numeric)
 {
   if (numeric)
     {
@@ -81,13 +79,10 @@ get_key_len (char *s, unsigned int len, int numeric)
     }
 }
 
-
 /* When the number of entries gets too big for efficient use of the
    hash table, resize it. */
 
-static
-void
-hashtab_resize (struct hashtab *ht)
+static void hashtab_resize(struct hashtab *ht)
 {
   unsigned long old_size, bucket;
   struct hashtab_elem **old_table, *elt;
@@ -131,14 +126,12 @@ hashtab_resize (struct hashtab *ht)
   free (old_table);
 }
 
-
 /* Create an entry for the given key.  If the key already exists,
    return the existing entry with the data cleared.  If LEN is 0,
    assume that the string is null-terminated.  Otherwise, only use LEN
    bytes. */
 
-struct hashtab_elem *
-      hashtab_create (struct hashtab *ht, void *key, unsigned int len)
+struct hashtab_elem *hashtab_create(struct hashtab *ht, void *key, unsigned int len)
   {
     unsigned long hashval;
     unsigned int key_len;
@@ -203,13 +196,11 @@ struct hashtab_elem *
     return he;
   }
 
-
 /* Find KEY in HT and return the entry associated with it.  If LEN is
    0, assume that the string is null-terminated.  Otherwise, only use
    LEN bytes. */
 
-struct hashtab_elem *
-      hashtab_find (struct hashtab *ht, void *key, unsigned int len)
+struct hashtab_elem *hashtab_find(struct hashtab *ht, void *key, unsigned int len)
   {
     unsigned long hashval;
     unsigned int key_len;
@@ -228,39 +219,31 @@ struct hashtab_elem *
     return NULL;
   }
 
-
 /* Return the key associated with HE. */
 
-void *
-hashtab_get_key (struct hashtab_elem *he)
+void *hashtab_get_key(struct hashtab_elem *he)
 {
   return he->key;
 }
 
-
 /* Return the data associated with HE. */
 
-void *
-hashtab_get_value (struct hashtab_elem *he)
+void *hashtab_get_value(struct hashtab_elem *he)
 {
   return he->data;
 }
 
-
 /* Set the data for HE. */
 
-void
-hashtab_set_value (struct hashtab_elem *he, void *v, unsigned int len)
+void hashtab_set_value(struct hashtab_elem *he, void *v, unsigned int len)
 {
   he->data = (void *) xmalloc (len);
   memcpy (he->data, v, len);
 }
 
-
 /* Return the first thing in the table. */
 
-struct hashtab_elem *
-      hashtab_first (struct hashtab *ht, struct hashtab_order *ho)
+struct hashtab_elem *hashtab_first(struct hashtab *ht, struct hashtab_order *ho)
   {
     ho->which = 0;
     ho->elem = NULL;
@@ -269,11 +252,9 @@ struct hashtab_elem *
     return hashtab_next (ho);
   }
 
-
 /* Given HO, return the next entry in the hash table. */
 
-struct hashtab_elem *
-      hashtab_next (struct hashtab_order *ho)
+struct hashtab_elem *hashtab_next(struct hashtab_order *ho)
   {
     unsigned long i;
     struct hashtab_elem *he;
@@ -294,13 +275,11 @@ struct hashtab_elem *
           ho->elem = he->next;
           return he;
         }
-
     return NULL;			/* nothing in the table */
   }
 
 
-void
-hashtab_dump_keys (struct hashtab *ht, FILE *out)
+void hashtab_dump_keys(struct hashtab *ht, FILE *out)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
@@ -311,13 +290,11 @@ hashtab_dump_keys (struct hashtab *ht, FILE *out)
     fprintf (stddebug, "%s (%d)\n", (char *) he->key, he->key_len);
 }
 
-
 /* Delete the given element from the hash table.  We want to be able
    to call this in between calls to HASHTAB_NEXT so we can use the
    obvious way to delete items from the table. */
 
-void
-hashtab_delete (struct hashtab_elem *he)
+void hashtab_delete(struct hashtab_elem *he)
 {
   he->ht->items_hashed--;
 

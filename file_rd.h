@@ -1,16 +1,18 @@
 /* file_rd.h
  *
  * data structures and routines for reading/writing binary
- * record-oriented files. */
+ * record-oriented files.
+ *
+ */
 
 struct file_list
-  {
+{
     char *name;
     struct file_list *next;
-  };
+};
 
 struct file_rd_info
-  {
+{
     struct file_list *the_files;
     FILE *fp;			/* current file pointer */
     char *name;			/* current file name -- we need this
@@ -26,12 +28,11 @@ struct file_rd_info
     int backwards;		/* non-zero if we're reading backwards */
     long rec_number;		/* record number in the currently open
 				   file, for error-reporting purposes */
-  };
+};
 
 struct file_rd_info *file_reader_init PARAMS((int record_size,
-          int buffered_records,
-          int backwards));
+                    int buffered_records,
+                    int backwards));
 void file_reader_add_file PARAMS((struct file_rd_info *fri, char *name));
 char *file_reader_get_entry PARAMS((struct file_rd_info *fri));
-void file_reader_print_file_and_line PARAMS((FILE *out,
-    struct file_rd_info *fri));
+void file_reader_print_file_and_line PARAMS((FILE *out, struct file_rd_info *fri));

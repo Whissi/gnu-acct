@@ -1,4 +1,5 @@
-/* Copyright (C) 1993, 1996, 1997, 2003, 2008 Free Software Foundation, Inc.
+/*
+Copyright (C) 1993, 1996, 1997, 2003, 2008, 2009 Free Software Foundation, Inc.
 
 This file contains the code for GNU accton.
 
@@ -15,14 +16,19 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with the GNU Accounting Utilities; see the file COPYING.  If
 not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
-MA 02139, USA.  */
+MA 02139, USA.
+*/
 
 #include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+extern int errno;
+#endif
 #include <string.h>
 
 #ifdef HAVE_UNISTD_H
@@ -31,18 +37,16 @@ MA 02139, USA.  */
 
 #include "common.h"
 #include "files.h"
-#ifdef HAVE_GETOPT_LONG
+#ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
 #else
-#include "getopt_long.h"
+#include "getopt.h"
 #endif
 #include "version.h"
-
 
 /* globals */
 
 char *program_name;		/* name of this executable */
-
 
 /* protos */
 
@@ -51,45 +55,40 @@ void print_version PARAMS((void));
 void print_usage PARAMS((void));
 void print_help PARAMS((void));
 
-
 /* code */
 
 /*
  * to print when there are errors related to options
  */
-void
-print_option_error (void)
-{
-  printf ("Try '%s --help' for more information.\n", program_name);
-}
 
+void print_option_error(void)
+{
+  (void)printf ("Try '%s --help' for more information.\n", program_name);
+}
 
 /*
  * to print version
  */
-void
-print_version (void)
-{
-  printf ("%s: GNU Accounting Utilities (release %s)\n",
-          program_name, VERSION_STRING);
-}
 
+void print_version(void)
+{
+  (void)printf("%s: GNU Accounting Utilities (release %s)\n",program_name, VERSION_STRING);
+}
 
 /*
  * to print usage (kind of very brief help)
  */
-void
-print_usage (void)
-{
-  printf ("Usage: %s [OPTION] on|off|ACCOUNTING_FILE\n", program_name);
-}
 
+void print_usage(void)
+{
+  (void)printf ("Usage: %s [OPTION] on|off|ACCOUNTING_FILE\n", program_name);
+}
 
 /*
  * to print help
  */
-void
-print_help (void)
+
+void print_help(void)
 {
   print_usage ();
 
@@ -113,12 +112,11 @@ print_help (void)
 /*
  * does all the real work
  */
-int
-main (int argc, char *argv[])
+
+int main(int argc, char *argv[])
 {
   int c, status_acct, number_args;
   char *acct_file = NULL;
-
 
   program_name = argv[0];
 
@@ -147,17 +145,14 @@ main (int argc, char *argv[])
         case 1:
           print_version ();
           exit (EXIT_SUCCESS);
-          break;
         case 'h':
         case 2:
           print_help ();
           exit (EXIT_SUCCESS);
-          break;
         default:
           print_usage ();
           print_option_error ();
           exit (EXIT_FAILURE);
-          break;
         }
     }
 
@@ -210,16 +205,11 @@ main (int argc, char *argv[])
       /* did the system call return an error? */
       if (-1 == status_acct)
         {
-          int err;
-          extern int errno;
-
-          err = errno;
+          int err = errno;
           perror ("accton");
           exit (err);
         }
     }
-
-
   return EXIT_SUCCESS;
 }
 

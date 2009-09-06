@@ -1,6 +1,7 @@
 /* common.h */
 
-/* Copyright (C) 1993, 1996, 1997, 2008 Free Software Foundation, Inc.
+/*
+Copyright (C) 1993, 1996, 1997, 2008, 2009 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -17,12 +18,14 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with the GNU Accounting Utilities; see the file COPYING.  If
 not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
-MA 02139, USA.  */
+MA 02139, USA.
+*/
 
 #ifndef COMMON_H
 #define COMMON_H
 
 #include "config.h"		/* can't hurt!  work that CPP! */
+#include "xalloc.h"
 
 /* defines */
 
@@ -44,13 +47,8 @@ MA 02139, USA.  */
 #define PARAMS(x) ()
 #endif /* PROTOTYPES */
 
-char *xmalloc PARAMS((unsigned));
 void fatal PARAMS((char *));
 FILE *file_open PARAMS((char *, int));
-
-#ifndef HAVE_RENAME
-int rename PARAMS((char *from, char *to));
-#endif
 
 void print_wtmp_file_location PARAMS((void));
 void print_acct_file_location PARAMS((void));

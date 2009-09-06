@@ -1,6 +1,8 @@
 /* utmp_rd.h
  *
- * protos & etc. for routines that read from utmp files */
+ * protos & etc. for routines that read from utmp files
+ *
+ */
 
 #include "config.h"		/* for HAVE_UT_HOST */
 
@@ -21,6 +23,8 @@ extern struct utmp utmp_rd_never_used;
 
 #ifdef HAVE_UT_HOST
 #define HOST_LEN ((int) sizeof (utmp_rd_never_used.ut_host))
+#else
+#define HOST_LEN 0
 #endif
 
 #ifdef HAVE_UT_ID

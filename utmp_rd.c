@@ -1,6 +1,8 @@
 /* utmp_rd.c
  *
- * routines that read utmp files */
+ * routines that read utmp files
+ *
+ */
 
 #include "config.h"
 
@@ -34,38 +36,31 @@ static struct file_rd_info *utmp_info = NULL;
 
 #define BUFFERED_RECS 256
 
-
 /* Set up utmp handling routines */
 
-void
-utmp_init (int backwards)
+void utmp_init(int backwards)
 {
-  utmp_info = file_reader_init (sizeof (struct utmp), BUFFERED_RECS,
-                                backwards);
+  utmp_info = file_reader_init(sizeof (struct utmp), BUFFERED_RECS,
+                               backwards);
 }
-
 
 /* Add a utmp/wtmp file to the list of files to process */
 
-void
-add_utmp_file (char *name)
+void add_utmp_file(char *name)
 {
-  file_reader_add_file (utmp_info, name);
+  file_reader_add_file(utmp_info, name);
 }
 
 
 /* Do a buffered read of the file and return the next record in REC.
    Return 0 if no more entries. */
 
-struct utmp *
-      utmp_get_entry (void)
+struct utmp *utmp_get_entry(void)
   {
-    return (struct utmp *) file_reader_get_entry (utmp_info);
+    return (struct utmp *)file_reader_get_entry(utmp_info);
   }
 
-
-void
-print_utmp_record (struct utmp *rec, FILE *out)
+void print_utmp_record(struct utmp *rec, FILE *out)
 {
   if (rec)
     {
@@ -122,10 +117,9 @@ print_utmp_record (struct utmp *rec, FILE *out)
     }
 }
 
-void
-utmp_print_file_and_line (FILE *out)
+void utmp_print_file_and_line(FILE *out)
 {
-  file_reader_print_file_and_line (out, utmp_info);
+  file_reader_print_file_and_line(out, utmp_info);
 }
 
 
@@ -138,8 +132,7 @@ utmp_print_file_and_line (FILE *out)
    cases for them in our processing loop.  Return non-zero if the
    field was modified. */
 
-int
-fix_ut_type_field (struct utmp *rec)
+int fix_ut_type_field(struct utmp *rec)
 {
   int mods = 0;
 
@@ -209,11 +202,9 @@ fix_ut_type_field (struct utmp *rec)
 }
 #endif
 
-
 /* If a record is obviously bad, return non-zero. */
 
-int
-bad_utmp_record (struct utmp *rec)
+int bad_utmp_record(struct utmp *rec)
 {
 #ifndef HAVE_UT_TYPE
 

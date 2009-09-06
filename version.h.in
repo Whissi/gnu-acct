@@ -1,5 +1,7 @@
 /* version.h.in
  *
- * some defines to give version numbers to all of these programs. */
+ * some defines to give version numbers to all of these programs.
+ *
+ */
 
 #define VERSION_STRING "@VERSION@"

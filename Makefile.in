@@ -49,11 +49,25 @@ DIST_COMMON = README $(am__configure_deps) $(noinst_HEADERS) \
 	mdate-sh missing mkinstalldirs texinfo.tex
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/00gnulib.m4 \
-	$(top_srcdir)/m4/config-h.m4 $(top_srcdir)/m4/gnulib-common.m4 \
-	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/dirname.m4 \
+	$(top_srcdir)/m4/dos.m4 $(top_srcdir)/m4/double-slash-root.m4 \
+	$(top_srcdir)/m4/errno_h.m4 $(top_srcdir)/m4/error.m4 \
+	$(top_srcdir)/m4/exitfail.m4 $(top_srcdir)/m4/extensions.m4 \
+	$(top_srcdir)/m4/getopt.m4 $(top_srcdir)/m4/getpagesize.m4 \
+	$(top_srcdir)/m4/gnulib-common.m4 \
+	$(top_srcdir)/m4/gnulib-comp.m4 \
+	$(top_srcdir)/m4/include_next.m4 $(top_srcdir)/m4/inline.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/mktime.m4 \
+	$(top_srcdir)/m4/multiarch.m4 $(top_srcdir)/m4/onceonly.m4 \
+	$(top_srcdir)/m4/rename.m4 $(top_srcdir)/m4/stdbool.m4 \
+	$(top_srcdir)/m4/stdlib_h.m4 $(top_srcdir)/m4/strerror.m4 \
+	$(top_srcdir)/m4/string_h.m4 $(top_srcdir)/m4/strndup.m4 \
+	$(top_srcdir)/m4/strnlen.m4 $(top_srcdir)/m4/sys_stat_h.m4 \
+	$(top_srcdir)/m4/time_h.m4 $(top_srcdir)/m4/time_r.m4 \
+	$(top_srcdir)/m4/unistd_h.m4 $(top_srcdir)/m4/xalloc.m4 \
+	$(top_srcdir)/m4/xstrndup.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -68,35 +82,40 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 sbinPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(sbin_PROGRAMS)
 am_ac_OBJECTS = ac.$(OBJEXT) common.$(OBJEXT) file_rd.$(OBJEXT) \
-	hashtab.$(OBJEXT) utmp_rd.$(OBJEXT) getopt_long.$(OBJEXT)
+	hashtab.$(OBJEXT) utmp_rd.$(OBJEXT)
 ac_OBJECTS = $(am_ac_OBJECTS)
 ac_LDADD = $(LDADD)
-am_accton_OBJECTS = accton.$(OBJEXT) common.$(OBJEXT) \
-	getopt_long.$(OBJEXT)
+ac_DEPENDENCIES = lib/libgnu.la
+am_accton_OBJECTS = accton.$(OBJEXT) common.$(OBJEXT)
 accton_OBJECTS = $(am_accton_OBJECTS)
 accton_LDADD = $(LDADD)
+accton_DEPENDENCIES = lib/libgnu.la
 am_dump_acct_OBJECTS = dump-acct.$(OBJEXT) common.$(OBJEXT) \
-	file_rd.$(OBJEXT) pacct_rd.$(OBJEXT) getopt_long.$(OBJEXT)
+	file_rd.$(OBJEXT) pacct_rd.$(OBJEXT)
 dump_acct_OBJECTS = $(am_dump_acct_OBJECTS)
 dump_acct_LDADD = $(LDADD)
+dump_acct_DEPENDENCIES = lib/libgnu.la
 am_dump_utmp_OBJECTS = dump-utmp.$(OBJEXT) common.$(OBJEXT) \
-	file_rd.$(OBJEXT) utmp_rd.$(OBJEXT) getopt_long.$(OBJEXT)
+	file_rd.$(OBJEXT) utmp_rd.$(OBJEXT)
 dump_utmp_OBJECTS = $(am_dump_utmp_OBJECTS)
 dump_utmp_LDADD = $(LDADD)
+dump_utmp_DEPENDENCIES = lib/libgnu.la
 am_last_OBJECTS = last.$(OBJEXT) common.$(OBJEXT) file_rd.$(OBJEXT) \
-	hashtab.$(OBJEXT) utmp_rd.$(OBJEXT) getopt_long.$(OBJEXT)
+	hashtab.$(OBJEXT) utmp_rd.$(OBJEXT)
 last_OBJECTS = $(am_last_OBJECTS)
 last_LDADD = $(LDADD)
+last_DEPENDENCIES = lib/libgnu.la
 am_lastcomm_OBJECTS = lastcomm.$(OBJEXT) common.$(OBJEXT) \
 	dev_hash.$(OBJEXT) file_rd.$(OBJEXT) hashtab.$(OBJEXT) \
-	pacct_rd.$(OBJEXT) uid_hash.$(OBJEXT) getopt_long.$(OBJEXT)
+	pacct_rd.$(OBJEXT) uid_hash.$(OBJEXT)
 lastcomm_OBJECTS = $(am_lastcomm_OBJECTS)
 lastcomm_LDADD = $(LDADD)
+lastcomm_DEPENDENCIES = lib/libgnu.la
 am_sa_OBJECTS = sa.$(OBJEXT) common.$(OBJEXT) file_rd.$(OBJEXT) \
-	hashtab.$(OBJEXT) pacct_rd.$(OBJEXT) uid_hash.$(OBJEXT) \
-	getopt_long.$(OBJEXT)
+	hashtab.$(OBJEXT) pacct_rd.$(OBJEXT) uid_hash.$(OBJEXT)
 sa_OBJECTS = $(am_sa_OBJECTS)
 sa_LDADD = $(LDADD)
+sa_DEPENDENCIES = lib/libgnu.la
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -166,7 +185,9 @@ ACCTON_PROG = @ACCTON_PROG@
 ACCT_FILE_LOC = @ACCT_FILE_LOC@
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
+ALLOCA_H = @ALLOCA_H@
 AMTAR = @AMTAR@
+APPLE_UNIVERSAL_BUILD = @APPLE_UNIVERSAL_BUILD@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -187,9 +208,146 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+EMULTIHOP_HIDDEN = @EMULTIHOP_HIDDEN@
+EMULTIHOP_VALUE = @EMULTIHOP_VALUE@
+ENOLINK_HIDDEN = @ENOLINK_HIDDEN@
+ENOLINK_VALUE = @ENOLINK_VALUE@
+EOVERFLOW_HIDDEN = @EOVERFLOW_HIDDEN@
+EOVERFLOW_VALUE = @EOVERFLOW_VALUE@
+ERRNO_H = @ERRNO_H@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GETOPT_H = @GETOPT_H@
+GNULIB_ATOLL = @GNULIB_ATOLL@
+GNULIB_CALLOC_POSIX = @GNULIB_CALLOC_POSIX@
+GNULIB_CHOWN = @GNULIB_CHOWN@
+GNULIB_CLOSE = @GNULIB_CLOSE@
+GNULIB_DUP2 = @GNULIB_DUP2@
+GNULIB_ENVIRON = @GNULIB_ENVIRON@
+GNULIB_EUIDACCESS = @GNULIB_EUIDACCESS@
+GNULIB_FCHDIR = @GNULIB_FCHDIR@
+GNULIB_FSYNC = @GNULIB_FSYNC@
+GNULIB_FTRUNCATE = @GNULIB_FTRUNCATE@
+GNULIB_GETCWD = @GNULIB_GETCWD@
+GNULIB_GETDOMAINNAME = @GNULIB_GETDOMAINNAME@
+GNULIB_GETDTABLESIZE = @GNULIB_GETDTABLESIZE@
+GNULIB_GETHOSTNAME = @GNULIB_GETHOSTNAME@
+GNULIB_GETLOADAVG = @GNULIB_GETLOADAVG@
+GNULIB_GETLOGIN_R = @GNULIB_GETLOGIN_R@
+GNULIB_GETPAGESIZE = @GNULIB_GETPAGESIZE@
+GNULIB_GETSUBOPT = @GNULIB_GETSUBOPT@
+GNULIB_GETUSERSHELL = @GNULIB_GETUSERSHELL@
+GNULIB_LCHMOD = @GNULIB_LCHMOD@
+GNULIB_LCHOWN = @GNULIB_LCHOWN@
+GNULIB_LINK = @GNULIB_LINK@
+GNULIB_LSEEK = @GNULIB_LSEEK@
+GNULIB_LSTAT = @GNULIB_LSTAT@
+GNULIB_MALLOC_POSIX = @GNULIB_MALLOC_POSIX@
+GNULIB_MBSCASECMP = @GNULIB_MBSCASECMP@
+GNULIB_MBSCASESTR = @GNULIB_MBSCASESTR@
+GNULIB_MBSCHR = @GNULIB_MBSCHR@
+GNULIB_MBSCSPN = @GNULIB_MBSCSPN@
+GNULIB_MBSLEN = @GNULIB_MBSLEN@
+GNULIB_MBSNCASECMP = @GNULIB_MBSNCASECMP@
+GNULIB_MBSNLEN = @GNULIB_MBSNLEN@
+GNULIB_MBSPBRK = @GNULIB_MBSPBRK@
+GNULIB_MBSPCASECMP = @GNULIB_MBSPCASECMP@
+GNULIB_MBSRCHR = @GNULIB_MBSRCHR@
+GNULIB_MBSSEP = @GNULIB_MBSSEP@
+GNULIB_MBSSPN = @GNULIB_MBSSPN@
+GNULIB_MBSSTR = @GNULIB_MBSSTR@
+GNULIB_MBSTOK_R = @GNULIB_MBSTOK_R@
+GNULIB_MEMMEM = @GNULIB_MEMMEM@
+GNULIB_MEMPCPY = @GNULIB_MEMPCPY@
+GNULIB_MEMRCHR = @GNULIB_MEMRCHR@
+GNULIB_MKDTEMP = @GNULIB_MKDTEMP@
+GNULIB_MKSTEMP = @GNULIB_MKSTEMP@
+GNULIB_PUTENV = @GNULIB_PUTENV@
+GNULIB_RANDOM_R = @GNULIB_RANDOM_R@
+GNULIB_RAWMEMCHR = @GNULIB_RAWMEMCHR@
+GNULIB_READLINK = @GNULIB_READLINK@
+GNULIB_REALLOC_POSIX = @GNULIB_REALLOC_POSIX@
+GNULIB_RPMATCH = @GNULIB_RPMATCH@
+GNULIB_SETENV = @GNULIB_SETENV@
+GNULIB_SLEEP = @GNULIB_SLEEP@
+GNULIB_STPCPY = @GNULIB_STPCPY@
+GNULIB_STPNCPY = @GNULIB_STPNCPY@
+GNULIB_STRCASESTR = @GNULIB_STRCASESTR@
+GNULIB_STRCHRNUL = @GNULIB_STRCHRNUL@
+GNULIB_STRDUP = @GNULIB_STRDUP@
+GNULIB_STRERROR = @GNULIB_STRERROR@
+GNULIB_STRNDUP = @GNULIB_STRNDUP@
+GNULIB_STRNLEN = @GNULIB_STRNLEN@
+GNULIB_STRPBRK = @GNULIB_STRPBRK@
+GNULIB_STRSEP = @GNULIB_STRSEP@
+GNULIB_STRSIGNAL = @GNULIB_STRSIGNAL@
+GNULIB_STRSTR = @GNULIB_STRSTR@
+GNULIB_STRTOD = @GNULIB_STRTOD@
+GNULIB_STRTOK_R = @GNULIB_STRTOK_R@
+GNULIB_STRTOLL = @GNULIB_STRTOLL@
+GNULIB_STRTOULL = @GNULIB_STRTOULL@
+GNULIB_STRVERSCMP = @GNULIB_STRVERSCMP@
+GNULIB_UNISTD_H_SIGPIPE = @GNULIB_UNISTD_H_SIGPIPE@
+GNULIB_UNSETENV = @GNULIB_UNSETENV@
+GNULIB_WRITE = @GNULIB_WRITE@
 GREP = @GREP@
+HAVE_ATOLL = @HAVE_ATOLL@
+HAVE_CALLOC_POSIX = @HAVE_CALLOC_POSIX@
+HAVE_DECL_ENVIRON = @HAVE_DECL_ENVIRON@
+HAVE_DECL_GETLOADAVG = @HAVE_DECL_GETLOADAVG@
+HAVE_DECL_GETLOGIN_R = @HAVE_DECL_GETLOGIN_R@
+HAVE_DECL_MEMMEM = @HAVE_DECL_MEMMEM@
+HAVE_DECL_MEMRCHR = @HAVE_DECL_MEMRCHR@
+HAVE_DECL_STRDUP = @HAVE_DECL_STRDUP@
+HAVE_DECL_STRERROR = @HAVE_DECL_STRERROR@
+HAVE_DECL_STRNDUP = @HAVE_DECL_STRNDUP@
+HAVE_DECL_STRNLEN = @HAVE_DECL_STRNLEN@
+HAVE_DECL_STRSIGNAL = @HAVE_DECL_STRSIGNAL@
+HAVE_DECL_STRTOK_R = @HAVE_DECL_STRTOK_R@
+HAVE_DUP2 = @HAVE_DUP2@
+HAVE_EUIDACCESS = @HAVE_EUIDACCESS@
+HAVE_FSYNC = @HAVE_FSYNC@
+HAVE_FTRUNCATE = @HAVE_FTRUNCATE@
+HAVE_GETDOMAINNAME = @HAVE_GETDOMAINNAME@
+HAVE_GETDTABLESIZE = @HAVE_GETDTABLESIZE@
+HAVE_GETHOSTNAME = @HAVE_GETHOSTNAME@
+HAVE_GETPAGESIZE = @HAVE_GETPAGESIZE@
+HAVE_GETSUBOPT = @HAVE_GETSUBOPT@
+HAVE_GETUSERSHELL = @HAVE_GETUSERSHELL@
+HAVE_LCHMOD = @HAVE_LCHMOD@
+HAVE_LINK = @HAVE_LINK@
+HAVE_LSTAT = @HAVE_LSTAT@
+HAVE_MALLOC_POSIX = @HAVE_MALLOC_POSIX@
+HAVE_MEMPCPY = @HAVE_MEMPCPY@
+HAVE_MKDTEMP = @HAVE_MKDTEMP@
+HAVE_OS_H = @HAVE_OS_H@
+HAVE_RANDOM_H = @HAVE_RANDOM_H@
+HAVE_RANDOM_R = @HAVE_RANDOM_R@
+HAVE_RAWMEMCHR = @HAVE_RAWMEMCHR@
+HAVE_READLINK = @HAVE_READLINK@
+HAVE_REALLOC_POSIX = @HAVE_REALLOC_POSIX@
+HAVE_RPMATCH = @HAVE_RPMATCH@
+HAVE_SETENV = @HAVE_SETENV@
+HAVE_SLEEP = @HAVE_SLEEP@
+HAVE_STPCPY = @HAVE_STPCPY@
+HAVE_STPNCPY = @HAVE_STPNCPY@
+HAVE_STRCASESTR = @HAVE_STRCASESTR@
+HAVE_STRCHRNUL = @HAVE_STRCHRNUL@
+HAVE_STRNDUP = @HAVE_STRNDUP@
+HAVE_STRPBRK = @HAVE_STRPBRK@
+HAVE_STRSEP = @HAVE_STRSEP@
+HAVE_STRTOD = @HAVE_STRTOD@
+HAVE_STRTOLL = @HAVE_STRTOLL@
+HAVE_STRTOULL = @HAVE_STRTOULL@
+HAVE_STRUCT_RANDOM_DATA = @HAVE_STRUCT_RANDOM_DATA@
+HAVE_STRVERSCMP = @HAVE_STRVERSCMP@
+HAVE_SYS_LOADAVG_H = @HAVE_SYS_LOADAVG_H@
+HAVE_SYS_PARAM_H = @HAVE_SYS_PARAM_H@
+HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_UNSETENV = @HAVE_UNSETENV@
+HAVE__BOOL = @HAVE__BOOL@
+INCLUDE_NEXT = @INCLUDE_NEXT@
+INCLUDE_NEXT_AS_FIRST_DIRECTIVE = @INCLUDE_NEXT_AS_FIRST_DIRECTIVE@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -199,16 +357,25 @@ LASTCOMM_MAN = @LASTCOMM_MAN@
 LASTCOMM_PROG = @LASTCOMM_PROG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LTALLOCA = @LTALLOCA@
+LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
-MKTIME_C = @MKTIME_C@
-MKTIME_O = @MKTIME_O@
+NEXT_ERRNO_H = @NEXT_ERRNO_H@
+NEXT_STDLIB_H = @NEXT_STDLIB_H@
+NEXT_STRING_H = @NEXT_STRING_H@
+NEXT_SYS_STAT_H = @NEXT_SYS_STAT_H@
+NEXT_TIME_H = @NEXT_TIME_H@
+NEXT_UNISTD_H = @NEXT_UNISTD_H@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -222,20 +389,50 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PRAGMA_SYSTEM_HEADER = @PRAGMA_SYSTEM_HEADER@
 RANLIB = @RANLIB@
+REPLACE_CHOWN = @REPLACE_CHOWN@
+REPLACE_CLOSE = @REPLACE_CLOSE@
+REPLACE_FCHDIR = @REPLACE_FCHDIR@
+REPLACE_GETCWD = @REPLACE_GETCWD@
+REPLACE_GETPAGESIZE = @REPLACE_GETPAGESIZE@
+REPLACE_LCHOWN = @REPLACE_LCHOWN@
+REPLACE_LOCALTIME_R = @REPLACE_LOCALTIME_R@
+REPLACE_LSEEK = @REPLACE_LSEEK@
+REPLACE_LSTAT = @REPLACE_LSTAT@
+REPLACE_MEMMEM = @REPLACE_MEMMEM@
+REPLACE_MKDIR = @REPLACE_MKDIR@
+REPLACE_MKSTEMP = @REPLACE_MKSTEMP@
+REPLACE_NANOSLEEP = @REPLACE_NANOSLEEP@
+REPLACE_PUTENV = @REPLACE_PUTENV@
+REPLACE_STRCASESTR = @REPLACE_STRCASESTR@
+REPLACE_STRDUP = @REPLACE_STRDUP@
+REPLACE_STRERROR = @REPLACE_STRERROR@
+REPLACE_STRPTIME = @REPLACE_STRPTIME@
+REPLACE_STRSIGNAL = @REPLACE_STRSIGNAL@
+REPLACE_STRSTR = @REPLACE_STRSTR@
+REPLACE_STRTOD = @REPLACE_STRTOD@
+REPLACE_TIMEGM = @REPLACE_TIMEGM@
+REPLACE_WRITE = @REPLACE_WRITE@
 SAVACCT_FILE_LOC = @SAVACCT_FILE_LOC@
 SA_MAN = @SA_MAN@
 SA_PROG = @SA_PROG@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+STDBOOL_H = @STDBOOL_H@
 STRIP = @STRIP@
 SYS_AC = @SYS_AC@
 SYS_LAST = @SYS_LAST@
 SYS_LASTCOMM = @SYS_LASTCOMM@
 SYS_SA = @SYS_SA@
+SYS_STAT_H = @SYS_STAT_H@
+SYS_TIME_H_DEFINES_STRUCT_TIMESPEC = @SYS_TIME_H_DEFINES_STRUCT_TIMESPEC@
+TIME_H_DEFINES_STRUCT_TIMESPEC = @TIME_H_DEFINES_STRUCT_TIMESPEC@
+UNISTD_H_HAVE_WINSOCK2_H = @UNISTD_H_HAVE_WINSOCK2_H@
 USRACCT_FILE_LOC = @USRACCT_FILE_LOC@
 VERSION = @VERSION@
+VOID_UNSETENV = @VOID_UNSETENV@
 WTMP_FILE_LOC = @WTMP_FILE_LOC@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -299,27 +496,31 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = 
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
 SUBDIRS = lib
-ac_SOURCES = ac.c common.c file_rd.c hashtab.c \
-  utmp_rd.c getopt_long.c
 
-accton_SOURCES = accton.c common.c getopt_long.c
+# What libs do we want to link against?
+LDADD = lib/libgnu.la
+ac_SOURCES = ac.c common.c file_rd.c hashtab.c \
+  utmp_rd.c
+
+accton_SOURCES = accton.c common.c
 dump_acct_SOURCES = dump-acct.c common.c file_rd.c \
-  pacct_rd.c getopt_long.c
+  pacct_rd.c
 
 dump_utmp_SOURCES = dump-utmp.c common.c file_rd.c \
-  utmp_rd.c getopt_long.c
+  utmp_rd.c
 
 last_SOURCES = last.c common.c file_rd.c hashtab.c \
-  utmp_rd.c getopt_long.c
+  utmp_rd.c
 
 lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c \
-  hashtab.c pacct_rd.c uid_hash.c getopt_long.c
+  hashtab.c pacct_rd.c uid_hash.c
 
 sa_SOURCES = sa.c common.c file_rd.c hashtab.c \
-  pacct_rd.c uid_hash.c getopt_long.c
+  pacct_rd.c uid_hash.c
 
-noinst_HEADERS = common.h config.h dev_hash.h file_rd.h getopt_long.h hashtab.h \
+noinst_HEADERS = common.h config.h dev_hash.h file_rd.h hashtab.h \
   pacct_rd.h uid_hash.h utmp_rd.h al_share.cpp linux-acct.h
 
 
@@ -341,7 +542,7 @@ all: config.h
 .SUFFIXES: .c .dvi .html .info .lo .o .obj .pdf .ps .texi
 am--refresh:
 	@:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -368,9 +569,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 
-$(top_srcdir)/configure:  $(am__configure_deps)
+$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1
@@ -382,7 +583,7 @@ config.h: stamp-h1
 stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h1
 	cd $(top_builddir) && $(SHELL) ./config.status config.h
-$(srcdir)/config.h.in:  $(am__configure_deps) 
+$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
 	cd $(top_srcdir) && $(AUTOHEADER)
 	rm -f stamp-h1
 	touch $@
@@ -484,7 +685,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump-acct.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump-utmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_rd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getopt_long.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hashtab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/last.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lastcomm.Po@am__quote@
@@ -572,7 +772,7 @@ $(srcdir)/accounting.info: accounting.texi $(srcdir)/version.texi
 accounting.dvi: accounting.texi $(srcdir)/version.texi
 accounting.pdf: accounting.texi $(srcdir)/version.texi
 accounting.html: accounting.texi $(srcdir)/version.texi
-$(srcdir)/version.texi:  $(srcdir)/stamp-vti
+$(srcdir)/version.texi: @MAINTAINER_MODE_TRUE@ $(srcdir)/stamp-vti
 $(srcdir)/stamp-vti: accounting.texi $(top_srcdir)/configure
 	@(dir=.; test -f ./accounting.texi || dir=$(srcdir); \
 	set `$(SHELL) $(srcdir)/mdate-sh $$dir/accounting.texi`; \
@@ -590,7 +790,7 @@ mostlyclean-vti:
 	-rm -f vti.tmp
 
 maintainer-clean-vti:
-	-rm -f $(srcdir)/stamp-vti $(srcdir)/version.texi
+@MAINTAINER_MODE_TRUE@	-rm -f $(srcdir)/stamp-vti $(srcdir)/version.texi
 .dvi.ps:
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	$(DVIPS) -o $@ $<

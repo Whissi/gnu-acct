@@ -1,6 +1,8 @@
 /* files.h.in
  *
- * file locations */
+ * file locations
+ *
+ */
 
 #ifndef FILES_H
 #define FILES_H

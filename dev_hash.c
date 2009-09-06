@@ -1,6 +1,8 @@
 /* dev_hash.c
  *
- * code that looks up device names from numbers */
+ * code that looks up device names from numbers
+ *
+ */
 
 #include "config.h"
 
@@ -12,7 +14,7 @@
 #  include <alloca.h>
 # else
 #  ifdef _AIX
- #pragma alloca
+#pragma alloca
 #  else
 #   ifndef alloca /* predefined by HP cc +Olibcalls */
 char *alloca ();
@@ -57,17 +59,15 @@ char *alloca ();
 
 struct hashtab *dev_table = NULL;
 
-struct dev_data {
-  char *name;			/* name of the device */
-};
-
+struct dev_data
+  {
+    char *name;			/* name of the device */
+  };
 
 /* Read the DIRNAME directory entries and make a linked list of ttys
    (so we can search through it later) */
 
-static
-void
-setup_devices (char *dirname)
+static void setup_devices(char *dirname)
 {
   DIR *dirp;			/* the directory itself */
   struct dirent *dp;		/* directory entry structure */
@@ -75,42 +75,42 @@ setup_devices (char *dirname)
   extern int debugging_enabled;
 
   if (debugging_enabled)
-    fprintf (stddebug, "device     devnum\n-----------------\n");
+    (void)fprintf (stddebug, "device     devnum\n-----------------\n");
 
   if ((dirp = opendir (dirname)) == NULL)
     return;			/* skip it silently */
-  
+
   for (dp = readdir (dirp); dp != NULL; dp = readdir (dirp))
     {
       char *fullname = (char *) alloca ((strlen (dirname)
-					 + NAMLEN (dp)
-					 + 1) * sizeof (char));
+                                         + NAMLEN (dp)
+                                         + 1) * sizeof (char));
 
-      sprintf (fullname, "%s/%s", dirname, dp->d_name);
-      stat (fullname, &sp);
-      
+      (void)sprintf (fullname, "%s/%s", dirname, dp->d_name);
+      (void)stat (fullname, &sp);
+
       if ((sp.st_mode & S_IFMT) != S_IFCHR)     /* skip if not a tty */
-	continue;
-      
+        continue;
+
       if (debugging_enabled)
-	fprintf (stddebug, "%-8.8d %s\n", (int) sp.st_rdev, dp->d_name);
+        fprintf (stddebug, "%-8.8d %s\n", (int) sp.st_rdev, dp->d_name);
 
       /* entry OK, so put it into the list */
 
       {
-	struct hashtab_elem *he;
-	struct dev_data dd;
-	long dev_num;
+        struct hashtab_elem *he;
+        struct dev_data dd;
+        long dev_num;
 
-	dev_num = sp.st_rdev;
-	dd.name = (char *) xmalloc (sizeof (char) * (NAMLEN (dp) + 1));
-	strcpy (dd.name, dp->d_name);
-	
-	he = hashtab_create (dev_table, (void *) &dev_num, sizeof (dev_num));
-	hashtab_set_value (he, &dd, sizeof (dd));
+        dev_num = sp.st_rdev;
+        dd.name = (char *) xmalloc (sizeof (char) * (NAMLEN (dp) + 1));
+        (void)strcpy (dd.name, dp->d_name);
+
+        he = hashtab_create (dev_table, (void *) &dev_num, sizeof (dev_num));
+        hashtab_set_value (he, &dd, sizeof (dd));
       }
     }
-  closedir (dirp);
+  (void)closedir (dirp);
 }
 
 
@@ -119,8 +119,7 @@ setup_devices (char *dirname)
    limited on some systems (won't let us pass -1 because it's an
    unsigned short or other). */
 
-char *
-dev_gnu_name (long dev_num)
+char *dev_gnu_name(long dev_num)
 {
   struct hashtab_elem *he;
 
@@ -136,17 +135,16 @@ dev_gnu_name (long dev_num)
       setup_devices ("/dev/pty");  /* perhaps */
       setup_devices ("/dev/ptym"); /* perhaps */
     }
-  
+
   he = hashtab_find (dev_table, (void *) &dev_num, sizeof (dev_num));
-  
+
   if (he != NULL)
     {
       struct dev_data *dd = hashtab_get_value (he);
       return dd->name;
     }
-  
+
   /* didn't find it */
-  
+
   return "??";
 }
-

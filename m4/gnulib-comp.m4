@@ -25,6 +25,7 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LIBOBJS$])dnl a variable
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -40,7 +41,44 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='lib'
-  gl_CONFIG_H
+changequote(,)dnl
+LTALLOCA=`echo "$ALLOCA" | sed 's/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/'`
+changequote([, ])dnl
+AC_SUBST([LTALLOCA])
+  gl_FUNC_ALLOCA
+  gl_DIRNAME
+  gl_DOUBLE_SLASH_ROOT
+  AC_REQUIRE([gl_HEADER_ERRNO_H])
+  gl_ERROR
+  m4_ifdef([AM_XGETTEXT_OPTION],
+    [AM_XGETTEXT_OPTION([--flag=error:3:c-format])
+     AM_XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
+  gl_EXITFAIL
+  gl_GETOPT
+  gl_FUNC_GETPAGESIZE
+  gl_UNISTD_MODULE_INDICATOR([getpagesize])
+  AC_SUBST([LIBINTL])
+  AC_SUBST([LTLIBINTL])
+  gl_INLINE
+  gl_FUNC_MKTIME
+  AC_REQUIRE([gl_MULTIARCH])
+  gl_FUNC_RENAME
+  AM_STDBOOL_H
+  gl_STDLIB_H
+  gl_FUNC_STRERROR
+  gl_STRING_MODULE_INDICATOR([strerror])
+  gl_HEADER_STRING_H
+  gl_FUNC_STRNDUP
+  gl_STRING_MODULE_INDICATOR([strndup])
+  gl_FUNC_STRNLEN
+  gl_STRING_MODULE_INDICATOR([strnlen])
+  gl_HEADER_SYS_STAT_H
+  AC_PROG_MKDIR_P
+  gl_HEADER_TIME_H
+  gl_TIME_R
+  gl_UNISTD_H
+  gl_XALLOC
+  gl_XSTRNDUP
   m4_ifval(gl_LIBSOURCES_LIST, [
     m4_syscmd([test ! -d ]m4_defn([gl_LIBSOURCES_DIR])[ ||
       for gl_file in ]gl_LIBSOURCES_LIST[ ; do
@@ -169,9 +207,70 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
-  lib/dummy.c
+  build-aux/link-warning.h
+  lib/alloca.c
+  lib/alloca.in.h
+  lib/basename.c
+  lib/dirname.c
+  lib/dirname.h
+  lib/errno.in.h
+  lib/error.c
+  lib/error.h
+  lib/exitfail.c
+  lib/exitfail.h
+  lib/getopt.c
+  lib/getopt.in.h
+  lib/getopt1.c
+  lib/getopt_int.h
+  lib/getpagesize.c
+  lib/gettext.h
+  lib/intprops.h
+  lib/mktime.c
+  lib/rename.c
+  lib/stdbool.in.h
+  lib/stdlib.in.h
+  lib/strerror.c
+  lib/string.in.h
+  lib/stripslash.c
+  lib/strndup.c
+  lib/strnlen.c
+  lib/sys_stat.in.h
+  lib/time.in.h
+  lib/time_r.c
+  lib/unistd.in.h
+  lib/xalloc-die.c
+  lib/xalloc.h
+  lib/xmalloc.c
+  lib/xstrndup.c
+  lib/xstrndup.h
   m4/00gnulib.m4
-  m4/config-h.m4
+  m4/alloca.m4
+  m4/dirname.m4
+  m4/dos.m4
+  m4/double-slash-root.m4
+  m4/errno_h.m4
+  m4/error.m4
+  m4/exitfail.m4
+  m4/extensions.m4
+  m4/getopt.m4
+  m4/getpagesize.m4
   m4/gnulib-common.m4
+  m4/include_next.m4
+  m4/inline.m4
+  m4/mktime.m4
+  m4/multiarch.m4
   m4/onceonly.m4
+  m4/rename.m4
+  m4/stdbool.m4
+  m4/stdlib_h.m4
+  m4/strerror.m4
+  m4/string_h.m4
+  m4/strndup.m4
+  m4/strnlen.m4
+  m4/sys_stat_h.m4
+  m4/time_h.m4
+  m4/time_r.m4
+  m4/unistd_h.m4
+  m4/xalloc.m4
+  m4/xstrndup.m4
 ])

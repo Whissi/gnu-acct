@@ -25,59 +25,59 @@ typedef __u32	comp2_t;
 
 struct acct
 {
-	char		ac_flag;		/* Flags */
-	char		ac_version;		/* Always set to ACCT_VERSION */
-	__u16		ac_tty;			/* Control Terminal */
-	__u32		ac_exitcode;		/* Exitcode */
-	__u32		ac_uid;			/* Real User ID */
-	__u32		ac_gid;			/* Real Group ID */
-	__u32		ac_pid;			/* Process ID */
-	__u32		ac_ppid;		/* Parent Process ID */
-	__u32		ac_btime;		/* Process Creation Time */
-	float		ac_etime;		/* Elapsed Time */
-	comp_t		ac_utime;		/* User Time */
-	comp_t		ac_stime;		/* System Time */
-	comp_t		ac_mem;			/* Average Memory Usage */
-	comp_t		ac_io;			/* Chars Transferred */
-	comp_t		ac_rw;			/* Blocks Read or Written */
-	comp_t		ac_minflt;		/* Minor Pagefaults */
-	comp_t		ac_majflt;		/* Major Pagefaults */
-	comp_t		ac_swaps;		/* Number of Swaps */
-	char		ac_comm[ACCT_COMM];	/* Command Name */
-	__u16		ac_ahz;			/* AHZ */
-	__u16		ac_uid16;		/* LSB of Real User ID */
-	__u16		ac_gid16;		/* LSB of Real Group ID */
-	__u16		ac_etime_16;		/* Elapsed Time (as comp_t) */
-	__u16		ac_etime_lo;		/* Elapsed Time LSB */
-	__u8		ac_etime_hi;		/* Elapsed Time MSB */
-	__u8		ac_pad;			/* padding to 76 bytes */
+    char		ac_flag;		/* Flags */
+    char		ac_version;		/* Always set to ACCT_VERSION */
+    __u16		ac_tty;			/* Control Terminal */
+    __u32		ac_exitcode;		/* Exitcode */
+    __u32		ac_uid;			/* Real User ID */
+    __u32		ac_gid;			/* Real Group ID */
+    __u32		ac_pid;			/* Process ID */
+    __u32		ac_ppid;		/* Parent Process ID */
+    __u32		ac_btime;		/* Process Creation Time */
+    float		ac_etime;		/* Elapsed Time */
+    comp_t		ac_utime;		/* User Time */
+    comp_t		ac_stime;		/* System Time */
+    comp_t		ac_mem;			/* Average Memory Usage */
+    comp_t		ac_io;			/* Chars Transferred */
+    comp_t		ac_rw;			/* Blocks Read or Written */
+    comp_t		ac_minflt;		/* Minor Pagefaults */
+    comp_t		ac_majflt;		/* Major Pagefaults */
+    comp_t		ac_swaps;		/* Number of Swaps */
+    char		ac_comm[ACCT_COMM];	/* Command Name */
+    __u16		ac_ahz;			/* AHZ */
+    __u16		ac_uid16;		/* LSB of Real User ID */
+    __u16		ac_gid16;		/* LSB of Real Group ID */
+    __u16		ac_etime_16;		/* Elapsed Time (as comp_t) */
+    __u16		ac_etime_lo;		/* Elapsed Time LSB */
+    __u8		ac_etime_hi;		/* Elapsed Time MSB */
+    __u8		ac_pad;			/* padding to 76 bytes */
 };
 
 struct acct_v0
 {
-	char		ac_flag;		/* Flags */
-	__u16		ac_uid;			/* Real User ID */
-	__u16		ac_gid;			/* Real Group ID */
-	__u16		ac_tty;			/* Control Terminal */
-	__u32		ac_btime;		/* Process Creation Time */
-	comp_t		ac_utime;		/* User Time */
-	comp_t		ac_stime;		/* System Time */
-	comp_t		ac_etime;		/* Elapsed Time */
-	comp_t		ac_mem;			/* Average Memory Usage */
-	comp_t		ac_io;			/* Chars Transferred */
-	comp_t		ac_rw;			/* Blocks Read or Written */
-	comp_t		ac_minflt;		/* Minor Pagefaults */
-	comp_t		ac_majflt;		/* Major Pagefaults */
-	comp_t		ac_swaps;		/* Number of Swaps */
-	__u32		ac_exitcode;		/* Exitcode */
-	char		ac_comm[ACCT_COMM + 1];	/* Command Name */
-	char		ac_pad[10];		/* Padding Bytes */
+    char		ac_flag;		/* Flags */
+    __u16		ac_uid;			/* Real User ID */
+    __u16		ac_gid;			/* Real Group ID */
+    __u16		ac_tty;			/* Control Terminal */
+    __u32		ac_btime;		/* Process Creation Time */
+    comp_t		ac_utime;		/* User Time */
+    comp_t		ac_stime;		/* System Time */
+    comp_t		ac_etime;		/* Elapsed Time */
+    comp_t		ac_mem;			/* Average Memory Usage */
+    comp_t		ac_io;			/* Chars Transferred */
+    comp_t		ac_rw;			/* Blocks Read or Written */
+    comp_t		ac_minflt;		/* Minor Pagefaults */
+    comp_t		ac_majflt;		/* Major Pagefaults */
+    comp_t		ac_swaps;		/* Number of Swaps */
+    __u32		ac_exitcode;		/* Exitcode */
+    char		ac_comm[ACCT_COMM + 1];	/* Command Name */
+    char		ac_pad[10];		/* Padding Bytes */
 };
 
 /*
  *  accounting flags
  */
-				/* bit set when the process ... */
+/* bit set when the process ... */
 #define AFORK		0x01	/* ... executed fork, but did not exec */
 #define ASU		0x02	/* ... used super-user privileges */
 #define ACOMPAT		0x04	/* ... used compatibility mode (VAX only not used) */

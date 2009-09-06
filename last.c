@@ -1,4 +1,5 @@
-/* Copyright (C) 1993, 1996, 1997, 2003, 2008 Free Software Foundation, Inc.
+/*
+Copyright (C) 1993, 1996, 1997, 2003, 2008, 2009 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -15,7 +16,8 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with the GNU Accounting Utilities; see the file COPYING.  If
 not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
-MA 02139, USA.  */
+MA 02139, USA.
+*/
 
 #include "config.h"
 #include <stdio.h>
@@ -51,10 +53,10 @@ MA 02139, USA.  */
 
 #include "common.h"
 #include "utmp_rd.h"
-#ifdef HAVE_GETOPT_LONG
+#ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
 #else
-#include "getopt_long.h"
+#include "getopt.h"
 #endif
 #include "hashtab.h"
 #include "version.h"
@@ -140,7 +142,6 @@ int print_host_len = my_min (HOST_LEN, 16);
 
 struct hashtab *names = NULL;
 
-
 /* A table of logins/logouts. */
 
 struct hashtab *login_table = NULL;
@@ -150,7 +151,6 @@ struct login_data
     time_t time;
     short fake_entry;
   };
-
 
 /* prototypes */
 
@@ -172,8 +172,7 @@ RETSIGTYPE handler PARAMS((int));
 
 /* code */
 
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int c;
   int other_wtmp_file_specified = 0; /* nonzero if the user used the
@@ -198,7 +197,7 @@ main (int argc, char *argv[])
           /* This looks like an old-style option -- read the number! */
           int d;
 
-          num_lines_to_print = atol (argv[c] + 1);
+          num_lines_to_print = strtol (argv[c] + 1, (char **)NULL, 10);
           if (num_lines_to_print < 1)
             fatal ("number of lines to print must be positive and non-zero");
 
@@ -267,7 +266,7 @@ main (int argc, char *argv[])
           break;
         case 'n':
         case 3:
-          num_lines_to_print = atol (optarg);
+          num_lines_to_print = strtol(optarg, (char **)NULL, 10);
           if (num_lines_to_print < 1)
             fatal ("number of lines to print must be positive and non-zero");
           break;
@@ -276,7 +275,7 @@ main (int argc, char *argv[])
           print_file_problems = 1;
           break;
         case 5:
-          time_warp_leniency = atol (optarg);
+          time_warp_leniency = strtol(optarg, (char **)NULL, 10);
           if (time_warp_leniency < 0)
             fatal ("time warp leniency value has to be non-negative");
           break;
@@ -284,8 +283,7 @@ main (int argc, char *argv[])
         case 6:
           printf ("%s: GNU Accounting Utilities (release %s)\n",
                   program_name, VERSION_STRING);
-          exit (0);
-          break;
+          exit(EXIT_SUCCESS);
         case 'f':
         case 8:
           add_utmp_file (optarg);
@@ -317,7 +315,7 @@ main (int argc, char *argv[])
           break;
 #endif
         case 14:
-          time_warp_suspicious = atol (optarg);
+          time_warp_suspicious = strtol(optarg, (char **)NULL, 10);
           if (time_warp_suspicious < 0)
             fatal ("time warp suspicious value has to be non-negative");
           if (time_warp_suspicious <= time_warp_leniency)
@@ -339,9 +337,8 @@ main (int argc, char *argv[])
         case 7:
           /* This should fall through to default! */
         default:
-          give_usage ();
-          exit (1);
-          break;
+          give_usage();
+          exit(EXIT_FAILURE);
         }
     }
 
@@ -392,50 +389,43 @@ main (int argc, char *argv[])
 
   parse_entries ();
 
-  fputs ("\nwtmp begins ", stdout);
+  (void)fputs ("\nwtmp begins ", stdout);
   display_date (last_time);
-  fputc ('\n', stdout);
+  (void)fputc ('\n', stdout);
 
-  exit (0);			/* a GUARANTEED return value to the env */
+  exit (EXIT_SUCCESS);			/* a GUARANTEED return value to the env */
 }
 
-
-
 /* guess what this does... */
-void
-give_usage ()
+
+void give_usage(void)
 {
-  char *usage = "\
+  (void)printf("\
                 Usage: %s [-"
 #ifdef HAVE_UT_TYPE
-                "a"
+               "a"
 #endif
 #ifdef HAVE_UT_ADDR
-                "i"
+               "i"
 #endif
-                "hs"
+               "hs"
 #ifdef HAVE_UT_TYPE
-                "x"
+               "x"
 #endif
-                "yV] [-<lines>] [-n <lines>] [-f <file>] [people] [ttys] ...\n\
+               "yV] [-<lines>] [-n <lines>] [-f <file>] [people] [ttys] ...\n\
                 [--lines <num>] [--file <file>] [--complain] [--debug]\n\
                 [--version] [--tw-leniency <value>] [--tw-suspicious <value>]\n\
                 [--no-truncate-ftp-entries] [--print-year] [--print-seconds]\n\
                 "
 #ifdef HAVE_UT_TYPE
-                "[--more-records] [--all-records] "
+               "[--more-records] [--all-records] "
 #endif
 #ifdef HAVE_UT_ADDR
-                "[--ip-address] "
+               "[--ip-address] "
 #endif
-                "[--help]\n"
-                ;
-
-  printf (usage, program_name);
+               "[--help]\n", program_name);
   print_wtmp_file_location ();
 }
-
-
 
 /* Since the routines in ac & last are so similar, just include them
 from another file. */
@@ -443,11 +433,10 @@ from another file. */
 #define BACKWARDS
 #include "al_share.cpp"
 
-
 /* since the sys clock has changed, each entry's login time has to be
 * adjusted...  */
-void
-update_system_time (time_t the_time)
+
+void update_system_time(time_t the_time)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
@@ -461,11 +450,9 @@ update_system_time (time_t the_time)
     }
 }
 
-
 /* Log all entries in at THE_TIME. */
 
-void
-log_everyone_in (time_t the_time)
+void log_everyone_in(time_t the_time)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
@@ -495,11 +482,9 @@ log_everyone_in (time_t the_time)
     }
 }
 
-
 /* Put a terminal into the hash table. */
 
-void
-log_out (struct utmp *entry, short fake_flag)
+void log_out(struct utmp *entry, short fake_flag)
 {
   struct hashtab_elem *he;
 
@@ -550,11 +535,9 @@ log_out (struct utmp *entry, short fake_flag)
     }
 }
 
-
 /* Remove an entry from the hash table. */
 
-void
-log_in (struct utmp *entry)
+void log_in(struct utmp *entry)
 {
   struct hashtab_elem *he;
 
@@ -580,12 +563,12 @@ log_in (struct utmp *entry)
           /* If this happens, we assume that the logout time for ENTRY
              is the the same as the next login time on the tty. */
 
-          utmp_print_file_and_line (stddebug);
-          fprintf (stddebug, ": problem: missing logout record for `%.*s'\n",
-                   TTY_LEN, entry->ut_line);
+          utmp_print_file_and_line(stddebug);
+          (void)fprintf(stddebug, ": problem: missing logout record for `%.*s'\n",
+                        TTY_LEN, entry->ut_line);
         }
 
-      print_record (entry, l->time, NULL, NULL, NULL);
+      print_record(entry, l->time, NULL, NULL, NULL);
 
       hashtab_delete (he);
     }
@@ -611,10 +594,9 @@ log_in (struct utmp *entry)
    UT_NAME, UT_LINE, or end-of-line fields, they can be passed in as
    the last three arguments. */
 
-void
-print_record (struct utmp *login, time_t logout_time,
-              char *replacement_name, char *replacement_tty,
-              char *special_message)
+void print_record(struct utmp *login, time_t logout_time,
+                  char *replacement_name, char *replacement_tty,
+                  char *special_message)
 {
   char *print_name;
   char *print_tty;
@@ -648,9 +630,9 @@ print_record (struct utmp *login, time_t logout_time,
   /* Sanitize the tty name (get rid of control characters) */
 
   {
-    int i;
+    int i = 0;
 
-    for (i = 0; (print_tty[i] != '\0') && (i < TTY_LEN); i++)
+    for (;(print_tty[i] != '\0') && (i < TTY_LEN); i++)
       sanitized_tty[i] = (isprint (print_tty[i]) && isascii (print_tty[i])
                           ? print_tty[i]
                           : '?');
@@ -660,9 +642,9 @@ print_record (struct utmp *login, time_t logout_time,
 
   /* Print the name and tty. */
 
-  printf ("%-*.*s %-*.*s ",
-          print_name_len, print_name_len, print_name,
-          print_tty_len, print_tty_len, sanitized_tty);
+  (void)printf("%-*.*s %-*.*s ",
+               print_name_len, print_name_len, print_name,
+               print_tty_len, print_tty_len, sanitized_tty);
 
 
 #ifdef HAVE_UT_ADDR
@@ -670,7 +652,7 @@ print_record (struct utmp *login, time_t logout_time,
     {
       struct in_addr a;
       a.s_addr = login->ut_addr;
-      printf ("%-15.15s ", (login->ut_addr) ? inet_ntoa (a) : "");
+      (void)printf("%-15.15s ", (login->ut_addr) ? inet_ntoa (a) : "");
     }
 #endif
 
@@ -680,16 +662,20 @@ print_record (struct utmp *login, time_t logout_time,
          beyond 80 characters in width. */
   if (!print_addresses)
 #endif
-    printf ("%-*.*s ", print_host_len, print_host_len, login->ut_host);
+    (void)printf ("%-*.*s ", print_host_len, print_host_len, login->ut_host);
 #endif
 
   display_date (login->ut_time);
 
   if (special_message)
-    printf ("  %s\n", special_message);
+    (void)printf ("  %s\n", special_message);
   else
     {
+#ifdef HAVE_SNPRINTF
+      char temp_str[16];
+#else
       char temp_str[15];
+#endif
       int days, hours, minutes, seconds;
       int diff, use_last_event = 0;
 
@@ -707,31 +693,48 @@ print_record (struct utmp *login, time_t logout_time,
       minutes = (int) (diff / 60);
       diff -= 60 * minutes;
       seconds = diff;
-
+#ifdef HAVE_SNPRINTF
       if (days)
         {
           if (print_seconds)
-            sprintf (temp_str, "(%d+%02d:%02d:%02d)",
-                     days, hours, minutes, seconds);
+            (void)snprintf (temp_str, sizeof(temp_str), "(%d+%02d:%02d:%02d)",
+                            days, hours, minutes, seconds);
           else
-            sprintf (temp_str, "(%d+%02d:%02d)", days, hours, minutes);
+            (void)snprintf (temp_str, sizeof(temp_str),"(%d+%02d:%02d)", days, hours, minutes);
         }
       else
         {
           if (print_seconds)
-            sprintf (temp_str, " (%02d:%02d:%02d)",
-                     hours, minutes, seconds);
+            (void)snprintf (temp_str, sizeof(temp_str)," (%02d:%02d:%02d)",
+                            hours, minutes, seconds);
           else
-            sprintf (temp_str, " (%02d:%02d)", hours, minutes);
+            (void)snprintf (temp_str, sizeof(temp_str)," (%02d:%02d)", hours, minutes);
         }
-
+#else
+      if (days)
+        {
+          if (print_seconds)
+            (void)sprintf (temp_str, "(%d+%02d:%02d:%02d)",
+                           days, hours, minutes, seconds);
+          else
+            (void)sprintf (temp_str, "(%d+%02d:%02d)", days, hours, minutes);
+        }
+      else
+        {
+          if (print_seconds)
+            (void)sprintf (temp_str, " (%02d:%02d:%02d)",
+                           hours, minutes, seconds);
+          else
+            (void)sprintf (temp_str, " (%02d:%02d)", hours, minutes);
+        }
+#endif
       if (use_last_event)
         {
           if (last_event == NULL)
 
-            fputs ("  still logged in\n", stdout);
+            (void)fputs ("  still logged in\n", stdout);
           else
-            printf ("- %-5.5s %s\n", last_event, temp_str);
+            (void)printf ("- %-5.5s %s\n", last_event, temp_str);
         }
       else
         {
@@ -755,29 +758,24 @@ print_record (struct utmp *login, time_t logout_time,
     }
 }
 
-
-
 /* Our signal handler */
 
 RETSIGTYPE
 #if defined (SVR4) && !defined (_POSIX_SOURCE)
-handler (int sig, int code, struct sigcontext *scp)
+handler(int sig, int code, struct sigcontext *scp)
 #else
-handler (int sig)
+handler(int sig)
 #endif
 {
-  fputs ("\ninterrupted at ", stdout);
+  (void)fputs ("\ninterrupted at ", stdout);
   display_date (last_time);
-  putchar ('\n');
-  exit (0);
+  (void)putchar ('\n');
+  exit(EXIT_SUCCESS);
 }
-
-
 
 /* Display the date, paying attention to the PRINT_YEAR flag. */
 
-void
-display_date (time_t now)
+void display_date(time_t now)
 {
   char *ct = ctime (&now);
 

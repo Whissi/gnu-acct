@@ -26,8 +26,8 @@ about the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-   This is Edition 6.5 of the documentation, updated 23 August 2009 for
-version 6.5 of the GNU Accounting Utilities.
+   This is Edition 6.5.1 of the documentation, updated 23 August 2009
+for version 6.5.1 of the GNU Accounting Utilities.
 
 * Menu:
 
@@ -1038,12 +1038,12 @@ the desired output format with the _new_ `AHZ' setting.
 
 Tag Table:
 Node: Top854
-Node: Preface1760
-Node: ac10428
-Node: accton18741
-Node: last19246
-Node: lastcomm23722
-Node: sa26894
-Node: dump-acct33271
+Node: Preface1764
+Node: ac10432
+Node: accton18745
+Node: last19250
+Node: lastcomm23726
+Node: sa26898
+Node: dump-acct33275
 
 End Tag Table

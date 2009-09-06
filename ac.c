@@ -1,4 +1,5 @@
-/* Copyright (C) 1993, 1996, 1997, 2003, 2008 Free Software Foundation, Inc.
+/*
+Copyright (C) 1993, 1996, 1997, 2003, 2008, 2009 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -15,7 +16,8 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with the GNU Accounting Utilities; see the file COPYING.  If
 not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
-MA 02139, USA.  */
+MA 02139, USA.
+*/
 
 #include "config.h"
 #include <stdio.h>
@@ -43,10 +45,10 @@ MA 02139, USA.  */
 
 #include "common.h"
 #include "utmp_rd.h"
-#ifdef HAVE_GETOPT_LONG
+#ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
 #else
-#include "getopt_long.h"
+#include "getopt.h"
 #endif
 #include "hashtab.h"
 #include "version.h"
@@ -124,7 +126,6 @@ int print_individual_totals = 0; /* -p flag */
 int print_midnight_totals = 0;	/* -d flag */
 int print_zero_totals = 0;	/* -z flag */
 
-
 /* A hash table to hold user totals.  The names themselves are the
    keys for this table. */
 
@@ -135,12 +136,10 @@ struct user_data
     unsigned long time;
   };
 
-
 /* A hash table which contains the names that the user wants
    printed.  The names themselves are the keys for this table. */
 
 struct hashtab *names = NULL;
-
 
 /* A table for the currently logged-in ttys.  The UT_LINE fields are
    the keys for this table. */
@@ -152,8 +151,6 @@ struct login_data
     char ut_name[NAME_LEN];
     time_t time;
   };
-
-
 
 /* prototypes */
 
@@ -168,12 +165,9 @@ void do_totals PARAMS((time_t *, time_t, int, int, char *));
 void update_system_time PARAMS((time_t));
 time_t midnight_after_me PARAMS((time_t));
 
-
-
 /* code */
 
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int c;
   int other_wtmp_file_specified = 0; /* nonzero if the user used the
@@ -239,16 +233,15 @@ main (int argc, char *argv[])
           print_file_problems = 1;
           break;
         case 7:
-          time_warp_leniency = atol (optarg);
+          time_warp_leniency = strtol(optarg, (char **)NULL, 10);
           if (time_warp_leniency < 0)
             fatal ("time warp leniency value has to be non-negative");
           break;
         case 'V':
         case 8:
-          printf ("%s: GNU Accounting Utilities (release %s)\n",
-                  program_name, VERSION_STRING);
-          exit (0);
-          break;
+          (void)printf("%s: GNU Accounting Utilities (release %s)\n",
+                       program_name, VERSION_STRING);
+          exit(EXIT_SUCCESS);
         case 10:
         case 'd':
           print_midnight_totals = 1;
@@ -277,19 +270,18 @@ main (int argc, char *argv[])
           print_all_days = 1;
           break;
         case 16:
-          time_warp_suspicious = atol (optarg);
+          time_warp_suspicious = strtol(optarg, (char **)NULL, 10);
           if (time_warp_suspicious < 0)
-            fatal ("time warp suspicious value has to be non-negative");
+            fatal("time warp suspicious value has to be non-negative");
           if (time_warp_suspicious <= time_warp_leniency)
-            fatal ("time warp suspicious value has to greater than the time warp leniency value");
+            fatal("time warp suspicious value has to greater than the time warp leniency value");
           break;
         case 'h':
         case 9:
           /* This should fall through to default! */
         default:
-          give_usage ();
-          exit (1);
-          break;
+          give_usage();
+          exit(EXIT_FAILURE); /* FIXME: return 1; */
         }
     }
 
@@ -308,7 +300,7 @@ main (int argc, char *argv[])
         hashtab_dump_keys (names, stddebug);
     }
 
-  if (! other_wtmp_file_specified)
+  if (!other_wtmp_file_specified)
     add_utmp_file (WTMP_FILE_LOC);
 
   /* Create hash tables for user totals and logins. */
@@ -344,37 +336,31 @@ main (int argc, char *argv[])
                  ? (print_year ? "Today\t" : "Today")
                      : "");
 
-  exit (0);			/* guarantee the proper return value */
+  exit (EXIT_SUCCESS);			/* guarantee the proper return value */
 }
 
-
 /* guess what this does... */
-void
-give_usage (void)
+
+void give_usage(void)
 {
-  char *usage = "\
+  (void)printf("\
                 Usage: %s [-dhpVy] [-f <file>] [people] ...\n\
                 [--daily-totals] [--individual-totals] [--file <file>]\n\
                 [--complain] [--reboots] [--supplants] [--timewarps] [--print-year]\n\
                 [--compatibility] [--print-zeros] [--debug] [--tw-leniency <value>]\n\
-                [--tw-suspicious <value>] [--version] [--help]\n";
-
-  printf (usage, program_name);
-  print_wtmp_file_location ();
+                [--tw-suspicious <value>] [--version] [--help]\n", program_name);
+  print_wtmp_file_location();
 }
-
-
 
 /* Since the routines in ac & last are so similar, just include them
    from another file. */
 
 #include "al_share.cpp"
 
-
 /* since the sys clock has changed, each entry's login time has to be
  * adjusted...  */
-void
-update_system_time (time_t the_time)
+
+void update_system_time(time_t the_time)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
@@ -388,15 +374,13 @@ update_system_time (time_t the_time)
     }
 }
 
-
 /* Log all entries out at THE_TIME.  Update statistics if
    UPDATE_TIME_FLAG is non-zero, and print out the entries preceded by
    DEBUG_STR.  If CHANGE_LOGIN_FLAG is non-zero, reset the login times
    to THE_TIME.  */
 
-void
-log_everyone_out (time_t the_time, int update_time_flag,
-                  int change_login_flag, char *debug_str)
+void log_everyone_out(time_t the_time, int update_time_flag,
+                      int change_login_flag, char *debug_str)
 {
   struct hashtab_order ho;
   struct hashtab_elem *he;
@@ -417,11 +401,9 @@ log_everyone_out (time_t the_time, int update_time_flag,
     }
 }
 
-
 /* Put a terminal into the hash table. */
 
-void
-log_in (struct utmp *entry)
+void log_in(struct utmp *entry)
 {
   struct hashtab_elem *he;
 
@@ -429,14 +411,14 @@ log_in (struct utmp *entry)
     {
       if (print_file_problems)
         {
-          utmp_print_file_and_line (stddebug);
-          fprintf (stddebug,
-                   ": problem: trying to hash rec with ut_line == NULL\n");
+          utmp_print_file_and_line(stddebug);
+          (void)fprintf(stddebug,
+                        ": problem: trying to hash rec with ut_line == NULL\n");
         }
       return;
     }
 
-  he = hashtab_find (login_table, entry->ut_line, TTY_LEN);
+  he = hashtab_find(login_table, entry->ut_line, TTY_LEN);
 
   if (he != NULL)
     {
@@ -446,8 +428,8 @@ log_in (struct utmp *entry)
         {
           char *ttyname = hashtab_get_key (he);
           utmp_print_file_and_line (stddebug);
-          fprintf (stddebug, ": problem: duplicate record for line `%.*s'\n",
-                   TTY_LEN, ttyname);
+          (void)fprintf(stddebug, ": problem: duplicate record for line `%.*s'\n",
+                        TTY_LEN, ttyname);
         }
 
       /* we should just write over the old one -- nasty ac's charge
@@ -455,7 +437,7 @@ log_in (struct utmp *entry)
       appears, so the flag NASTY_SUPPLANT is included */
 
       if (nasty_supplant)
-        update_user_time (l->ut_name, entry->ut_time - l->time, "supplant");
+        update_user_time(l->ut_name, entry->ut_time - l->time, "supplant");
 
       strncpy (l->ut_name, entry->ut_name, NAME_LEN);
       l->time = entry->ut_time;
@@ -475,11 +457,9 @@ log_in (struct utmp *entry)
     }
 }
 
-
 /* Remove an entry from the hash table. */
 
-void
-log_out (struct utmp *entry)
+void log_out(struct utmp *entry)
 {
   struct hashtab_elem *he;
 
@@ -520,17 +500,15 @@ log_out (struct utmp *entry)
     }
 }
 
-
-
 /* fills in the days between entries, calculating how much time a user
  * has racked up by midnight of each period
  *
  * side-effect (desirable) -- changes the value passed in NEXT_MIDNIGHT
  * to catch up with CURRENT_TIME
  */
-void
-do_totals (time_t *next_midnight, time_t current_time,
-           int update_time_flag, int change_login_flag, char *debug_str)
+
+void do_totals(time_t *next_midnight, time_t current_time,
+               int update_time_flag, int change_login_flag, char *debug_str)
 {
   while (*next_midnight < current_time)
     {
@@ -541,18 +519,29 @@ do_totals (time_t *next_midnight, time_t current_time,
         {
           /* We need the proper label for do_statistics: we can get it
              relative to next_midnight.  */
-
+#ifdef HAVE_SNPRINTF
+          char month_day_string[256];
+#else
           char month_day_string[255];
+#endif
           time_t temp_time = *next_midnight - 10;
           struct tm *temp_tm = localtime (&temp_time);
           if (print_year)
-            sprintf (month_day_string, "%s %2d %4d",
-                     months[temp_tm->tm_mon], temp_tm->tm_mday,
-                     1900 + temp_tm->tm_year);
+#ifdef HAVE_SNPRINTF
+            (void)snprintf(month_day_string, sizeof(month_day_string), "%s %2d %4d",
+                           months[temp_tm->tm_mon], temp_tm->tm_mday,
+                           1900 + temp_tm->tm_year);
           else
-            sprintf (month_day_string, "%s %2d",
-                     months[temp_tm->tm_mon], temp_tm->tm_mday);
-
+            (void)snprintf(month_day_string, sizeof(month_day_string),"%s %2d",
+                           months[temp_tm->tm_mon], temp_tm->tm_mday);
+#else
+            (void)sprintf(month_day_string, "%s %2d %4d",
+                          months[temp_tm->tm_mon], temp_tm->tm_mday,
+                          1900 + temp_tm->tm_year);
+          else
+            (void)sprintf(month_day_string, "%s %2d",
+                          months[temp_tm->tm_mon], temp_tm->tm_mday);
+#endif
           do_statistics (month_day_string);
         }
 
@@ -567,8 +556,6 @@ do_totals (time_t *next_midnight, time_t current_time,
     }
 }
 
-
-
 /* print out statistics and clear the user totals
  * if !PRINT_INDIVIDUAL_TOTALS && !PRINT_MIDNIGHT_TOTALS
  *   don't print anything until the end
@@ -577,8 +564,8 @@ do_totals (time_t *next_midnight, time_t current_time,
  * if PRINT_MIDNIGHT_TOTALS && PRINT_INDIVIDUAL_TOTALS
  *   print totals, individ user times, & clear times
  */
-void
-do_statistics (char *date_string)
+
+void do_statistics(char *date_string)
 {
   unsigned long total;
   double float_total;
@@ -627,10 +614,9 @@ do_statistics (char *date_string)
             number_precision + 3, float_total);
 }
 
-
 /* put something into the user table */
-void
-update_user_time (char *name, time_t the_time, char *debug_label)
+
+void update_user_time(char *name, time_t the_time, char *debug_label)
 {
   struct hashtab_elem *he;
 
@@ -672,10 +658,10 @@ update_user_time (char *name, time_t the_time, char *debug_label)
 }
 
 
-
+
 /* return the time of midnight that will happen after our time */
-time_t
-midnight_after_me (time_t now_time)
+
+time_t midnight_after_me(time_t now_time)
 {
   struct tm *tm_ptr, temp_tm;
 
@@ -690,4 +676,3 @@ midnight_after_me (time_t now_time)
 
   return mktime (&temp_tm);
 }
-

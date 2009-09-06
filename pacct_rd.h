@@ -1,6 +1,8 @@
 /* pacct_rd.h
  *
- * protos & etc. for routines that read from pacct/acct files */
+ * protos & etc. for routines that read from pacct/acct files
+ *
+ */
 
 #include "config.h"
 

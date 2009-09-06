@@ -15,12 +15,18 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=. --libtool --macro-prefix=gl --vc-files config-h
+#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=. --libtool --macro-prefix=gl alloca getopt getpagesize mktime rename sys_stat xalloc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
 gl_MODULES([
-  config-h
+  alloca
+  getopt
+  getpagesize
+  mktime
+  rename
+  sys_stat
+  xalloc
 ])
 gl_AVOID([])
 gl_SOURCE_BASE([lib])
@@ -33,4 +39,3 @@ gl_MAKEFILE_NAME([])
 gl_LIBTOOL
 gl_MACRO_PREFIX([gl])
 gl_PO_DOMAIN([])
-gl_VC_FILES([true])

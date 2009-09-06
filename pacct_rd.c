@@ -1,6 +1,8 @@
 /* pacct_rd.c
  *
- * routines that read acct/pacct files */
+ * routines that read acct/pacct files
+ *
+ */
 
 #include "config.h"
 
@@ -36,8 +38,7 @@ static int convert_acct_record_read PARAMS((struct acct *rec_in, struct acct *re
 
 /* Set up pacct handling routines */
 
-void
-pacct_init (int backwards)
+void pacct_init(int backwards)
 {
 #ifdef LINUX_MULTIFORMAT
   pacct_info = file_reader_init (sizeof (struct acct_v0), BUFFERED_RECS,
@@ -47,21 +48,17 @@ pacct_init (int backwards)
                                  backwards);
 }
 
-
 /* Add a pacct/acct file to the list of files to process */
 
-void
-add_pacct_file (char *name)
+void add_pacct_file(char *name)
 {
   file_reader_add_file (pacct_info, name);
 }
 
-
 /* Do a buffered read of the file and return the next record in REC.
    Return 0 if no more entries. */
 
-struct acct *
-      pacct_get_entry (void)
+struct acct *pacct_get_entry(void)
   {
 #ifdef LINUX_MULTIFORMAT
     struct acct *entry;
@@ -85,52 +82,50 @@ struct acct *
   }
 
 
-void
-print_pacct_record (struct acct *rec, FILE *out)
+void print_pacct_record(struct acct *rec, FILE *out)
 {
   time_t btime = (time_t)rec->ac_btime;
 
-  fprintf (out, "%-*.*s|", COMM_LEN, COMM_LEN, rec->ac_comm);
+  (void)fprintf(out, "%-*.*s|", COMM_LEN, COMM_LEN, rec->ac_comm);
 
 #define NUM_FORMAT "%9.2f"
 
 #ifdef LINUX_MULTIFORMAT
-  fprintf (out, "v%1d|", rec->ac_version & 0x7f);
+  (void)fprintf(out, "v%1d|", rec->ac_version & 0x7f);
 #endif
 
 #ifdef HAVE_ACUTIME
-  fprintf (out, NUM_FORMAT "|", ACUTIME_2_DOUBLE(rec->ac_utime));
+  (void)fprintf(out, NUM_FORMAT "|", ACUTIME_2_DOUBLE(rec->ac_utime));
 #endif
 
 #ifdef HAVE_ACSTIME
-  fprintf (out, NUM_FORMAT "|", ACSTIME_2_DOUBLE(rec->ac_stime));
+  (void)fprintf(out, NUM_FORMAT "|", ACSTIME_2_DOUBLE(rec->ac_stime));
 #endif
 
 #ifdef HAVE_ACETIME
-  fprintf (out, NUM_FORMAT "|", ACETIME_2_DOUBLE(rec->ac_etime));
+  (void)fprintf(out, NUM_FORMAT "|", ACETIME_2_DOUBLE(rec->ac_etime));
 #endif
 
-  fprintf (out, "%6lu|%6lu|",
-           (unsigned long)rec->ac_uid, (unsigned long)rec->ac_gid);
+  (void)fprintf(out, "%6lu|%6lu|",
+                (unsigned long)rec->ac_uid, (unsigned long)rec->ac_gid);
 
 #ifdef HAVE_ACMEM
-  fprintf (out, NUM_FORMAT "|", ACMEM_2_DOUBLE(rec->ac_mem));
+  (void)fprintf(out, NUM_FORMAT "|", ACMEM_2_DOUBLE(rec->ac_mem));
 #endif
 
 #ifdef HAVE_ACIO
-  fprintf (out, NUM_FORMAT "|", ACIO_2_DOUBLE(rec->ac_io));
+  (void)fprintf(out, NUM_FORMAT "|", ACIO_2_DOUBLE(rec->ac_io));
 #endif
 
 #ifdef LINUX_MULTIFORMAT
-  fprintf (out, "%8d %8d|", rec->ac_pid, rec->ac_ppid);
+  (void)fprintf(out, "%8d %8d|", rec->ac_pid, rec->ac_ppid);
 #endif
 
-  fprintf (out, "%s", ctime (&btime));
+  (void)fprintf(out, "%s", ctime (&btime));
 }
 
 
-void
-pacct_print_file_and_line (FILE *out)
+void pacct_print_file_and_line(FILE *out)
 {
   file_reader_print_file_and_line (out, pacct_info);
 }
@@ -140,8 +135,7 @@ pacct_print_file_and_line (FILE *out)
 
 /* convert a comp_t to a double */
 
-double
-comp_t_2_double (comp_t c_num)
+double comp_t_2_double(comp_t c_num)
 {
   unsigned long in = 0;		/* the number part */
 
@@ -166,7 +160,6 @@ comp_t_2_double (comp_t c_num)
 
 #endif /* HAVE_COMP_T */
 
-
 #ifdef LINUX_MULTIFORMAT
 
 /* convert a comp2_t to a double */
@@ -174,8 +167,7 @@ comp_t_2_double (comp_t c_num)
 #define MANTSIZE2 20                       /* 20 bit mantissa. */
 #define MAXFRACT2 ((1ul << MANTSIZE2) - 1) /* Maximum fractional value. */
 
-double
-comp2_t_2_double (comp2_t val)
+double comp2_t_2_double(comp2_t val)
 {
   unsigned long tmp = val & (MAXFRACT2 >> 1),
                       exp = val >> (MANTSIZE2 - 1),
@@ -204,8 +196,7 @@ comp2_t_2_double (comp2_t val)
 #define MAXCOMP_T	(MAXMANT | (MAXEXP << MANTSIZE))
 /* maximum comp_t value */
 
-static comp_t
-double_2_comp_t (double value)
+static comp_t double_2_comp_t(double value)
 {
   double mantissa;
   int exponent, exp;
@@ -255,8 +246,7 @@ double_2_comp_t (double value)
 #define MAXCOMP2_T	(MAXMANT2 | (MAXEXP2 << (MANTSIZE2-1)))
 /* maximum comp2_t value */
 
-static comp2_t
-double_2_comp2_t (double value)
+static comp2_t double_2_comp2_t(double value)
 {
   double mantissa;
   int exponent, exp;
@@ -292,7 +282,7 @@ double_2_comp2_t (double value)
       exp++;
     }
   /* shift exponent into place */
-  return mant | (exp << MANTSIZE2 - 1);
+  return (mant | (exp << (MANTSIZE2 - 1)));
 }
 
 
@@ -378,11 +368,9 @@ static signed char permute[76][5] =
   {-1, -1,  -1, -1, -1}
 };	/* __u8		ac_pad; */
 
-
 /* convert various formats to internal format */
 
-static int
-convert_acct_record_read (struct acct *rec_in, struct acct *rec_out)
+static int convert_acct_record_read(struct acct *rec_in, struct acct *rec_out)
 {
   int byteswap = 0;
   int perm;
@@ -466,9 +454,8 @@ convert_acct_record_read (struct acct *rec_in, struct acct *rec_out)
 /* convert internal format to the format denoted by "version" and "byteswap"
    BEWARE! *rec_in might be changed according to output format! */
 
-size_t
-convert_acct_record_write (struct acct *rec_in, struct acct *rec_out,
-                           int version, int byteswap)
+size_t convert_acct_record_write(struct acct *rec_in, struct acct *rec_out,
+                                 int version, int byteswap)
 {
   int perm;
   static int warned = 0;

@@ -1,7 +1,9 @@
+## Â$Id: Makefile.am,v 1.12 2009/09/05 20:58:56 nihilus Exp $
 ## Process this file with automake to produce Makefile.in
 
 AUTOMAKE_OPTIONS =
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
 SUBDIRS = lib
 
@@ -11,29 +13,33 @@ bin_PROGRAMS = ac last @LASTCOMM_PROG@
 sbin_PROGRAMS = dump-utmp @DUMP_ACCT_PROG@ @ACCTON_PROG@ @SA_PROG@
 EXTRA_PROGRAMS = lastcomm dump-acct accton sa
 
+# What libs do we want to link against?
+
+LDADD = lib/libgnu.la
+
 ## From what sources are those programs built?
 
 ac_SOURCES = ac.c common.c file_rd.c hashtab.c \
-  utmp_rd.c getopt_long.c
+  utmp_rd.c
   
-accton_SOURCES = accton.c common.c getopt_long.c
+accton_SOURCES = accton.c common.c
 
 dump_acct_SOURCES = dump-acct.c common.c file_rd.c \
-  pacct_rd.c getopt_long.c
+  pacct_rd.c
 
 dump_utmp_SOURCES = dump-utmp.c common.c file_rd.c \
-  utmp_rd.c getopt_long.c
+  utmp_rd.c
 
 last_SOURCES = last.c common.c file_rd.c hashtab.c \
-  utmp_rd.c getopt_long.c
+  utmp_rd.c
 
 lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c \
-  hashtab.c pacct_rd.c uid_hash.c getopt_long.c
+  hashtab.c pacct_rd.c uid_hash.c
 
 sa_SOURCES = sa.c common.c file_rd.c hashtab.c \
-  pacct_rd.c uid_hash.c getopt_long.c
+  pacct_rd.c uid_hash.c
 
-noinst_HEADERS = common.h config.h dev_hash.h file_rd.h getopt_long.h hashtab.h \
+noinst_HEADERS = common.h config.h dev_hash.h file_rd.h hashtab.h \
   pacct_rd.h uid_hash.h utmp_rd.h al_share.cpp linux-acct.h
 
 # What documentation should we include?

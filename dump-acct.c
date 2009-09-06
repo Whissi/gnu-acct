@@ -1,5 +1,23 @@
-/* Copyright Free Software Foundation 1997, 2003, 2005
-   This file is released under the terms of the GNU General Public License */
+/*
+Copyright (C) 1997, 2003, 2005, 2008, 2009 Free Software Foundation, Inc.
+
+This file is part of the GNU Accounting Utilities
+
+The GNU Accounting Utilities are free software; you can redistribute
+them and/or modify them under the terms of the GNU General Public
+License as published by the Free Software Foundation; either version
+3, or (at your option) any later version.
+
+The GNU Accounting Utilities are distributed in the hope that they will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with the GNU Accounting Utilities; see the file COPYING.  If
+not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
+MA 02139, USA.
+*/
 
 /* print an acct/pacct file in human-readable format. */
 
@@ -13,10 +31,10 @@
 
 #include "common.h"
 #include "pacct_rd.h"
-#ifdef HAVE_GETOPT_LONG
+#ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
 #else
-#include "getopt_long.h"
+#include "getopt.h"
 #endif
 
 char *program_name;
@@ -25,10 +43,7 @@ int debugging_enabled = 0;	/* no -- we don't care about bad
 				   algorithms. */
 int ahz = AHZ;
 
-
-static
-void
-give_usage (void)
+static void give_usage(void)
 {
   printf ("Usage: %s [-hrR] [-n <recs>] <files>\n\
           [--num <recs>] [--raw] [--reverse] [--help]\n",
@@ -39,9 +54,7 @@ give_usage (void)
   print_acct_file_location ();
 }
 
-
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int c;
   int backwards_flag = 0;	/* start forwards */
@@ -88,12 +101,11 @@ main (int argc, char *argv[])
           break;
         case 'h':
         case 2:
-          give_usage ();
-          exit (1);
-          break;
+          give_usage();
+          exit (EXIT_FAILURE);
         case 'n':
         case 3:
-          num_lines_to_print = atol (optarg);
+          num_lines_to_print = strtol(optarg, (char **)NULL, 10);
           if (num_lines_to_print < 1)
             fatal ("number of lines to print must be positive and non-zero");
           break;
@@ -102,18 +114,18 @@ main (int argc, char *argv[])
           raw = 1;
           break;
         case 5:
-          ahz = atoi (optarg);
+          ahz = strtol(optarg, (char **)NULL, 10);
           if (ahz < 1)
             {
               printf ("%s: AHZ must be one or greater\n", program_name);
-              exit (1);
+              exit (EXIT_FAILURE);
             }
           break;
 #ifdef LINUX_MULTIFORMAT
         case 6:
           if (optarg[0]=='v')
             optarg++;
-          version = atoi (optarg);
+          version = strtol(optarg, (char **)NULL, 10);
           break;
         case 7:
           byteswap = 1;
@@ -127,7 +139,7 @@ main (int argc, char *argv[])
       /* User didn't pass any filenames -- give them the usage
          message. */
       give_usage ();
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
   pacct_init (backwards_flag);
@@ -159,12 +171,10 @@ main (int argc, char *argv[])
           {
             num_lines_to_print--;
             if (num_lines_to_print == 0)    /* max lines printed */
-              exit (0);
+              exit (EXIT_SUCCESS);
           }
       }
 
   }
-
-  exit (0);
+  exit (EXIT_SUCCESS);
 }
-

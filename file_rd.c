@@ -1,7 +1,9 @@
 /* file_rd.c
  *
  * generic routines for reading and writing binary record-oriented
- * files. */
+ * files.
+ *
+ */
 
 #include "config.h"
 
@@ -16,8 +18,7 @@
 
 /* Set up a file reader. */
 
-struct file_rd_info *
-      file_reader_init (int record_size, int buffered_records, int backwards)
+struct file_rd_info *file_reader_init (int record_size, int buffered_records, int backwards)
   {
     struct file_rd_info *new;
 
@@ -31,11 +32,9 @@ struct file_rd_info *
     return new;
   }
 
-
 /* Add a file to the list of files to process */
 
-void
-file_reader_add_file (struct file_rd_info *fri, char *name)
+void file_reader_add_file(struct file_rd_info *fri, char *name)
 {
   /* SNOC this file onto our list so that we process them in order. */
 
@@ -61,12 +60,10 @@ file_reader_add_file (struct file_rd_info *fri, char *name)
     }
 }
 
-
 /* Do a buffered read of the file and return the next record in REC.
    Return 0 if no more entries. */
 
-char *
-file_reader_get_entry (struct file_rd_info *fri)
+char *file_reader_get_entry(struct file_rd_info *fri)
 {
   extern int debugging_enabled;
 
@@ -95,7 +92,7 @@ file_reader_get_entry (struct file_rd_info *fri)
                 }
 
               if (fri->backwards)
-                fseek (fri->fp, 0, SEEK_END);	/* go to end of file */
+                (void)fseek(fri->fp, 0, SEEK_END);	/* go to end of file */
 
               fri->rec_number = 0;	/* start over! */
               fri->name = fri->the_files->name;
@@ -122,8 +119,8 @@ file_reader_get_entry (struct file_rd_info *fri)
 
               /* Move back in the file */
 
-              fseek (fri->fp, -fri->record_size * recs_to_read,
-                     SEEK_CUR);
+              (void)fseek(fri->fp, -fri->record_size * recs_to_read,
+                          SEEK_CUR);
 
               if (debugging_enabled)
                 {
@@ -142,7 +139,7 @@ file_reader_get_entry (struct file_rd_info *fri)
 
               /* don't need to check this, because the above read was fine */
 
-              fseek (fri->fp, -fri->record_size * recs_to_read, SEEK_CUR);
+              (void)fseek(fri->fp, -fri->record_size * recs_to_read, SEEK_CUR);
 
               /* Set up buffer position variables */
 
@@ -174,7 +171,7 @@ file_reader_get_entry (struct file_rd_info *fri)
                    Close it, delete it from our list, and try again. */
 
 no_more_records:
-          fclose (fri->fp);
+          (void)fclose (fri->fp);
 no_more_records_no_close:
           fri->fp = NULL;
           fri->the_files = fri->the_files->next;
@@ -196,9 +193,7 @@ no_more_records_no_close:
   }
 }
 
-
-void
-file_reader_print_file_and_line (FILE *out, struct file_rd_info *fri)
+void file_reader_print_file_and_line(FILE *out, struct file_rd_info *fri)
 {
   fprintf (out, "%s:%ld", fri->name ? fri->name : "NULL?", fri->rec_number);
 }

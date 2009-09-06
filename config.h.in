@@ -1,5 +1,9 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if the compiler is building for multiple architectures of Apple
+   platforms at once. */
+#undef AA_APPLE_UNIVERSAL_BUILD
+
 /* Define if <sys/acct.h>'s AC_ETIME field is a COMP_T. */
 #undef ACETIME_COMPT
 
@@ -38,6 +42,22 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Define to 1 if // is a file system root distinct from /. */
+#undef DOUBLE_SLASH_IS_DISTINCT_ROOT
+
+/* Define on systems for which file names may have a so-called `drive letter'
+   prefix, define this to compute the length of that prefix, including the
+   colon. */
+#undef FILE_SYSTEM_ACCEPTS_DRIVE_LETTER_PREFIX
+
+/* Define if the backslash character may also serve as a file name component
+   separator. */
+#undef FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
+
+/* Define if a drive letter prefix denotes a relative path if it is not
+   followed by a file name component separator. */
+#undef FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
+
 /* Define if <sys/acct.h> has the AC_ETIME field. */
 #undef HAVE_ACETIME
 
@@ -56,7 +76,8 @@
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
 
-/* Define to 1 if you have `alloca', as a function or macro. */
+/* Define to 1 if you have 'alloca' after including <alloca.h>, a header that
+   may be supplied by this distribution. */
 #undef HAVE_ALLOCA
 
 /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
@@ -66,6 +87,26 @@
 /* Define if <sys/acct.h> uses the COMP_T type. */
 #undef HAVE_COMP_T
 
+/* Define to 1 if you have the declaration of `getenv', and to 0 if you don't.
+   */
+#undef HAVE_DECL_GETENV
+
+/* Define to 1 if you have the declaration of `strerror', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRERROR
+
+/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRERROR_R
+
+/* Define to 1 if you have the declaration of `strndup', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRNDUP
+
+/* Define to 1 if you have the declaration of `strnlen', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRNLEN
+
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
@@ -73,14 +114,22 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Does your system have getopt? */
-#undef HAVE_GETOPT
+/* Define to 1 if you have the <errno.h> header file. */
+#undef HAVE_ERRNO_H
 
-/* Does your system have getopt_long? */
-#undef HAVE_GETOPT_LONG
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
 
-/* Does your system have a getpagesize call? */
+/* Define to 1 if you have the `getopt_long_only' function. */
+#undef HAVE_GETOPT_LONG_ONLY
+
+/* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
+
+/* Define to 1 if the compiler supports one of the keywords 'inline',
+   '__inline__', '__inline' and effectively inlines functions marked as such.
+   */
+#undef HAVE_INLINE
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -88,17 +137,29 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 
+/* Define to 1 if you have the <OS.h> header file. */
+#undef HAVE_OS_H
+
 /* Define if <sys/acct.h> has the AC_MINFLT, AC_MAJFLT and AC_SWAPS fields. */
 #undef HAVE_PAGING
 
-/* Define if your system has the RENAME system call. */
-#undef HAVE_RENAME
+/* Define to 1 if you have the <random.h> header file. */
+#undef HAVE_RANDOM_H
+
+/* Define if your system has the SNPRINTF system call. */
+#undef HAVE_SNPRINTF
+
+/* Define to 1 if stdbool.h conforms to C99. */
+#undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -106,11 +167,20 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
+/* Define to 1 if you have the `strerror_r' function. */
+#undef HAVE_STRERROR_R
+
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define if you have the strndup() function and it works. */
+#undef HAVE_STRNDUP
+
+/* Define to 1 if the system has the type `struct random_data'. */
+#undef HAVE_STRUCT_RANDOM_DATA
 
 /* Define if you have the <sys/acct.h> header file. */
 #undef HAVE_SYS_ACCT_H
@@ -123,6 +193,12 @@
    */
 #undef HAVE_SYS_NDIR_H
 
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#undef HAVE_SYS_SOCKET_H
+
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
@@ -131,6 +207,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <time.h> header file. */
+#undef HAVE_TIME_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -149,6 +228,18 @@
 
 /* Does your system use System V style utmp records? (uses ut_type field) */
 #undef HAVE_UT_TYPE
+
+/* Define to 1 if you have the <winsock2.h> header file. */
+#undef HAVE_WINSOCK2_H
+
+/* Define to 1 if the system has the type `_Bool'. */
+#undef HAVE__BOOL
+
+#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
+# define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#else
+# define ISSLASH(C) ((C) == '/')
+#endif
 
 /* Define to use "linux-acct.h" instead of <sys/acct.h> */
 #undef LINUX_MULTIFORMAT
@@ -178,6 +269,13 @@
 /* Define to 1 if the C compiler supports function prototypes. */
 #undef PROTOTYPES
 
+/* Define if rename does not work for source file names with a trailing slash,
+   like the one from SunOS 4.1.1_U1. */
+#undef RENAME_TRAILING_SLASH_BUG
+
+/* Define this to 1 if strerror is broken. */
+#undef REPLACE_STRERROR
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
@@ -189,33 +287,17 @@
 	STACK_DIRECTION = 0 => direction of growth unknown */
 #undef STACK_DIRECTION
 
+/* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
+#undef STAT_MACROS_BROKEN
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define to 1 if strerror_r returns char *. */
+#undef STRERROR_R_CHAR_P
+
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #undef TIME_WITH_SYS_TIME
-
-/* Enable extensions on AIX 3, Interix.  */
-#ifndef _ALL_SOURCE
-# undef _ALL_SOURCE
-#endif
-/* Enable GNU extensions on systems that have them.  */
-#ifndef _GNU_SOURCE
-# undef _GNU_SOURCE
-#endif
-/* Enable threading extensions on Solaris.  */
-#ifndef _POSIX_PTHREAD_SEMANTICS
-# undef _POSIX_PTHREAD_SEMANTICS
-#endif
-/* Enable extensions on HP NonStop.  */
-#ifndef _TANDEM_SOURCE
-# undef _TANDEM_SOURCE
-#endif
-/* Enable general extensions on Solaris.  */
-#ifndef __EXTENSIONS__
-# undef __EXTENSIONS__
-#endif
-
 
 /* Version number of package */
 #undef VERSION
@@ -242,6 +324,35 @@
 /* Define to 1 if you need to in order for `stat' and other things to work. */
 #undef _POSIX_SOURCE
 
+/* Define to 500 only on HP-UX. */
+#undef _XOPEN_SOURCE
+
+/* Enable extensions on AIX 3, Interix.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
+/* Enable threading extensions on Solaris.  */
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions on HP NonStop.  */
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
+
+
+/* Define to rpl_ if the getopt replacement functions and variables should be
+   used. */
+#undef __GETOPT_PREFIX
+
 /* Define like PROTOTYPES; this can be used by system headers. */
 #undef __PROTOTYPES
 
@@ -250,6 +361,12 @@
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef gid_t
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif
 
 /* Work around a bug in Apple GCC 4.0.1 build 5465: In C99 mode, it supports
    the ISO C 99 semantics of 'extern inline' (unlike the GNU C semantics of
@@ -261,8 +378,17 @@
 # define __GNUC_STDC_INLINE__ 1
 #endif
 
+/* Define to rpl_mktime if the replacement function should be used. */
+#undef mktime
+
+/* Define to the type of st_nlink in struct stat, or a supertype. */
+#undef nlink_t
+
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
+
+/* Define to rpl_rename if the replacement function should be used. */
+#undef rename
 
 /* Define to the equivalent of the C99 'restrict' keyword, or to
    nothing if this is not supported.  Do not define if restrict is
@@ -279,6 +405,9 @@
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
+
+/* Define to rpl_strnlen if the replacement function should be used. */
+#undef strnlen
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef uid_t
