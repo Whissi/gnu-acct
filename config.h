@@ -92,6 +92,10 @@
    */
 #define HAVE_DECL_GETENV 1
 
+/* Define to 1 if you have the declaration of `getutent', and to 0 if you
+   don't. */
+#define HAVE_DECL_GETUTENT 1
+
 /* Define to 1 if you have the declaration of `strerror', and to 0 if you
    don't. */
 /* #undef HAVE_DECL_STRERROR */
@@ -117,6 +121,9 @@
 
 /* Define to 1 if you have the <errno.h> header file. */
 #define HAVE_ERRNO_H 1
+
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#define HAVE_FSEEKO 1
 
 /* Define to 1 if you have the <getopt.h> header file. */
 #define HAVE_GETOPT_H 1
@@ -165,6 +172,9 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
+
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
 
@@ -182,6 +192,72 @@
 
 /* Define to 1 if the system has the type `struct random_data'. */
 #define HAVE_STRUCT_RANDOM_DATA 1
+
+/* Define to 1 if `ut_exit' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_EXIT 1
+
+/* Define to 1 if `ut_exit.e_exit' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_EXIT_E_EXIT 1
+
+/* Define to 1 if `ut_exit.e_termination' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_EXIT_E_TERMINATION 1
+
+/* Define to 1 if `ut_exit.ut_exit' is member of `struct utmpx'. */
+/* #undef HAVE_STRUCT_UTMPX_UT_EXIT_UT_EXIT */
+
+/* Define to 1 if `ut_exit.ut_termination' is member of `struct utmpx'. */
+/* #undef HAVE_STRUCT_UTMPX_UT_EXIT_UT_TERMINATION */
+
+/* Define to 1 if `ut_host' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_HOST 1
+
+/* Define to 1 if `ut_id' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_ID 1
+
+/* Define to 1 if `ut_name' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_NAME 1
+
+/* Define to 1 if `ut_pid' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_PID 1
+
+/* Define to 1 if `ut_type' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_TYPE 1
+
+/* Define to 1 if `ut_user' is member of `struct utmpx'. */
+#define HAVE_STRUCT_UTMPX_UT_USER 1
+
+/* Define to 1 if `ut_exit' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_EXIT 1
+
+/* Define to 1 if `ut_exit.e_exit' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_EXIT_E_EXIT 1
+
+/* Define to 1 if `ut_exit.e_termination' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_EXIT_E_TERMINATION 1
+
+/* Define to 1 if `ut_exit.ut_exit' is member of `struct utmp'. */
+/* #undef HAVE_STRUCT_UTMP_UT_EXIT_UT_EXIT */
+
+/* Define to 1 if `ut_exit.ut_termination' is member of `struct utmp'. */
+/* #undef HAVE_STRUCT_UTMP_UT_EXIT_UT_TERMINATION */
+
+/* Define to 1 if `ut_host' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_HOST 1
+
+/* Define to 1 if `ut_id' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_ID 1
+
+/* Define to 1 if `ut_name' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_NAME 1
+
+/* Define to 1 if `ut_pid' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_PID 1
+
+/* Define to 1 if `ut_type' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_TYPE 1
+
+/* Define to 1 if `ut_user' is member of `struct utmp'. */
+#define HAVE_STRUCT_UTMP_UT_USER 1
 
 /* Define if you have the <sys/acct.h> header file. */
 /* #undef HAVE_SYS_ACCT_H */
@@ -215,20 +291,20 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
-/* Define if your system has the ut_addr field in utmp. */
-#define HAVE_UT_ADDR 1
+/* Define if your compiler support __builtin_unreachable(). */
+/* #undef HAVE_UNREACHBLE */
 
-/* Does your system have the ut_host field in utmp? */
-#define HAVE_UT_HOST 1
+/* Define to 1 if you have the `utmpname' function. */
+#define HAVE_UTMPNAME 1
 
-/* Define if your system has the ut_id field in utmp. */
-#define HAVE_UT_ID 1
+/* Define to 1 if you have the `utmpxname' function. */
+#define HAVE_UTMPXNAME 1
 
-/* Define if your system has the ut_pid field in utmp. */
-#define HAVE_UT_PID 1
+/* Define to 1 if you have the <utmpx.h> header file. */
+#define HAVE_UTMPX_H 1
 
-/* Does your system use System V style utmp records? (uses ut_type field) */
-#define HAVE_UT_TYPE 1
+/* Define to 1 if you have the <utmp.h> header file. */
+#define HAVE_UTMP_H 1
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 /* #undef HAVE_WINSOCK2_H */
@@ -245,6 +321,9 @@
 /* Define to use "linux-acct.h" instead of <sys/acct.h> */
 #define LINUX_MULTIFORMAT 1
 
+/* Define to 1 if lseek does not detect pipes. */
+/* #undef LSEEK_PIPE_BROKEN */
+
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #define LT_OBJDIR ".libs/"
@@ -259,13 +338,13 @@
 #define PACKAGE_NAME "acct"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "acct 6.5.1"
+#define PACKAGE_STRING "acct 6.5.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "acct"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "6.5.1"
+#define PACKAGE_VERSION "6.5.3"
 
 /* Define to 1 if the C compiler supports function prototypes. */
 #define PROTOTYPES 1
@@ -301,7 +380,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "6.5.1"
+#define VERSION "6.5.3"
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
@@ -314,6 +393,15 @@
 /* #  undef WORDS_BIGENDIAN */
 # endif
 #endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+/* #undef _FILE_OFFSET_BITS */
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+/* #undef _LARGEFILE_SOURCE */
+
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */

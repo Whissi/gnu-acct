@@ -1,4 +1,4 @@
-## Â$Id: Makefile.am,v 1.12 2009/09/05 20:58:56 nihilus Exp $
+## $Id: Makefile.am,v 1.14 2009/09/17 23:13:30 nihilus Exp $
 ## Process this file with automake to produce Makefile.in
 
 AUTOMAKE_OPTIONS =
@@ -30,6 +30,8 @@ dump_acct_SOURCES = dump-acct.c common.c file_rd.c \
 dump_utmp_SOURCES = dump-utmp.c common.c file_rd.c \
   utmp_rd.c
 
+#dump_utmpx_SOURCES = dump-utmpx.c
+
 last_SOURCES = last.c common.c file_rd.c hashtab.c \
   utmp_rd.c
 
@@ -46,17 +48,12 @@ noinst_HEADERS = common.h config.h dev_hash.h file_rd.h hashtab.h \
 
 info_TEXINFOS = accounting.texi
 
-# Note: the manual pages target doesn't work yet.  You're going to
-# have all of the manual pages installed whether you like it or not.
-# The line that I _wanted_ to use was:
-#man_MANS = ac.1 last.1 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
-# but I had to use:
-man_MANS = ac.1 accton.8 last.1 lastcomm.1 sa.8
-EXTRA_DIST = ac.1 accton.8 last.1 lastcomm.1 sa.8 TODO m4/gnulib-cache.m4
+man_MANS = ac.1 last.1 dump-utmp.8 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
+EXTRA_DIST = ac.1 dump-utmp.8 accton.8 last.1 lastcomm.1 sa.8 TODO m4/gnulib-cache.m4
 
 ## Extra stuff to remove when cleaning
 
-DISTCLEANFILES = files.h version.h stamp-h
+DISTCLEANFILES = files.h version.h
 
 ## Extra targets for debugging
 

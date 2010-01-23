@@ -1,3 +1,8 @@
+Sun Sep 05 18:30:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Minor fixes, included getop, mktime, rename & xmalloc
+	  from gnulib. Fixed HOST_LEN not defined issue.
+
 Mon Aug 24 00:01:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
 	
 	* Major overhaul, releasing GNU Acct 6.5.

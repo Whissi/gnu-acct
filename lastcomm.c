@@ -43,6 +43,9 @@ MA 02139, USA.  */
 #  include <time.h>
 # endif
 #endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <pwd.h>
 
@@ -73,6 +76,7 @@ char *program_name;		/* name of the program, for usage & errs */
 
 int show_paging = 0;		/* If they want paging stats, print 'em */
 
+static unsigned int hzval;
 
 /* Here are various lists for the user to specify entries that they
    want to see.  */
@@ -99,6 +103,8 @@ int main(int argc, char *argv[])
   int other_pacct_file_specified = 0; /* nonzero if the user used the
   					 `-f' or `--file' flag */
   int backwards = 1; /* default to reading backwards */
+
+  hzval = sysconf(_SC_CLK_TCK);
 
   program_name = argv[0];
 
@@ -396,7 +402,7 @@ void parse_entries(void)
 #ifdef LINUX_MULTIFORMAT
                          ((ut + st) / (double) rec->ac_ahz),
 #else
-                         ((ut + st) / (double) ahz),
+                         ((ut + st) / (double) hzval),
 #endif
                          ctime (&btime));
           else
@@ -406,7 +412,7 @@ void parse_entries(void)
 #ifdef LINUX_MULTIFORMAT
                          ((ut + st) / (double) rec->ac_ahz),
 #else
-                         ((ut + st) / (double) ahz),
+                         ((ut + st) / (double) hzval),
 #endif
                          ctime (&btime));
 #else

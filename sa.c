@@ -1,7 +1,7 @@
 /* sa.c -- everyone's favorite hairball */
 
 /*
-Copyright (C) 1993, 1996, 1997, 2008, 2009 Free Software Foundation, Inc.
+Copyright (C) 1993, 1996, 1997, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -253,6 +253,7 @@ int print_all_records = 0;	/* don't lump calls into the
 				   "***other" category */
 int always_yes = 0;		/* nonzero means always answer yes to
 				   a query */
+static unsigned int hzval;
 
 /* prototypes */
 
@@ -281,6 +282,7 @@ int main(int argc, char *argv[])
 {
   int c;
 
+  static unsigned int hzval;
   program_name = argv[0];
 
   /* Cache the page size of the machine for the PAGES_TO_KB macro */
@@ -598,7 +600,7 @@ int main(int argc, char *argv[])
 
   if (debugging_enabled)
     {
-      (void)fprintf (stddebug, "AHZ -> %d\n", ahz);
+      (void)fprintf (stddebug, "hzval -> %d\n", hzval);
       (void)fprintf (stddebug, "getpagesize() -> %d\n", getpagesize ());
       (void)fprintf (stddebug, "system_page_size == %.2f\n", system_page_size);
     }
@@ -629,7 +631,7 @@ int main(int argc, char *argv[])
   parse_acct_entries ();
 
   if (print_users)
-    exit (0);
+    exit(EXIT_SUCCESS);
 
   if (merge_files)
     {
@@ -644,7 +646,7 @@ int main(int argc, char *argv[])
         print_command_list ();
     }
 
-  exit (0);			/* guarantee the proper return value */
+  exit(EXIT_SUCCESS);			/* guarantee the proper return value */
 }
 
 
@@ -736,9 +738,7 @@ give_usage (void)
 }
 
 
-static
-void
-add_stats (struct stats *accum, struct stats *s)
+static void add_stats (struct stats *accum, struct stats *s)
 {
 #define ADDIT(x); accum->x += s->x;
 
@@ -962,7 +962,7 @@ static void print_stats_nicely (struct stats *s)
       /* Christoph Badura <bad@flatlin.ka.sub.org> says:
       *
       * The k*sec statistic is computed as
-      * ((ac_utime+ac_stime)*pages_to_kbytes(ac_mem))/AHZ.  Of course you
+      * ((ac_utime+ac_stime)*pages_to_kbytes(ac_mem))/hzval.  Of course you
       * need to expand the comp_t values.
       *
       * PAGES_TO_KBYTES(x) simply divides x by (getpagesize()/1024).  Of
@@ -1176,19 +1176,19 @@ void parse_acct_entries (void)
   while ((rec = pacct_get_entry ()) != NULL)
     {
 #ifdef HAVE_ACUTIME
-      double ut = comp_t_2_double (rec->ac_utime) / CURR_AHZ;
+      double ut = comp_t_2_double (rec->ac_utime) / (double) hzval;
 #endif
 
 #ifdef HAVE_ACSTIME
-      double st = comp_t_2_double (rec->ac_stime) / CURR_AHZ;
+      double st = comp_t_2_double (rec->ac_stime) / (double) hzval;
 #endif
 
 #ifdef HAVE_ACETIME
-      double et = ACETIME_2_DOUBLE (rec->ac_etime) / CURR_AHZ;
+      double et = comp_t_2_double (rec->ac_etime) / (double) hzval;
 #endif
 
 #ifdef HAVE_ACIO
-      double di = comp_t_2_double (rec->ac_io) / CURR_AHZ;
+      double di = comp_t_2_double (rec->ac_io) / (double) hzval;
 #endif
 
 #ifdef HAVE_ACMEM

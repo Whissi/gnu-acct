@@ -1,3 +1,24 @@
+/*
+Copyright (C) 1993, 1996, 1997, 2008, 2009, 2010 Free Software Foundation, Inc.
+
+This file is part of the GNU Accounting Utilities
+
+The GNU Accounting Utilities are free software; you can redistribute
+them and/or modify them under the terms of the GNU General Public
+License as published by the Free Software Foundation; either version
+3, or (at your option) any later version.
+
+The GNU Accounting Utilities are distributed in the hope that they will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with the GNU Accounting Utilities; see the file COPYING.  If
+not, write to the Free Software Foundation, 675 Mass Ave, Cambridge,
+MA 02139, USA.
+*/
+
 #ifndef _LINUX_ACCT_H
 #define _LINUX_ACCT_H
 
@@ -24,7 +45,7 @@ typedef __u32	comp2_t;
 #define ACCT_COMM	16
 
 struct acct
-{
+  {
     char		ac_flag;		/* Flags */
     char		ac_version;		/* Always set to ACCT_VERSION */
     __u16		ac_tty;			/* Control Terminal */
@@ -51,10 +72,10 @@ struct acct
     __u16		ac_etime_lo;		/* Elapsed Time LSB */
     __u8		ac_etime_hi;		/* Elapsed Time MSB */
     __u8		ac_pad;			/* padding to 76 bytes */
-};
+  };
 
 struct acct_v0
-{
+  {
     char		ac_flag;		/* Flags */
     __u16		ac_uid;			/* Real User ID */
     __u16		ac_gid;			/* Real Group ID */
@@ -72,7 +93,7 @@ struct acct_v0
     __u32		ac_exitcode;		/* Exitcode */
     char		ac_comm[ACCT_COMM + 1];	/* Command Name */
     char		ac_pad[10];		/* Padding Bytes */
-};
+  };
 
 /*
  *  accounting flags

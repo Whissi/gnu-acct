@@ -68,11 +68,11 @@ void print_utmp_record(struct utmp *rec, FILE *out)
                NAME_LEN, NAME_LEN, rec->ut_name,
                TTY_LEN, TTY_LEN, rec->ut_line);
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
       fprintf (out, "%1d|", rec->ut_type);
 #endif
 
-#ifdef HAVE_UT_ID
+#ifdef HAVE_STRUCT_UTMP_UT_ID
       {
         int i;
         for (i = 0; i < ID_LEN; i++)
@@ -96,11 +96,11 @@ void print_utmp_record(struct utmp *rec, FILE *out)
       }
 #endif
 
-#ifdef HAVE_UT_PID
+#ifdef HAVE_STRUCT_UTMP_UT_PID
       fprintf (out, "%5d|", rec->ut_pid);
 #endif
 
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
       {
         struct in_addr a;
         a.s_addr = rec->ut_addr;
@@ -109,7 +109,7 @@ void print_utmp_record(struct utmp *rec, FILE *out)
       }
 #endif
 
-#ifdef HAVE_UT_HOST
+#ifdef HAVE_STRUCT_UTMP_UT_HOST
       fprintf (out, "%-*.*s|", HOST_LEN, HOST_LEN, rec->ut_host);
 #endif
 
@@ -123,7 +123,7 @@ void utmp_print_file_and_line(FILE *out)
 }
 
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
 
 /* Some machines have a combination of bsd and sysv stuff writing to
    their /etc/wtmp file.  If we can handle ut_type fields, let's do
@@ -206,7 +206,7 @@ int fix_ut_type_field(struct utmp *rec)
 
 int bad_utmp_record(struct utmp *rec)
 {
-#ifndef HAVE_UT_TYPE
+#ifndef HAVE_STRUCT_UTMP_UT_TYPE
 
   /* If we have UT_TYPE, all bets are off, since all of these tests
      might be valid for one record type or another.  We can only do

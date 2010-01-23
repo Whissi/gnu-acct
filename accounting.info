@@ -1,8 +1,13 @@
 This is accounting.info, produced by makeinfo version 4.13 from
 accounting.texi.
 
-GNU Accounting Utilities Copyright (C) 1993, 1996, 1997, 1998, 2005,
-2008, 2009 Free Software Foundation, Inc.
+INFO-DIR-SECTION GNU Utilities
+START-INFO-DIR-ENTRY
+* acct: (acct).                The GNU Accounting utilities for process and login accounting
+END-INFO-DIR-ENTRY
+
+   GNU Accounting Utilities Copyright (C) 1993, 1996, 1997, 1998, 2005,
+2008, 2009, 2010 Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -26,8 +31,8 @@ about the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-   This is Edition 6.5.1 of the documentation, updated 23 August 2009
-for version 6.5.1 of the GNU Accounting Utilities.
+   This is Edition 6.5.3 of the documentation, updated 23 January 2010
+for version 6.5.3 of the GNU Accounting Utilities.
 
 * Menu:
 
@@ -35,7 +40,6 @@ for version 6.5.1 of the GNU Accounting Utilities.
 
 * ac::                          print statistics about connect time
 * accton::                      turns accounting on or off
-* last::                        list last logins of users and terms
 * lastcomm::                    list last commands executed
 * sa::                          print accounting statistics
 * dump-acct::                   print accounting file in human-readable form
@@ -66,6 +70,18 @@ users and charge them through the nose for their CPU time..."
 
    The accounting utilities were born.
 
+   Years later Markus Gothe was a facing the CEO at his work, keep
+asking him where and how he got the information on other employees
+payrolls.  There was indeed a conflict, Markus denied all the modus
+operandi on how to get held of such copies or information. Plans was
+made up to frame him, by interception.
+
+   This momement Markus realized the words of Rob Savoye "You cannot
+buy yourself free from guilt." He left the room with pridefull, for
+making a stand. However, sadly enogh, the CEO never realized that
+meaning. You cannot buy yourself free from guilt; A new revival had
+come for the GNU acccounting utilities and so a POSIX-standard.
+
    Seriously though, the accouting utilities can provide a system
 administrator with useful information about system usage--connections,
 programs executed, and utilization of system resources.
@@ -87,13 +103,6 @@ files.
 
 `accton'
      turns accounting on or off.
-
-`last'
-     lists the logins on the system, most recent first.  With `last',
-     you can search the `wtmp' file for a particular user or terminal
-     name (to which the user was connected).  Of special interest are
-     two fake users, `reboot' and `shutdown', which are recorded when
-     the system is shut down or reboots.
 
 `lastcomm'
      lists the commands executed on the system, most recent first,
@@ -154,14 +163,14 @@ file.
 
    Multiformat support under Linux is intended to be a temporary
 solution to aid in switching to the v3 `acct' file format. So do not
-expect GNU acct 6.5 to still contain Multiformat support. In a few years
+expect GNU acct 6.7 to still contain Multiformat support. In a few years
 time, when everybody uses the v3 format, the ability to read multiple
 formats at runtime will probably be dropped again from the GNU
 accounting utilities.  This does not, however, affect the ability to
 adapt to the `acct' file format at compile time (when `./configure' is
 run). Even GNU acct 6.3.5 (that does not know about multiple file
 formats) will yield working binary programs when compiled under a (as
-yet hypothetical) Linux kernel 2.6.31 that is only able to write the v3
+yet hypothetical) Linux kernel 2.6.62 that is only able to write the v3
 format.
 
 History of the Accounting Utilities
@@ -262,7 +271,7 @@ printed out.
    The accounting file `wtmp' is maintained by `init' and `login'.
 Neither of these programs creates the file; if the file is not there,
 no accounting is done.  To begin accounting, create the file with a
-length of zero.  *NOTE_* the `wtmp' file can get really big, really
+length of zero. *NOTE_* the `wtmp' file can get really big, really
 fast.  You might want to trim it every once and a while.
 
    GNU `ac' works nearly the same u*x `ac', though it's a little
@@ -458,7 +467,7 @@ there's no possibility of chalking up time to anything but user
 processes.
 
 
-File: accounting.info,  Node: accton,  Next: last,  Prev: ac,  Up: Top
+File: accounting.info,  Node: accton,  Next: lastcomm,  Prev: ac,  Up: Top
 
 2 `accton'
 **********
@@ -485,144 +494,9 @@ accounting.
 
 
 
-File: accounting.info,  Node: last,  Next: lastcomm,  Prev: accton,  Up: Top
+File: accounting.info,  Node: lastcomm,  Next: sa,  Prev: accton,  Up: Top
 
-3 `last'
-********
-
-`last' looks through the `wtmp' file (which records all logins/logouts)
-and prints information about connect times of users.  Records are
-printed from most recent to least recent.  Records can be specified by
-tty and username.  tty names can be abbreviated: `last 0' is equivalent
-to `last tty0'.
-
-   Multiple arguments can be specified: `last root console' will print
-all of the entries for the user `root' and all entries logged in on the
-`console' tty.
-
-   The special users `reboot' and `shutdown' log in when the system
-reboots or (surprise) shuts down.  `last reboot' will produce a record
-of reboot times.
-
-   If `last' is interrupted by a quit signal, it prints out how far its
-search in the `wtmp' file had reached and then quits:
-     weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
-     weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
-
-     interrupted at Mon Feb 15 19:07:52 1993
-
-3.1 Flags
-=========
-
-This program implements the features of regular u*x `last' with a few
-extra flags.  When `last' is invoked with no arguments, the output
-looks like this:
-     gr151     ttyp2    ray.cs.oberlin.e Tue Feb 16 17:40   still logged in
-     jhoggard  ttyp2    csts.cs.oberlin. Tue Feb 16 17:39 - 17:39  (00:00)
-     jstarr    ttyp1    UNIX5.ANDREW.CMU Tue Feb 16 17:38   still logged in
-     jberman   ttypb    132.162.32.25    Tue Feb 16 17:34   still logged in
-     alee      ttyp7    csts.cs.oberlin. Tue Feb 16 17:34   still logged in
-     jbrick    ttyp2    ocvaxa.cc.oberli Tue Feb 16 17:33 - 17:36  (00:03)
-     mbastedo  ttypc    ocvaxa.cc.oberli Tue Feb 16 17:25 - 17:26  (00:01)
-     rgoodste  ttypb    ocvaxa.cc.oberli Tue Feb 16 17:22 - 17:26  (00:03)
-     huttar    ttyp9    lobby.ti.com     Tue Feb 16 17:19   still logged in
-     klutz     ttyp3    132.162.32.25    Tue Feb 16 17:14   still logged in
-
-`--no-truncate-ftp-entries'
-     When printing out the information, don't chop the number part off
-     of `ftp'XXXX entries.
-
-`-NUMBER'
-`-n NUMBER'
-`--lines NUMBER'
-     Limit the number of lines that `last' prints.
-
-`-f FILENAME'
-`--file FILENAME'
-     Read from the file FILENAME instead of the system's `wtmp' file.
-
-`-y'
-`--print-year'
-     Print out the year when displaying dates.
-
-`-s'
-`--print-seconds'
-     Print out seconds when displaying dates and durations.
-
-`--complain'
-     When the `wtmp' file has a problem (a time-warp, missing record,
-     or whatever), print out an appropriate error.
-
-`-x'
-`--more-records'
-     Print out run level changes, shutdowns, and time changes in
-     addition to the normal records.
-
-`-a'
-`--all-records'
-     Print out all records in the `wtmp' file.
-
-`-i'
-`--ip-address'
-     Some machines store the IP address of a connection in a utmp
-     record.  Enabling this option makes `last' print the IP address
-     instead of the hostname.
-
-`--tw-leniency VALUE'
-     Set the time warp leniency value (in seconds).  See the `ac'
-     chapter for information.
-
-`--tw-suspicious VALUE'
-     Set the time warp suspicious value (in seconds).  See the `ac'
-     chapter for information.
-
-`-w'
-`--wide'
-     By default, `last' tries to print each entry within in 80 columns.
-     Use this option to instruct `last' to print out the fields in the
-     `wtmp' file with full field widths.
-
-`--debug'
-     Print verbose internal information.
-
-`-V'
-`--version'
-     Print `last''s version number.
-
-`-h'
-`--help'
-     Print `last''s usage string and default locations of system files
-     to standard output.
-
-3.2 Problems
-============
-
-The Clock Change Problem
-........................
-
-Of the `last's I've tried, all of them have had problems parsing a
-system clock change.  Instead of modifying the entries that have been
-read, they just ignore the change and give you incorrect values.  GNU
-`last' knows about clock changes and prints the correct times.
-
-*TANGIBLE RESULT:* if you `diff' the output of your `last' and GNU
-`last', entries after (before, rather) a clock change will be off by
-the amount of the clock change.
-
-The Ftp Problem
-...............
-
-Most `last's that I've examined have the same problem here as `ac'
-does--they log everyone out as soon as they see an ftp entry.
-
-*TANGIBLE RESULT:* GNU `last' will reflect the correct time spent in an
-ftp session, so the totals that it gives will most likely be greater
-than those given by the system `last'.
-
-
-File: accounting.info,  Node: lastcomm,  Next: sa,  Prev: last,  Up: Top
-
-4 `lastcomm'
+3 `lastcomm'
 ************
 
 `lastcomm' prints out information about previously executed commands.
@@ -663,7 +537,7 @@ executions of command `a.out' by user `root' on terminal `tty0', type:
 
    * time the process exited
 
-4.1 Flags
+3.1 Flags
 =========
 
 This program implements the features of regular u*x `lastcomm' with a
@@ -719,7 +593,7 @@ output looks like this:
 
 File: accounting.info,  Node: sa,  Next: dump-acct,  Prev: lastcomm,  Up: Top
 
-5 `sa'
+4 `sa'
 ******
 
 `sa' summarizes information about previously executed commands as
@@ -777,7 +651,7 @@ of "real time."
    An asterisk will appear after the name of commands that forked but
 didn't call `exec'.
 
-5.1 Flags
+4.1 Flags
 =========
 
 The availability of these program options depends on your operating
@@ -918,7 +792,7 @@ determine which flags will be present.  For example, if your system's
    *Note*: if more than one sorting option is specified, the list will
 be sorted by the one specified last on the command line.
 
-5.2 Problems
+4.2 Problems
 ============
 
 I haven't been able to test this on many different machines because the
@@ -930,7 +804,7 @@ like `--print-seconds' and `--sort-num-calls' when printing out
 commands when combined with the `--user-summary' or `--print-users'
 flags.  GNU `sa' pays attention to these flags if they are applicable.
 
-5.2.1 mips sa
+4.2.1 mips sa
 -------------
 
 The average memory use is stored as a short rather than a double, so we
@@ -940,7 +814,7 @@ through.
 
 File: accounting.info,  Node: dump-acct,  Prev: sa,  Up: Top
 
-6 `dump-acct'
+5 `dump-acct'
 *************
 
 `dump-acct' dumps some of the contents of one or more `acct' files in
@@ -989,7 +863,7 @@ following fields, separated by vertical bars(`|'):
 all of the above columns will actually appear, depending on what
 information your operating system provides in it's `struct acct'.
 
-6.1 Flags
+5.1 Flags
 =========
 
 `--ahz HZ'
@@ -1037,13 +911,12 @@ the desired output format with the _new_ `AHZ' setting.
 
 
 Tag Table:
-Node: Top854
-Node: Preface1764
-Node: ac10432
-Node: accton18745
-Node: last19250
-Node: lastcomm23726
-Node: sa26898
-Node: dump-acct33275
+Node: Top1028
+Node: Preface1871
+Node: ac10857
+Node: accton19169
+Node: lastcomm19678
+Node: sa22852
+Node: dump-acct29229
 
 End Tag Table

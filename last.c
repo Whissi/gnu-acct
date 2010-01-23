@@ -1,5 +1,5 @@
 /*
-Copyright (C) 1993, 1996, 1997, 2003, 2008, 2009 Free Software Foundation, Inc.
+Copyright (C) 1993, 1996, 1997, 2003, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -113,7 +113,7 @@ int truncate_ftp_entries = 1;	/* Nonzero means shorten "ftpxxx"
 				   this by default, but we should have
 				   a flag for it */
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
 int print_which_recs = 0;	/* If 0, only print the usual.  If 1,
 				   print run level information,
 				   shutdowns, and time changes.  If 2
@@ -121,7 +121,7 @@ int print_which_recs = 0;	/* If 0, only print the usual.  If 1,
 				   business. */
 #endif
 
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
 int print_addresses = 0;	/* should we print the ut_addr field? */
 #endif
 
@@ -226,14 +226,14 @@ int main(int argc, char *argv[])
           { "help", no_argument, NULL, 7 },
           { "file", required_argument, NULL, 8 },
           { "no-truncate-ftp-entries", no_argument, NULL, 9 },
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
           { "all-records", no_argument, NULL, 10 },
 #endif
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
           { "ip-address", no_argument, NULL, 11 },
 #endif
           { "print-year", no_argument, NULL, 12 },
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
           { "more-records", no_argument, NULL, 13 },
 #endif
           { "tw-suspicious", required_argument, NULL, 14 },
@@ -243,14 +243,14 @@ int main(int argc, char *argv[])
         };
 
       c = getopt_long (argc, argv,
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
                        "a"
 #endif
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
                        "i"
 #endif
                        "f:n:s"
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
                        "x"
 #endif
                        "wyV",
@@ -292,13 +292,13 @@ int main(int argc, char *argv[])
         case 9:
           truncate_ftp_entries = 0;
           break;
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
         case 'a':
         case 10:
           print_which_recs = 2;
           break;
 #endif
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
         case 'i':
         case 11:
           print_addresses = 1;
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
         case 12:
           print_year = 1;
           break;
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
         case 'x':
         case 13:
           print_which_recs = 1;
@@ -368,7 +368,7 @@ int main(int argc, char *argv[])
 
           optind++;
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
           if (!print_which_recs)
             print_which_recs = 1;
 #endif
@@ -402,14 +402,14 @@ void give_usage(void)
 {
   (void)printf("\
                 Usage: %s [-"
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
                "a"
 #endif
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
                "i"
 #endif
                "hs"
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
                "x"
 #endif
                "yV] [-<lines>] [-n <lines>] [-f <file>] [people] [ttys] ...\n\
@@ -417,10 +417,10 @@ void give_usage(void)
                 [--version] [--tw-leniency <value>] [--tw-suspicious <value>]\n\
                 [--no-truncate-ftp-entries] [--print-year] [--print-seconds]\n\
                 "
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
                "[--more-records] [--all-records] "
 #endif
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
                "[--ip-address] "
 #endif
                "[--help]\n", program_name);
@@ -614,7 +614,7 @@ void print_record(struct utmp *login, time_t logout_time,
   /* Choose replacement names, if provided.  Don't do this if we're on
      a BSD system. */
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
   if (replacement_tty)
     print_tty = replacement_tty;
   else
@@ -647,7 +647,7 @@ void print_record(struct utmp *login, time_t logout_time,
                print_tty_len, print_tty_len, sanitized_tty);
 
 
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
   if (print_addresses)
     {
       struct in_addr a;
@@ -656,8 +656,8 @@ void print_record(struct utmp *login, time_t logout_time,
     }
 #endif
 
-#ifdef HAVE_UT_HOST
-#ifdef HAVE_UT_ADDR
+#ifdef HAVE_STRUCT_UTMP_UT_HOST
+#ifdef HAVE_STRUCT_UTMP_UT_ADDR
   /* If we have both HOST and ADDR, only print one, or else we go
          beyond 80 characters in width. */
   if (!print_addresses)
@@ -754,7 +754,7 @@ void print_record(struct utmp *login, time_t logout_time,
     {
       num_lines_to_print--;
       if (num_lines_to_print == 0)    /* max lines printed */
-        exit (0);
+        exit(EXIT_SUCCESS);
     }
 }
 

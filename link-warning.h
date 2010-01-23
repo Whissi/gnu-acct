@@ -3,10 +3,10 @@
    We use a linker warning rather than a preprocessor warning, because
    #warning cannot be used inside macros.  */
 #ifndef GL_LINK_WARNING
-  /* This works on platforms with GNU ld and ELF object format.
-     Testing __GLIBC__ is sufficient for asserting that GNU ld is in use.
-     Testing __ELF__ guarantees the ELF object format.
-     Testing __GNUC__ is necessary for the compound expression syntax.  */
+/* This works on platforms with GNU ld and ELF object format.
+   Testing __GLIBC__ is sufficient for asserting that GNU ld is in use.
+   Testing __ELF__ guarantees the ELF object format.
+   Testing __GNUC__ is necessary for the compound expression syntax.  */
 # if defined __GLIBC__ && defined __ELF__ && defined __GNUC__
 #  define GL_LINK_WARNING(message) \
      GL_LINK_WARNING1 (__FILE__, __LINE__, message)

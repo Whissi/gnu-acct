@@ -49,7 +49,7 @@ lastcomm \-  print out information about previously executed commands.
 ]
 .br
 [
--B \p
+.B \p
 |
 .B \-\-show_paging
 ]
@@ -97,7 +97,7 @@ all of the executions of command
 .IR a.out " by user " root " on terminal " tty0, 
 type:
 .ce 
-lastcomm \-\-strict-match a.out root tty0
+lastcomm \-\-strict-match \-\-command a.out \-\-user root \-\-tty tty0
 .ce 0
 .LP
 The order of the arguments is not important.
@@ -113,7 +113,7 @@ For each entry the following information is printed:
    + the name of the user who ran the process
    + time the process exited
 .SH OPTIONS
-\. .PD 0
+.PD 0
 .TP
 .B \-\-strict-match
 Print only entries that match *all* of the arguments on the command

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 1997, 2003, 2005, 2008, 2009 Free Software Foundation, Inc.
+Copyright (C) 1997, 2003, 2005, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 This file is part of the GNU Accounting Utilities
 
@@ -159,9 +159,9 @@ int main(int argc, char *argv[])
           {
 #ifdef LINUX_MULTIFORMAT
             size = convert_acct_record_write (rec, &buf, version, byteswap);
-            fwrite (&buf, size, 1, stdout);
+            (void)fwrite (&buf, size, 1, stdout);
 #else
-            fwrite (rec, sizeof (struct acct), 1, stdout);
+            (void)fwrite (rec, sizeof (struct acct), 1, stdout);
 #endif
           }
         else

@@ -31,6 +31,7 @@ char *alloca ();
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/utsname.h>
 #include <pwd.h>
 
 #include "common.h"
@@ -54,6 +55,11 @@ char *alloca ();
 # endif
 #endif
 
+#ifdef __linux__
+#define NULLDEV 0
+#else
+#define NULLDEV -1
+#endif
 
 /* globals */
 
@@ -63,6 +69,60 @@ struct dev_data
   {
     char *name;			/* name of the device */
   };
+
+/* hash all possible /dev/pts devices as they only appear
+ *  in the filesystem when the device is active.
+ */
+
+static void
+setup_pts_devices ()
+{
+
+  struct utsname uts;
+  struct dev_data dd;
+  int i;
+  struct pts_params
+    {
+      char *utsname;		/* os name */
+      int base;			/* base major number */
+      int max;			/* max # of devices */
+      int mod;			/* number of minors per major */
+    } *pts_ent, pts_table[] =
+  {
+    {"Linux", 136, 2048, 256},
+    { }
+  };
+
+  if ( uname (&uts) )
+    {
+      /* silent error */
+      return;
+    }
+
+  for (pts_ent = &(pts_table[0]); pts_ent != NULL; ++pts_ent)
+    {
+      if (!strcmp (uts.sysname, pts_ent->utsname))
+        break;
+    }
+  if (pts_ent == NULL) return; /* unsupported OS */
+
+  for (i = 0; i < pts_ent->max; ++i)
+    {
+      long dev_num;
+      struct hashtab_elem *he;
+      int major, minor;
+
+      major = pts_ent->base + (i/pts_ent->mod);
+      minor = i % pts_ent->mod;
+      dev_num = ((major << 8) + minor);
+
+      dd.name = xmalloc (sizeof(char) * (strlen("pts/xxxx") + 1));
+      sprintf (dd.name, "pts/%d", i);
+
+      he = hashtab_create (dev_table, (void *) & dev_num, sizeof(dev_num));
+      hashtab_set_value (he, &dd, sizeof (dd));
+    }
+}
 
 /* Read the DIRNAME directory entries and make a linked list of ttys
    (so we can search through it later) */
@@ -79,6 +139,14 @@ static void setup_devices(char *dirname)
 
   if ((dirp = opendir (dirname)) == NULL)
     return;			/* skip it silently */
+
+  if (!strcmp (dirname, "/dev/pts"))
+    {
+      /* assuming SysV, these are dynamically allocated */
+      closedir (dirp);
+      setup_pts_devices ();
+      return;
+    }
 
   for (dp = readdir (dirp); dp != NULL; dp = readdir (dirp))
     {
@@ -122,10 +190,11 @@ static void setup_devices(char *dirname)
 char *dev_gnu_name(long dev_num)
 {
   struct hashtab_elem *he;
+  static char devstr [20];
 
   /* special case */
 
-  if (dev_num == -1)
+  if (dev_num == NULLDEV)
     return "__";
 
   if (dev_table == NULL)
@@ -134,6 +203,7 @@ char *dev_gnu_name(long dev_num)
       setup_devices ("/dev");	   /* most certainly */
       setup_devices ("/dev/pty");  /* perhaps */
       setup_devices ("/dev/ptym"); /* perhaps */
+      setup_devices ("/dev/pts");  /* perhaps */
     }
 
   he = hashtab_find (dev_table, (void *) &dev_num, sizeof (dev_num));
@@ -144,7 +214,10 @@ char *dev_gnu_name(long dev_num)
       return dd->name;
     }
 
-  /* didn't find it */
+  /* didn't find it, return it as [maj,min] */
 
-  return "??";
+  sprintf (devstr, "[%d,%d]",  /* is this portable? */
+           (int) ((dev_num & 0xFF00) >> 8), (int) (dev_num & 0x00FF));
+
+  return devstr;
 }

@@ -26,6 +26,7 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+  AC_REQUIRE([AC_FUNC_FSEEKO])
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -54,16 +55,22 @@ AC_SUBST([LTALLOCA])
     [AM_XGETTEXT_OPTION([--flag=error:3:c-format])
      AM_XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
   gl_EXITFAIL
+  gl_FUNC_FTELLO
+  gl_STDIO_MODULE_INDICATOR([ftello])
   gl_GETOPT
   gl_FUNC_GETPAGESIZE
   gl_UNISTD_MODULE_INDICATOR([getpagesize])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   gl_INLINE
+  gl_FUNC_LSEEK
+  gl_UNISTD_MODULE_INDICATOR([lseek])
   gl_FUNC_MKTIME
   AC_REQUIRE([gl_MULTIARCH])
+  gl_READUTMP
   gl_FUNC_RENAME
   AM_STDBOOL_H
+  gl_STDIO_H
   gl_STDLIB_H
   gl_FUNC_STRERROR
   gl_STRING_MODULE_INDICATOR([strerror])
@@ -218,6 +225,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/ftello.c
   lib/getopt.c
   lib/getopt.in.h
   lib/getopt1.c
@@ -225,9 +233,14 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getpagesize.c
   lib/gettext.h
   lib/intprops.h
+  lib/lseek.c
   lib/mktime.c
+  lib/readutmp.c
+  lib/readutmp.h
   lib/rename.c
   lib/stdbool.in.h
+  lib/stdio-write.c
+  lib/stdio.in.h
   lib/stdlib.in.h
   lib/strerror.c
   lib/string.in.h
@@ -252,16 +265,20 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
+  m4/ftello.m4
   m4/getopt.m4
   m4/getpagesize.m4
   m4/gnulib-common.m4
   m4/include_next.m4
   m4/inline.m4
+  m4/lseek.m4
   m4/mktime.m4
   m4/multiarch.m4
   m4/onceonly.m4
+  m4/readutmp.m4
   m4/rename.m4
   m4/stdbool.m4
+  m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/strerror.m4
   m4/string_h.m4

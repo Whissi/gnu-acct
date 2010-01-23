@@ -103,9 +103,9 @@ char *file_reader_get_entry(struct file_rd_info *fri)
 
           if (fri->backwards)
             {
-              long offset, max_recs, recs_to_read;
+              off_t offset, max_recs, recs_to_read;
 
-              if ((offset = ftell (fri->fp)) <= 0)
+              if ((offset = ftello (fri->fp)) <= 0)
                 goto no_more_records;
 
               /* Read as many records as possible, up to
@@ -124,8 +124,8 @@ char *file_reader_get_entry(struct file_rd_info *fri)
 
               if (debugging_enabled)
                 {
-                  long new_offset = ftell (fri->fp);
-                  fprintf (stddebug, "Did seek in file %ld --> %ld\n",
+                  off_t new_offset = ftello (fri->fp);
+                  fprintf (stddebug, "Did seek in file %lld --> %lld\n",
                            offset, new_offset);
                 }
 
@@ -195,6 +195,6 @@ no_more_records_no_close:
 
 void file_reader_print_file_and_line(FILE *out, struct file_rd_info *fri)
 {
-  fprintf (out, "%s:%ld", fri->name ? fri->name : "NULL?", fri->rec_number);
+  (void)fprintf(out, "%s:%ld", fri->name ? fri->name : "NULL?", fri->rec_number);
 }
 

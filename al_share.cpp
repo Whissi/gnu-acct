@@ -33,7 +33,7 @@ void parse_entries(void)
           print_utmp_record(rec, stddebug);
         }
 
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
       if (fix_ut_type_field (rec) && debugging_enabled)
         {
           (void)fprintf (stddebug, " MUNGED REC: ");
@@ -171,7 +171,7 @@ void parse_entries(void)
           if (expecting_clock)
             {
 #ifdef BACKWARDS
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
               if (print_which_recs >= 1)
 #endif
                 print_record(rec, 0, NULL, "old time", "");
@@ -204,7 +204,7 @@ void parse_entries(void)
                    see. */
 
 #ifdef BACKWARDS
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
           if (print_which_recs >= 1)
 #endif
             print_record(rec, 0, NULL, "new time", "");
@@ -218,17 +218,17 @@ void parse_entries(void)
 
           if (strncmp (rec->ut_name, "shutdown", NAME_LEN) == 0)
             {
-#if defined (HAVE_UT_TYPE) && (defined (RUN_LVL) || defined (BACKWARDS))
+#if defined (HAVE_STRUCT_UTMP_UT_TYPE) && (defined (RUN_LVL) || defined (BACKWARDS))
 do_shutdown:
 #endif
 
 #ifdef BACKWARDS
-#ifdef HAVE_UT_TYPE
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
               if (print_which_recs >= 1)
 #endif
                 print_record(rec, 0, NULL, "system down", "");
 
-#if defined (HAVE_UT_TYPE) && defined (RUN_LVL) && defined (__linux__)
+#if defined (HAVE_STRUCT_UTMP_UT_TYPE) && defined (RUN_LVL) && defined (__linux__)
 do_shutdown_part_2:
 #endif
               last_event = "down";
@@ -264,7 +264,7 @@ do_shutdown_part_2:
           /* Handle those types which simply print things out, rather
              than linking up logins/logouts. */
 
-#ifdef HAVE_UT_TYPE		/* just in case */
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE		/* just in case */
 
 #ifdef RUN_LVL
 
@@ -407,7 +407,7 @@ do_shutdown_part_2:
           break;
 #endif
 
-#endif /* HAVE_UT_TYPE */
+#endif /* HAVE_STRUCT_UTMP_UT_TYPE */
 
           /* FIXME: here we assume that unknown types are things that
              are to be treated as logins/logouts in the BSD sense.  If

@@ -1,3 +1,7 @@
+New in 6.5.3:
+
+  * Merged patches from Debian and Red Hat.
+
 New in 6.5.1:
 
   * GNUlib for compability, audited code... Reworked.
