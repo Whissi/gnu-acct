@@ -43,11 +43,11 @@ approved by the Foundation.
 @subtitle Version @value{VERSION}
 @subtitle @value{UPDATED}
 @author Noel Cragg @code{(noel@@gnu.ai.mit.edu)}
-@author Mrkus Gothe @code{(nietzsche@@lysator.liu.se)}
+@author Markus Gothe @code{(nietzsche@@lysator.liu.se)}
 @page
 
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1993, 1996, 1997, 1998, 2005, 2008, 2009  
+Copyright @copyright{} 1993, 1996, 1997, 1998, 2005, 2008, 2009, 2010
 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
@@ -84,9 +84,13 @@ Utilities.
 
 * ac::                          print statistics about connect time
 * accton::                      turns accounting on or off
+* last::                        list last logins of users and terms
 * lastcomm::                    list last commands executed
 * sa::                          print accounting statistics
 * dump-acct::                   print accounting file in human-readable form
+
+
+
 
 @end menu
 
@@ -121,7 +125,7 @@ to get held of such copies or information. Plans was made up to frame
 him, by interception.
 
 This momement Markus realized the words of Rob Savoye ``You cannot
-buy yourself free from guilt.'' He left the room with pridefull, for
+buy yourself free from guilt.'' He left the room with pride, for
 making a stand. However, sadly enogh, the CEO never realized that
 meaning. You cannot buy yourself free from guilt; A new revival had
 come for the GNU acccounting utilities and so a POSIX-standard.
@@ -149,6 +153,13 @@ printing totals by day or for all of the entries in the
 
 @item accton
 turns accounting on or off.
+
+@item last
+lists the logins on the system, most recent first.  With @code{last},
+you can search the @code{wtmp} file for a particular user or
+terminal name (to which the user was connected).  Of special interest
+are two fake users, @samp{reboot} and @samp{shutdown}, which are
+recorded when the system is shut down or reboots.
 
 @item lastcomm
 lists the commands executed on the system, most recent first, showing
@@ -528,7 +539,7 @@ greater than what it should be.
 anything but user processes.
 
 @c ----------------------------------------------------------------------
-@node accton, lastcomm, ac, Top
+@node accton, last, ac, Top
 @chapter @code{accton}
 
 @code{accton} turns process accounting on or off.  To save process
@@ -555,7 +566,146 @@ to standard output.
 @end table
 
 @c ----------------------------------------------------------------------
-@node lastcomm, sa, accton, Top
+@node last, lastcomm, accton, Top
+@chapter @code{last}
+
+@code{last} looks through the @code{wtmp} file (which records
+all logins/logouts) and prints information about connect times of users.
+Records are printed from most recent to least recent.  Records can be
+specified by tty and username.  tty names can be abbreviated: @samp{last
+0} is equivalent to @samp{last tty0}.
+
+Multiple arguments can be specified: @samp{last root console} will print
+all of the entries for the user @code{root} and all entries logged in on
+the @code{console} tty.
+
+The special users @code{reboot} and @code{shutdown} log in when the
+system reboots or (surprise) shuts down.  @samp{last reboot} will
+produce a record of reboot times.
+
+If @code{last} is interrupted by a quit signal, it prints out how far
+its search in the @code{wtmp} file had reached and then
+quits:
+@example
+weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
+weerapan  ttyq6    132.162.32.37    Mon Feb 15 19:07 - 19:21  (00:13)
+
+interrupted at Mon Feb 15 19:07:52 1993
+@end example
+
+@section Flags
+
+This program implements the features of regular u*x @code{last} with a few
+extra flags.  When @code{last} is invoked with no arguments, the output
+looks like this:
+@example
+gr151     ttyp2    ray.cs.oberlin.e Tue Feb 16 17:40   still logged in
+jhoggard  ttyp2    csts.cs.oberlin. Tue Feb 16 17:39 - 17:39  (00:00)
+jstarr    ttyp1    UNIX5.ANDREW.CMU Tue Feb 16 17:38   still logged in
+jberman   ttypb    132.162.32.25    Tue Feb 16 17:34   still logged in
+alee      ttyp7    csts.cs.oberlin. Tue Feb 16 17:34   still logged in
+jbrick    ttyp2    ocvaxa.cc.oberli Tue Feb 16 17:33 - 17:36  (00:03)
+mbastedo  ttypc    ocvaxa.cc.oberli Tue Feb 16 17:25 - 17:26  (00:01)
+rgoodste  ttypb    ocvaxa.cc.oberli Tue Feb 16 17:22 - 17:26  (00:03)
+huttar    ttyp9    lobby.ti.com     Tue Feb 16 17:19   still logged in
+klutz     ttyp3    132.162.32.25    Tue Feb 16 17:14   still logged in
+@end example
+
+@table @code
+@item --no-truncate-ftp-entries
+When printing out the information, don't chop the number part off of
+@code{ftp}@var{xxxx} entries.
+
+@item -@var{number}
+@itemx -n @var{number}
+@itemx --lines @var{number}
+Limit the number of lines that @code{last} prints.
+
+@item -f @var{filename}
+@itemx --file @var{filename}
+Read from the file @var{filename} instead of the system's
+@code{wtmp} file.
+
+@item -y
+@itemx --print-year
+Print out the year when displaying dates.
+
+@item -s
+@itemx --print-seconds
+Print out seconds when displaying dates and durations.
+
+@item --complain
+When the @code{wtmp} file has a problem (a time-warp, missing
+record, or whatever), print out an appropriate error.
+
+@item -x
+@itemx --more-records
+Print out run level changes, shutdowns, and time changes in addition to
+the normal records.
+
+@item -a
+@itemx --all-records
+Print out all records in the @code{wtmp} file.
+
+@item -i
+@itemx --ip-address
+Some machines store the IP address of a connection in a utmp record.
+Enabling this option makes @code{last} print the IP address instead of
+the hostname.
+
+@item --tw-leniency @var{value}
+Set the time warp leniency value (in seconds).  See the @code{ac}
+chapter for information.
+
+@item --tw-suspicious @var{value}
+Set the time warp suspicious value (in seconds).  See the @code{ac}
+chapter for information.
+
+@item -w
+@itemx --wide
+By default, @code{last} tries to print each entry within in 80 columns.
+Use this option to instruct @code{last} to print out the fields in the
+@code{wtmp} file with full field widths.
+
+@item --debug
+Print verbose internal information.
+
+@item -V
+@itemx --version
+Print @code{last}'s version number.
+
+@item -h
+@itemx --help
+Print @code{last}'s usage string and default locations of system files
+to standard output.
+@end table
+
+@section Problems
+
+@unnumberedsubsubsec The Clock Change Problem
+
+Of the @code{last}s I've tried, all of them have had problems parsing a
+system clock change. Instead of modifying the entries that have been
+read, they just ignore the change and give you incorrect values.  GNU
+@code{last} knows about clock changes and prints the correct times.
+
+@noindent
+@strong{TANGIBLE RESULT:} if you @code{diff} the output of your
+@code{last} and GNU @code{last}, entries after (before, rather) a clock
+change will be off by the amount of the clock change.
+
+@unnumberedsubsubsec The Ftp Problem
+
+Most @code{last}s that I've examined have the same problem here as
+@code{ac} does---they log everyone out as soon as they see an ftp entry.
+
+@noindent
+@strong{TANGIBLE RESULT:} GNU @code{last} will reflect the correct time
+spent in an ftp session, so the totals that it gives will most likely be
+greater than those given by the system @code{last}.
+
+@c ----------------------------------------------------------------------
+@node lastcomm, sa, last, Top
 @chapter @code{lastcomm}
 
 @code{lastcomm} prints out information about previously executed
@@ -884,7 +1034,7 @@ through.
 
 
 @c ----------------------------------------------------------------------
-@node dump-acct, , sa, Top
+@node dump-acct,  , sa, Top
 @chapter @code{dump-acct}
 
 @code{dump-acct} dumps some of the contents of one or more @code{acct}

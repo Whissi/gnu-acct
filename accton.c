@@ -48,12 +48,9 @@ extern int errno;
 
 char *program_name;		/* name of this executable */
 
-/* protos */
-
-void print_option_error PARAMS((void));
-void print_version PARAMS((void));
-void print_usage PARAMS((void));
-void print_help PARAMS((void));
+void print_option_error (void);
+void print_version (void);
+void print_help (void);
 
 /* code */
 
@@ -79,7 +76,7 @@ void print_version(void)
  * to print usage (kind of very brief help)
  */
 
-void print_usage(void)
+void give_usage(void)
 {
   (void)printf ("Usage: %s [OPTION] on|off|ACCOUNTING_FILE\n", program_name);
 }
@@ -90,7 +87,7 @@ void print_usage(void)
 
 void print_help(void)
 {
-  print_usage ();
+  give_usage ();
 
   printf ("\n\
           Turns process accounting on or off, or changes the file where this\n\
@@ -127,12 +124,12 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "version", no_argument, NULL, 1
-          },
-          { "help", no_argument, NULL, 2 },
-          { 0, 0, 0, 0 }
-        };
+      {
+        { "version", no_argument, NULL, 1
+        },
+        { "help", no_argument, NULL, 2 },
+        { 0, 0, 0, 0 }
+      };
 
       c = getopt_long (argc, argv, "hV", long_options, &option_index);
 
@@ -150,7 +147,7 @@ int main(int argc, char *argv[])
           print_help ();
           exit (EXIT_SUCCESS);
         default:
-          print_usage ();
+          give_usage ();
           print_option_error ();
           exit (EXIT_FAILURE);
         }
@@ -164,7 +161,7 @@ int main(int argc, char *argv[])
   if (1 < number_args)
     {
       printf ("%s: too many arguments\n", program_name);
-      print_usage ();
+      give_usage ();
       print_option_error ();
       exit (EXIT_FAILURE);
     }
@@ -172,7 +169,7 @@ int main(int argc, char *argv[])
   else if (0 == number_args)
     {
       printf ("%s: no arguments\n", program_name);
-      print_usage ();
+      give_usage ();
       print_option_error ();
       exit (EXIT_FAILURE);
     }

@@ -73,6 +73,7 @@ char *alloca ();
 #include <pwd.h>
 
 #include "common.h"
+#include "files.h"
 #include "pacct_rd.h"
 #include "utmp_rd.h"
 #ifdef HAVE_GETOPT_LONG_ONLY
@@ -90,35 +91,35 @@ char *alloca ();
 /* This is the struct we read/write from/to usracct and savacct. */
 
 struct stats
-  {
-    unsigned long num_calls;	/* how many times this command called */
+{
+  unsigned long num_calls;	/* how many times this command called */
 #ifdef HAVE_ACUTIME
-    double user_time;		/* user time */
+  double user_time;		/* user time */
 #endif
 #ifdef HAVE_ACSTIME
-    double sys_time;		/* system time */
+  double sys_time;		/* system time */
 #endif
 #ifdef HAVE_ACETIME
-    double elapsed_time;		/* real time */
+  double elapsed_time;		/* real time */
 #endif
 #ifdef HAVE_ACMEM
-    double mem_usage;		/* total memory usage */
+  double mem_usage;		/* total memory usage */
 #endif
 #ifdef HAVE_ACIO
-    double disk_io;		/* how many disk I/O operations */
+  double disk_io;		/* how many disk I/O operations */
 #endif
 #ifdef HAVE_PAGING
-    double minor_faults;
-    double major_faults;
-    double swap_count;
+  double minor_faults;
+  double major_faults;
+  double swap_count;
 #endif
-  };
+};
 
 struct usracct
-  {
-    char name[NAME_LEN];		/* should we be using the val from utmp_rd? */
-    struct stats s;
-  };
+{
+  char name[NAME_LEN];		/* should we be using the val from utmp_rd? */
+  struct stats s;
+};
 
 #ifndef HAVE_GETPAGESIZE
 #define getpagesize() 4096
@@ -138,31 +139,31 @@ int debugging_enabled = 0;	/* print internal information relating
 struct hashtab *user_table;
 
 struct user_data
-  {
-    struct stats s;
-  };
+{
+  struct stats s;
+};
 
 /* Hash table of entries broken down by command */
 
 struct hashtab *command_table;
 
 struct command_key
-  {
-    char comm[COMM_LEN];		/* command name */
-    short fork_flag;		/* nonzero if fork but no exec */
-  };
+{
+  char comm[COMM_LEN];		/* command name */
+  short fork_flag;		/* nonzero if fork but no exec */
+};
 
 struct command_data
-  {
-    struct stats s;
-    short junked;
-  };
+{
+  struct stats s;
+  short junked;
+};
 
 struct savacct
-  {
-    struct command_key c;
-    struct stats s;
-  };
+{
+  struct command_key c;
+  struct stats s;
+};
 
 
 struct stats stats_totals;	/* total of all commands */
@@ -255,26 +256,23 @@ int always_yes = 0;		/* nonzero means always answer yes to
 				   a query */
 static unsigned int hzval;
 
-/* prototypes */
-
-void give_usage PARAMS((void));
-void write_savacct_file PARAMS((char *));
-void write_usracct_file PARAMS((char *));
-void parse_savacct_entries PARAMS((char *));
-void parse_usracct_entries PARAMS((char *));
-void parse_acct_entries PARAMS((void));
-void init_flags_and_data PARAMS((void));
-unsigned long hash_name PARAMS((char *));
-void update_command_list PARAMS((char *, struct stats *, short fork_flag));
-void update_user_list PARAMS((char *, struct stats *));
-int compare_sum_entry PARAMS((struct hashtab_elem **, struct hashtab_elem **));
-int compare_user_entry PARAMS((struct hashtab_elem **,
-                               struct hashtab_elem **));
-int compare_stats_entry PARAMS((struct stats *, struct stats *));
-void print_command_list PARAMS((void));
-void print_user_list PARAMS((void));
-int non_printable PARAMS((char *, int));
-int ask_if_junkable PARAMS((char *, int));
+void write_savacct_file (char *);
+void write_usracct_file (char *);
+void parse_savacct_entries (char *);
+void parse_usracct_entries (char *);
+void parse_acct_entries (void);
+void init_flags_and_data (void);
+unsigned long hash_name (char *);
+void update_command_list (char *, struct stats *, short fork_flag);
+void update_user_list (char *, struct stats *);
+int compare_sum_entry (struct hashtab_elem **, struct hashtab_elem **);
+int compare_user_entry (struct hashtab_elem **,
+                        struct hashtab_elem **);
+int compare_stats_entry (struct stats *, struct stats *);
+void print_command_list (void);
+void print_user_list (void);
+int non_printable (char *, int);
+int ask_if_junkable (char *, int);
 
 /* code */
 
@@ -304,73 +302,73 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "debug", no_argument, NULL, 1
-          },
-          { "version", no_argument, NULL, 2 },
-          { "help", no_argument, NULL, 3 },
-          { "other-acct-file", required_argument, NULL, 4 },
-          { "print-seconds", no_argument, NULL, 5 },
-          { "dont-read-summary-files", no_argument, NULL, 6 },
-          { "list-all-names", no_argument, NULL, 7 },
-          { "other-savacct-file", 1, NULL, 9 },
-          { "print-users", no_argument, NULL, 12 },
-          { "percentages", no_argument, NULL, 14 },
-          { "not-interactive", no_argument, NULL, 19 },
-          { "user-summary", no_argument, NULL, 20 },
-          { "reverse-sort", no_argument, NULL, 21 },
-          { "merge", no_argument, NULL, 22 },
-          { "threshold", required_argument, NULL, 23 },
-          { "separate-forks", no_argument, NULL, 24 },
-          { "other-usracct-file", required_argument, NULL, 25 },
+      {
+        { "debug", no_argument, NULL, 1
+        },
+        { "version", no_argument, NULL, 2 },
+        { "help", no_argument, NULL, 3 },
+        { "other-acct-file", required_argument, NULL, 4 },
+        { "print-seconds", no_argument, NULL, 5 },
+        { "dont-read-summary-files", no_argument, NULL, 6 },
+        { "list-all-names", no_argument, NULL, 7 },
+        { "other-savacct-file", 1, NULL, 9 },
+        { "print-users", no_argument, NULL, 12 },
+        { "percentages", no_argument, NULL, 14 },
+        { "not-interactive", no_argument, NULL, 19 },
+        { "user-summary", no_argument, NULL, 20 },
+        { "reverse-sort", no_argument, NULL, 21 },
+        { "merge", no_argument, NULL, 22 },
+        { "threshold", required_argument, NULL, 23 },
+        { "separate-forks", no_argument, NULL, 24 },
+        { "other-usracct-file", required_argument, NULL, 25 },
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
-          { "separate-times", no_argument, NULL, 8
-          },
+        { "separate-times", no_argument, NULL, 8
+        },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
-          { "sort-ksec", no_argument, NULL, 10
-          },
+        { "sort-ksec", no_argument, NULL, 10
+        },
 #endif
 
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
-          { "print-ratio", no_argument, NULL, 11
-          },
+        { "print-ratio", no_argument, NULL, 11
+        },
 #endif
 
 #ifdef HAVE_ACIO
-          { "sort-tio", no_argument, NULL, 13 },
+        { "sort-tio", no_argument, NULL, 13 },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-          { "sort-sys-user-div-calls", no_argument, NULL, 15
-          },
+        { "sort-sys-user-div-calls", no_argument, NULL, 15
+        },
 #endif
 
 #ifdef HAVE_ACIO
-          { "sort-avio", no_argument, NULL, 16 },
+        { "sort-avio", no_argument, NULL, 16 },
 #endif
 
 #ifdef HAVE_ACMEM
-          { "sort-cpu-avmem", no_argument, NULL, 17 },
+        { "sort-cpu-avmem", no_argument, NULL, 17 },
 #endif
 
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME)
-          /* Don't want this if it's the default */
-          { "sort-num-calls", no_argument, NULL, 18
-          },
+        /* Don't want this if it's the default */
+        { "sort-num-calls", no_argument, NULL, 18
+        },
 #endif
 #ifdef HAVE_ACETIME
-          { "sort-real-time", no_argument, NULL, 26 },
+        { "sort-real-time", no_argument, NULL, 26 },
 #endif
-          { "ahz", required_argument, NULL, 27 },
+        { "ahz", required_argument, NULL, 27 },
 #ifdef HAVE_PAGING
-          { "show-paging", no_argument, NULL, 28 },
-          { "show-paging-avg", no_argument, NULL, 29 },
+        { "show-paging", no_argument, NULL, 28 },
+        { "show-paging-avg", no_argument, NULL, 29 },
 #endif
-          { 0, 0, 0, 0 }
-        };
+        { 0, 0, 0, 0 }
+      };
 
       c = getopt_long (argc, argv,
                        "ahV"
@@ -1284,7 +1282,7 @@ void update_command_list(char *comm, struct stats *s, short fork_flag)
   strncpy (ck.comm, comm, COMM_LEN);
   ck.fork_flag = fork_flag;
 
-  he = hashtab_find (command_table, &ck, sizeof (ck));
+  he = hashtab_find (command_table, &ck, (unsigned int)sizeof (ck));
   if (he == NULL)
     {
       struct command_data cd;
@@ -1325,7 +1323,7 @@ void update_user_list(char *name, struct stats *s)
       print_stats_raw (s, stddebug);
     }
 
-  he = hashtab_find (user_table, name, NAME_LEN);
+  he = hashtab_find (user_table, name, (unsigned int)NAME_LEN);
 
   if (he == NULL)
     {

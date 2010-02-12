@@ -1,3 +1,8 @@
+Thu Feb 11 23:30:05 2010 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Fixed includes for BSDen. Removed last K & R remainings.
+	  Bump version to 6.5.4.
+
 Sun Sep 05 18:30:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
 
 	* Minor fixes, included getop, mktime, rename & xmalloc

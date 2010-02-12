@@ -15,6 +15,11 @@
 # include "linux-acct.h"
 #else
 # include <sys/acct.h>
+	#ifdef __FreeBSD__
+	# if __FreeBSD_version >= 700100 /* FreeBSD 7.0-STABLE */
+	# define acct acctv2
+	# endif
+	#endif
 #endif
 
 #include <utmp.h>

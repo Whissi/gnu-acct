@@ -27,6 +27,7 @@
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "file_rd.h"
 #include "utmp_rd.h"
 
@@ -56,9 +57,9 @@ void add_utmp_file(char *name)
    Return 0 if no more entries. */
 
 struct utmp *utmp_get_entry(void)
-  {
-    return (struct utmp *)file_reader_get_entry(utmp_info);
-  }
+{
+  return (struct utmp *)file_reader_get_entry(utmp_info);
+}
 
 void print_utmp_record(struct utmp *rec, FILE *out)
 {

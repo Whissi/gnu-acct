@@ -30,6 +30,7 @@ MA 02139, USA.
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "utmp_rd.h"
 #ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
@@ -42,7 +43,7 @@ int debugging_enabled = 0;	/* no -- we don't care about bad
 				   records or the file-reading
 				   algorithms. */
 
-static void give_usage(void)
+void give_usage(void)
 {
   printf ("Usage: %s [-hrR] [-n <recs>] <files>\n\
           [--num <recs>] [--raw] [--reverse] [--help]\n",
@@ -64,14 +65,14 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "reverse", no_argument, NULL, 1
-          },
-          { "help", no_argument, NULL, 2 },
-          { "num", required_argument, NULL, 3 },
-          { "raw", no_argument, NULL, 4 },
-          { 0, 0, 0, 0 },
-        };
+      {
+        { "reverse", no_argument, NULL, 1
+        },
+        { "help", no_argument, NULL, 2 },
+        { "num", required_argument, NULL, 3 },
+        { "raw", no_argument, NULL, 4 },
+        { 0, 0, 0, 0 },
+      };
 
       c = getopt_long (argc, argv, "rhn:R", long_options, &option_index);
 

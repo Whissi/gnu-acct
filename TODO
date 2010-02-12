@@ -5,7 +5,6 @@ Things to be done in the near future:
 * Review the Info manual
 * Improve output of commands (i.e. the default output of 'ac')
 * Simplify the option handling code (getopt)
-* Remove support for KnR C (in the name of simplification)
 
 --------------------------------------------------------------
 OLD TODO: (the more long-term items)

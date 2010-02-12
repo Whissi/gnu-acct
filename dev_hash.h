@@ -29,6 +29,14 @@ MA 02139, USA.
 #ifndef DEV_HASH_H
 #define DEV_HASH_H
 
-char *dev_gnu_name PARAMS((long dev_num));
+char *dev_gnu_name (long dev_num);
+
+struct pts_params
+{
+  char *utsname;		/* os name */
+  int base;			/* base major number */
+  int max;			/* max # of devices */
+  int mod;			/* number of minors per major */
+};
 
 #endif /* DEV_HASH_H */

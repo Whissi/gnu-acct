@@ -44,6 +44,7 @@ MA 02139, USA.
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "utmp_rd.h"
 #ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
@@ -132,9 +133,9 @@ int print_zero_totals = 0;	/* -z flag */
 struct hashtab *user_totals = NULL;
 
 struct user_data
-  {
-    unsigned long time;
-  };
+{
+  unsigned long time;
+};
 
 /* A hash table which contains the names that the user wants
    printed.  The names themselves are the keys for this table. */
@@ -147,23 +148,22 @@ struct hashtab *names = NULL;
 struct hashtab *login_table;
 
 struct login_data
-  {
-    char ut_name[NAME_LEN];
-    time_t time;
-  };
+{
+  char ut_name[NAME_LEN];
+  time_t time;
+};
 
 /* prototypes */
 
-void give_usage PARAMS((void));
-void do_statistics PARAMS((char *));
-void log_in PARAMS((struct utmp *));
-void update_user_time PARAMS((char *, time_t, char *));
-void log_out PARAMS((struct utmp *));
-void log_everyone_out PARAMS((time_t, int, int, char *));
-void parse_entries PARAMS((void));
-void do_totals PARAMS((time_t *, time_t, int, int, char *));
-void update_system_time PARAMS((time_t));
-time_t midnight_after_me PARAMS((time_t));
+void do_statistics (char *);
+void log_in (struct utmp *);
+void update_user_time (char *, time_t, char *);
+void log_out (struct utmp *);
+void log_everyone_out (time_t, int, int, char *);
+void parse_entries (void);
+void do_totals (time_t *, time_t, int, int, char *);
+void update_system_time (time_t);
+time_t midnight_after_me (time_t);
 
 /* code */
 
@@ -184,26 +184,26 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "complain", no_argument, NULL, 1
-          },
-          { "reboots", no_argument, NULL, 2 },
-          { "supplants", no_argument, NULL, 3 },
-          { "timewarps", no_argument, NULL, 4 },
-          { "print-zeros", no_argument, NULL, 5 },
-          { "debug", no_argument, NULL, 6 },
-          { "tw-leniency", required_argument, NULL, 7 },
-          { "version", no_argument, NULL, 8 },
-          { "help", no_argument, NULL, 9 },
-          { "daily-totals", no_argument, NULL, 10 },
-          { "individual-totals", no_argument, NULL, 11 },
-          { "file", required_argument, NULL, 12 },
-          { "compatibility", no_argument, NULL, 13 },
-          { "print-year", no_argument, NULL, 14 },
-          { "all-days", no_argument, NULL, 15 },
-          { "tw-suspicious", required_argument, NULL, 16 },
-          { 0, 0, 0, 0 }
-        };
+      {
+        { "complain", no_argument, NULL, 1
+        },
+        { "reboots", no_argument, NULL, 2 },
+        { "supplants", no_argument, NULL, 3 },
+        { "timewarps", no_argument, NULL, 4 },
+        { "print-zeros", no_argument, NULL, 5 },
+        { "debug", no_argument, NULL, 6 },
+        { "tw-leniency", required_argument, NULL, 7 },
+        { "version", no_argument, NULL, 8 },
+        { "help", no_argument, NULL, 9 },
+        { "daily-totals", no_argument, NULL, 10 },
+        { "individual-totals", no_argument, NULL, 11 },
+        { "file", required_argument, NULL, 12 },
+        { "compatibility", no_argument, NULL, 13 },
+        { "print-year", no_argument, NULL, 14 },
+        { "all-days", no_argument, NULL, 15 },
+        { "tw-suspicious", required_argument, NULL, 16 },
+        { 0, 0, 0, 0 }
+      };
 
       c = getopt_long (argc, argv, "adf:hpVyz", long_options, &option_index);
 
@@ -418,7 +418,7 @@ void log_in(struct utmp *entry)
       return;
     }
 
-  he = hashtab_find(login_table, entry->ut_line, TTY_LEN);
+  he = hashtab_find(login_table, entry->ut_line, (unsigned int)TTY_LEN);
 
   if (he != NULL)
     {
@@ -439,7 +439,7 @@ void log_in(struct utmp *entry)
       if (nasty_supplant)
         update_user_time(l->ut_name, entry->ut_time - l->time, "supplant");
 
-      strncpy (l->ut_name, entry->ut_name, NAME_LEN);
+      (void)strncpy (l->ut_name, entry->ut_name, (size_t)NAME_LEN);
       l->time = entry->ut_time;
     }
   else
@@ -449,11 +449,11 @@ void log_in(struct utmp *entry)
 
       struct login_data l;
 
-      strncpy (l.ut_name, entry->ut_name, NAME_LEN);
+      (void)strncpy (l.ut_name, entry->ut_name, (size_t)NAME_LEN);
       l.time = entry->ut_time;
 
       he = hashtab_create (login_table, entry->ut_line, TTY_LEN);
-      hashtab_set_value (he, &l, sizeof (l));
+      hashtab_set_value (he, &l, sizeof(l));
     }
 }
 
@@ -468,15 +468,15 @@ void log_out(struct utmp *entry)
       if (print_file_problems)
         {
           utmp_print_file_and_line (stddebug);
-          fprintf (stddebug,
-                   ": problem: trying to hash rec with ut_line == NULL\n");
+          (void)fprintf (stddebug,
+                         ": problem: trying to hash rec with ut_line == NULL\n");
         }
       return;
     }
 
   /* Match the most recent login on the terminal. */
 
-  he = hashtab_find (login_table, entry->ut_line, TTY_LEN);
+  he = hashtab_find (login_table, entry->ut_line, (unsigned int)TTY_LEN);
 
   if (he != NULL)
     {
@@ -528,11 +528,11 @@ void do_totals(time_t *next_midnight, time_t current_time,
           struct tm *temp_tm = localtime (&temp_time);
           if (print_year)
 #ifdef HAVE_SNPRINTF
-            (void)snprintf(month_day_string, sizeof(month_day_string), "%s %2d %4d",
+            (void)snprintf(month_day_string, (size_t)sizeof(month_day_string), "%s %2d %4d",
                            months[temp_tm->tm_mon], temp_tm->tm_mday,
                            1900 + temp_tm->tm_year);
           else
-            (void)snprintf(month_day_string, sizeof(month_day_string),"%s %2d",
+            (void)snprintf(month_day_string, (size_t)sizeof(month_day_string),"%s %2d",
                            months[temp_tm->tm_mon], temp_tm->tm_mday);
 #else
             (void)sprintf(month_day_string, "%s %2d %4d",
@@ -583,7 +583,7 @@ void do_statistics(char *date_string)
 
       /* print if the user table is null or the name is on the command line */
 
-      if ((names == NULL) || hashtab_find (names, username, NAME_LEN))
+      if ((names == NULL) || hashtab_find (names, username, (unsigned int)NAME_LEN))
         {
           struct user_data *u = hashtab_get_value (he);
 
@@ -634,12 +634,12 @@ void update_user_time(char *name, time_t the_time, char *debug_label)
     }
 
   if (debugging_enabled
-      && ((names == NULL) || hashtab_find (names, name, NAME_LEN)))
+      && ((names == NULL) || hashtab_find (names, name, (unsigned int)NAME_LEN)))
     fprintf (stddebug, "\t\t\t\t\t%*.2f %-*.*s (%s)\n",
              NAME_LEN, (double) the_time / 3600.0,
              NAME_LEN, NAME_LEN, name, debug_label);
 
-  he = hashtab_find (user_totals, name, NAME_LEN);
+  he = hashtab_find (user_totals, name, (unsigned int)NAME_LEN);
   if (he == NULL)
     {
       struct user_data u;
@@ -666,7 +666,7 @@ time_t midnight_after_me(time_t now_time)
   struct tm *tm_ptr, temp_tm;
 
   tm_ptr = localtime (&now_time);
-  memcpy ((void *)&temp_tm, (void *)tm_ptr, sizeof (struct tm));
+  memcpy ((void *)&temp_tm, (void *)tm_ptr, (size_t)sizeof(struct tm));
   temp_tm.tm_sec = 0;
   temp_tm.tm_min = 0;
   temp_tm.tm_hour = 0;

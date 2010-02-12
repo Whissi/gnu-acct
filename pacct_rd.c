@@ -21,6 +21,7 @@
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "file_rd.h"
 #include "pacct_rd.h"
 
@@ -33,7 +34,7 @@ extern int ahz;
 #define BUFFERED_RECS 256
 
 #ifdef LINUX_MULTIFORMAT
-static int convert_acct_record_read PARAMS((struct acct *rec_in, struct acct *rec_out));
+static int convert_acct_record_read (struct acct *rec_in, struct acct *rec_out);
 #endif
 
 /* Set up pacct handling routines */
@@ -59,27 +60,27 @@ void add_pacct_file(char *name)
    Return 0 if no more entries. */
 
 struct acct *pacct_get_entry(void)
-  {
+{
 #ifdef LINUX_MULTIFORMAT
-    struct acct *entry;
-    static struct acct buf;
+  struct acct *entry;
+  static struct acct buf;
 
-    /* Convert acct file formats on-the-fly.
-       A non-zero return value from convert_acct_record_read() indicates that
-       this entry doesn't contain decodable information and is to
-       be skipped. */
-    do
-      {
-        entry = (struct acct *) file_reader_get_entry (pacct_info);
-        if (entry == (struct acct *) 0)
-          return entry;
-      }
-    while (convert_acct_record_read(entry, &buf) != 0);
-    return &buf;
+  /* Convert acct file formats on-the-fly.
+     A non-zero return value from convert_acct_record_read() indicates that
+     this entry doesn't contain decodable information and is to
+     be skipped. */
+  do
+    {
+      entry = (struct acct *) file_reader_get_entry (pacct_info);
+      if (entry == (struct acct *) 0)
+        return entry;
+    }
+  while (convert_acct_record_read(entry, &buf) != 0);
+  return &buf;
 #else
-    return (struct acct *) file_reader_get_entry (pacct_info);
+  return (struct acct *) file_reader_get_entry (pacct_info);
 #endif
-  }
+}
 
 
 void print_pacct_record(struct acct *rec, FILE *out)

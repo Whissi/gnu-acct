@@ -35,6 +35,7 @@ char *alloca ();
 #include <pwd.h>
 
 #include "common.h"
+#include "files.h"
 #include "hashtab.h"
 #include "dev_hash.h"
 
@@ -66,9 +67,9 @@ char *alloca ();
 struct hashtab *dev_table = NULL;
 
 struct dev_data
-  {
-    char *name;			/* name of the device */
-  };
+{
+  char *name;			/* name of the device */
+};
 
 /* hash all possible /dev/pts devices as they only appear
  *  in the filesystem when the device is active.
@@ -81,16 +82,10 @@ setup_pts_devices ()
   struct utsname uts;
   struct dev_data dd;
   int i;
-  struct pts_params
-    {
-      char *utsname;		/* os name */
-      int base;			/* base major number */
-      int max;			/* max # of devices */
-      int mod;			/* number of minors per major */
-    } *pts_ent, pts_table[] =
+  struct pts_params *pts_ent, pts_table[] =
   {
     {"Linux", 136, 2048, 256},
-    { }
+    {NULL}
   };
 
   if ( uname (&uts) )
@@ -206,7 +201,7 @@ char *dev_gnu_name(long dev_num)
       setup_devices ("/dev/pts");  /* perhaps */
     }
 
-  he = hashtab_find (dev_table, (void *) &dev_num, sizeof (dev_num));
+  he = hashtab_find (dev_table, (void *) &dev_num, (unsigned int)sizeof (dev_num));
 
   if (he != NULL)
     {

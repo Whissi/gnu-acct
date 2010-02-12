@@ -50,6 +50,7 @@ MA 02139, USA.  */
 #include <pwd.h>
 
 #include "common.h"
+#include "files.h"
 #include "uid_hash.h"
 #include "dev_hash.h"
 #include "pacct_rd.h"
@@ -86,14 +87,9 @@ struct hashtab *tty_list = NULL;     /* lookup table for ttys */
 struct hashtab *command_list = NULL; /* lookup table for commands */
 struct hashtab *all_list = NULL;     /* lookup table for users/ttys/cmds */
 
-
-/* protos */
-
-void give_usage PARAMS((void));
-void parse_entries PARAMS((void));
-char *dev_gnu_name PARAMS((long));
-int get_entry PARAMS((struct acct **));
-int desired_entry PARAMS((char *, char *, char *));
+char *dev_gnu_name (long);
+int get_entry (struct acct **);
+int desired_entry (char *, char *, char *);
 
 /* code */
 
@@ -113,24 +109,24 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "debug", no_argument, NULL, 1
-          },
-          { "version", no_argument, NULL, 2 },
-          { "help", no_argument, NULL, 3 },
-          { "file", required_argument, NULL, 4 },
-          { "strict-match", no_argument, NULL, 5 },
-          { "print-controls", no_argument, NULL, 6 },
-          { "user", required_argument, NULL, 7 },
-          { "tty", required_argument, NULL, 8 },
-          { "command", required_argument, NULL, 9 },
-          { "ahz", required_argument, NULL, 10 },
+      {
+        { "debug", no_argument, NULL, 1
+        },
+        { "version", no_argument, NULL, 2 },
+        { "help", no_argument, NULL, 3 },
+        { "file", required_argument, NULL, 4 },
+        { "strict-match", no_argument, NULL, 5 },
+        { "print-controls", no_argument, NULL, 6 },
+        { "user", required_argument, NULL, 7 },
+        { "tty", required_argument, NULL, 8 },
+        { "command", required_argument, NULL, 9 },
+        { "ahz", required_argument, NULL, 10 },
 #ifdef HAVE_PAGING
-          { "show-paging", no_argument, NULL, 11 },
+        { "show-paging", no_argument, NULL, 11 },
 #endif
-          { "forwards", no_argument, NULL, 12 },
-          { 0, 0, 0, 0 }
-        };
+        { "forwards", no_argument, NULL, 12 },
+        { 0, 0, 0, 0 }
+      };
 
       c = getopt_long (argc, argv, "f:hV"
 #ifdef HAVE_PAGING
@@ -477,13 +473,13 @@ int desired_entry(char *uid, char *dev, char *comm)
       lists will only contain a single item, we can use
       hashtab_find to see if that item matches the given string. */
 
-      if (tty_list && hashtab_find (tty_list, dev, 0) == NULL)
+      if (tty_list && hashtab_find (tty_list, dev, (unsigned int)0) == NULL)
         return 0;
 
-      if (user_list && hashtab_find (user_list, uid, 0) == NULL)
+      if (user_list && hashtab_find (user_list, uid, (unsigned int)0) == NULL)
         return 0;
 
-      if (command_list && hashtab_find (command_list, comm, COMM_LEN) == NULL)
+      if (command_list && hashtab_find (command_list, comm, (unsigned int)COMM_LEN) == NULL)
         return 0;
 
       /* found all of them */
@@ -494,18 +490,18 @@ int desired_entry(char *uid, char *dev, char *comm)
       /* Return 1 for any match. */
 
       if (all_list
-          && (hashtab_find (all_list, uid, 0)
-              || hashtab_find (all_list, dev, 0)
-              || hashtab_find (all_list, comm, COMM_LEN)))
+          && (hashtab_find (all_list, uid, (unsigned int)0)
+              || hashtab_find (all_list, dev, (unsigned int)0)
+              || hashtab_find (all_list, comm, (unsigned int)COMM_LEN)))
         return 1;
 
-      if (tty_list && hashtab_find (tty_list, dev, 0))
+      if (tty_list && hashtab_find (tty_list, dev, (unsigned int)0))
         return 1;
 
-      if (user_list && hashtab_find (user_list, uid, 0))
+      if (user_list && hashtab_find (user_list, uid, (unsigned int)0))
         return 1;
 
-      if (command_list && hashtab_find (command_list, comm, COMM_LEN))
+      if (command_list && hashtab_find (command_list, comm, (unsigned int)COMM_LEN))
         return 1;
 
       /* didn't match anything */

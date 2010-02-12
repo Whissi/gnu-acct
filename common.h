@@ -41,18 +41,15 @@ MA 02139, USA.
 #define SEEK_END 2
 #endif
 
-#if PROTOTYPES
-#define PARAMS(x) x
-#else
-#define PARAMS(x) ()
-#endif /* PROTOTYPES */
+void fatal (char *);
+FILE *file_open (char *, int);
 
-void fatal PARAMS((char *));
-FILE *file_open PARAMS((char *, int));
+void give_usage (void);
+void parse_entries (void);
 
-void print_wtmp_file_location PARAMS((void));
-void print_acct_file_location PARAMS((void));
-void print_acct_file_locations PARAMS((void));
+void print_wtmp_file_location (void);
+void print_acct_file_location (void);
+void print_acct_file_locations (void);
 
 #ifdef ACUTIME_COMPT
 # define ACUTIME_2_DOUBLE(x) (comp_t_2_double(x))

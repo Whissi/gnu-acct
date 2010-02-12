@@ -193,70 +193,70 @@
 /* Define to 1 if the system has the type `struct random_data'. */
 #define HAVE_STRUCT_RANDOM_DATA 1
 
-/* Define to 1 if `ut_exit' is member of `struct utmpx'. */
+/* Define to 1 if `ut_exit' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_EXIT 1
 
-/* Define to 1 if `ut_exit.e_exit' is member of `struct utmpx'. */
+/* Define to 1 if `ut_exit.e_exit' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_EXIT_E_EXIT 1
 
-/* Define to 1 if `ut_exit.e_termination' is member of `struct utmpx'. */
+/* Define to 1 if `ut_exit.e_termination' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_EXIT_E_TERMINATION 1
 
-/* Define to 1 if `ut_exit.ut_exit' is member of `struct utmpx'. */
+/* Define to 1 if `ut_exit.ut_exit' is a member of `struct utmpx'. */
 /* #undef HAVE_STRUCT_UTMPX_UT_EXIT_UT_EXIT */
 
-/* Define to 1 if `ut_exit.ut_termination' is member of `struct utmpx'. */
+/* Define to 1 if `ut_exit.ut_termination' is a member of `struct utmpx'. */
 /* #undef HAVE_STRUCT_UTMPX_UT_EXIT_UT_TERMINATION */
 
-/* Define to 1 if `ut_host' is member of `struct utmpx'. */
+/* Define to 1 if `ut_host' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_HOST 1
 
-/* Define to 1 if `ut_id' is member of `struct utmpx'. */
+/* Define to 1 if `ut_id' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_ID 1
 
-/* Define to 1 if `ut_name' is member of `struct utmpx'. */
+/* Define to 1 if `ut_name' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_NAME 1
 
-/* Define to 1 if `ut_pid' is member of `struct utmpx'. */
+/* Define to 1 if `ut_pid' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_PID 1
 
-/* Define to 1 if `ut_type' is member of `struct utmpx'. */
+/* Define to 1 if `ut_type' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_TYPE 1
 
-/* Define to 1 if `ut_user' is member of `struct utmpx'. */
+/* Define to 1 if `ut_user' is a member of `struct utmpx'. */
 #define HAVE_STRUCT_UTMPX_UT_USER 1
 
-/* Define to 1 if `ut_exit' is member of `struct utmp'. */
+/* Define to 1 if `ut_exit' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_EXIT 1
 
-/* Define to 1 if `ut_exit.e_exit' is member of `struct utmp'. */
+/* Define to 1 if `ut_exit.e_exit' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_EXIT_E_EXIT 1
 
-/* Define to 1 if `ut_exit.e_termination' is member of `struct utmp'. */
+/* Define to 1 if `ut_exit.e_termination' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_EXIT_E_TERMINATION 1
 
-/* Define to 1 if `ut_exit.ut_exit' is member of `struct utmp'. */
+/* Define to 1 if `ut_exit.ut_exit' is a member of `struct utmp'. */
 /* #undef HAVE_STRUCT_UTMP_UT_EXIT_UT_EXIT */
 
-/* Define to 1 if `ut_exit.ut_termination' is member of `struct utmp'. */
+/* Define to 1 if `ut_exit.ut_termination' is a member of `struct utmp'. */
 /* #undef HAVE_STRUCT_UTMP_UT_EXIT_UT_TERMINATION */
 
-/* Define to 1 if `ut_host' is member of `struct utmp'. */
+/* Define to 1 if `ut_host' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_HOST 1
 
-/* Define to 1 if `ut_id' is member of `struct utmp'. */
+/* Define to 1 if `ut_id' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_ID 1
 
-/* Define to 1 if `ut_name' is member of `struct utmp'. */
+/* Define to 1 if `ut_name' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_NAME 1
 
-/* Define to 1 if `ut_pid' is member of `struct utmp'. */
+/* Define to 1 if `ut_pid' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_PID 1
 
-/* Define to 1 if `ut_type' is member of `struct utmp'. */
+/* Define to 1 if `ut_type' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_TYPE 1
 
-/* Define to 1 if `ut_user' is member of `struct utmp'. */
+/* Define to 1 if `ut_user' is a member of `struct utmp'. */
 #define HAVE_STRUCT_UTMP_UT_USER 1
 
 /* Define if you have the <sys/acct.h> header file. */
@@ -338,16 +338,16 @@
 #define PACKAGE_NAME "acct"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "acct 6.5.3"
+#define PACKAGE_STRING "acct 6.5.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "acct"
 
-/* Define to the version of this package. */
-#define PACKAGE_VERSION "6.5.3"
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
 
-/* Define to 1 if the C compiler supports function prototypes. */
-#define PROTOTYPES 1
+/* Define to the version of this package. */
+#define PACKAGE_VERSION "6.5.4"
 
 /* Define if rename does not work for source file names with a trailing slash,
    like the one from SunOS 4.1.1_U1. */
@@ -380,7 +380,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "6.5.3"
+#define VERSION "6.5.4"
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
@@ -395,7 +395,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-/* #undef _FILE_OFFSET_BITS */
+#define _FILE_OFFSET_BITS 64
 
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 /* #undef _LARGEFILE_SOURCE */
@@ -442,9 +442,6 @@
    used. */
 /* #undef __GETOPT_PREFIX */
 
-/* Define like PROTOTYPES; this can be used by system headers. */
-#define __PROTOTYPES 1
-
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
 
@@ -472,6 +469,9 @@
 
 /* Define to the type of st_nlink in struct stat, or a supertype. */
 /* #undef nlink_t */
+
+/* Define to `long int' if <sys/types.h> does not define. */
+/* #undef off_t */
 
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef pid_t */

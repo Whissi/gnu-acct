@@ -14,23 +14,24 @@
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "file_rd.h"
 
 /* Set up a file reader. */
 
 struct file_rd_info *file_reader_init (int record_size, int buffered_records, int backwards)
-  {
-    struct file_rd_info *new;
+{
+  struct file_rd_info *new;
 
-    new = (struct file_rd_info *) xmalloc (sizeof (struct file_rd_info));
-    memset (new, 0, sizeof (struct file_rd_info));
-    new->record_size = record_size;
-    new->buffered_records = buffered_records;
-    new->buffer = (char *) xmalloc (record_size * buffered_records);
-    new->backwards = backwards;
+  new = (struct file_rd_info *) xmalloc (sizeof (struct file_rd_info));
+  memset (new, 0, sizeof (struct file_rd_info));
+  new->record_size = record_size;
+  new->buffered_records = buffered_records;
+  new->buffer = (char *) xmalloc (record_size * buffered_records);
+  new->backwards = backwards;
 
-    return new;
-  }
+  return new;
+}
 
 /* Add a file to the list of files to process */
 
@@ -125,8 +126,8 @@ char *file_reader_get_entry(struct file_rd_info *fri)
               if (debugging_enabled)
                 {
                   off_t new_offset = ftello (fri->fp);
-                  fprintf (stddebug, "Did seek in file %lld --> %lld\n",
-                           offset, new_offset);
+                  (void)fprintf (stddebug, "Did seek in file %ld --> %ld\n",
+                                 (long int)offset, (long int)new_offset);
                 }
 
               if (fread ((void *) fri->buffer, fri->record_size,
@@ -134,8 +135,8 @@ char *file_reader_get_entry(struct file_rd_info *fri)
                 fatal ("get_entry: couldn't read from file");
 
               if (debugging_enabled)
-                fprintf (stddebug, "Got %ld records from file\n",
-                         recs_to_read);
+                (void)fprintf (stddebug, "Got %ld records from file\n",
+                               (long int)recs_to_read);
 
               /* don't need to check this, because the above read was fine */
 

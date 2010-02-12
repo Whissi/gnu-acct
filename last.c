@@ -52,6 +52,7 @@ MA 02139, USA.
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "utmp_rd.h"
 #ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
@@ -147,27 +148,23 @@ struct hashtab *names = NULL;
 struct hashtab *login_table = NULL;
 
 struct login_data
-  {
-    time_t time;
-    short fake_entry;
-  };
+{
+  time_t time;
+  short fake_entry;
+};
 
-/* prototypes */
-
-void log_everyone_in PARAMS((time_t));
-void give_usage PARAMS((void));
-void parse_entries PARAMS((void));
-void update_system_time PARAMS((time_t));
-void log_out PARAMS((struct utmp *entry, short fake_flag));
-void log_in PARAMS((struct utmp *));
-void print_record PARAMS((struct utmp *, time_t logout_time,
-                          char *, char *, char *));
-void display_date PARAMS((time_t now));
+void log_everyone_in (time_t);
+void update_system_time (time_t);
+void log_out (struct utmp *entry, short fake_flag);
+void log_in (struct utmp *);
+void print_record (struct utmp *, time_t logout_time,
+                   char *, char *, char *);
+void display_date (time_t now);
 
 #if defined (SVR4) && !defined (_POSIX_SOURCE)
-RETSIGTYPE handler PARAMS((int, int, struct sigcontext *));
+RETSIGTYPE handler (int, int, struct sigcontext *);
 #else
-RETSIGTYPE handler PARAMS((int));
+RETSIGTYPE handler (int);
 #endif
 
 /* code */
@@ -216,31 +213,31 @@ int main(int argc, char *argv[])
       int option_index = 0;
 
       static struct option long_options[] =
-        {
-          { "complain", no_argument, NULL, 1
-          },
-          { "lines", required_argument, NULL, 3 },
-          { "debug", no_argument, NULL, 4 },
-          { "tw-leniency", required_argument, NULL, 5 },
-          { "version", no_argument, NULL, 6 },
-          { "help", no_argument, NULL, 7 },
-          { "file", required_argument, NULL, 8 },
-          { "no-truncate-ftp-entries", no_argument, NULL, 9 },
+      {
+        { "complain", no_argument, NULL, 1
+        },
+        { "lines", required_argument, NULL, 3 },
+        { "debug", no_argument, NULL, 4 },
+        { "tw-leniency", required_argument, NULL, 5 },
+        { "version", no_argument, NULL, 6 },
+        { "help", no_argument, NULL, 7 },
+        { "file", required_argument, NULL, 8 },
+        { "no-truncate-ftp-entries", no_argument, NULL, 9 },
 #ifdef HAVE_STRUCT_UTMP_UT_TYPE
-          { "all-records", no_argument, NULL, 10 },
+        { "all-records", no_argument, NULL, 10 },
 #endif
 #ifdef HAVE_STRUCT_UTMP_UT_ADDR
-          { "ip-address", no_argument, NULL, 11 },
+        { "ip-address", no_argument, NULL, 11 },
 #endif
-          { "print-year", no_argument, NULL, 12 },
+        { "print-year", no_argument, NULL, 12 },
 #ifdef HAVE_STRUCT_UTMP_UT_TYPE
-          { "more-records", no_argument, NULL, 13 },
+        { "more-records", no_argument, NULL, 13 },
 #endif
-          { "tw-suspicious", required_argument, NULL, 14 },
-          { "print-seconds", no_argument, NULL, 15 },
-          { "wide", no_argument, NULL, 16 },
-          { 0, 0, 0, 0 }
-        };
+        { "tw-suspicious", required_argument, NULL, 14 },
+        { "print-seconds", no_argument, NULL, 15 },
+        { "wide", no_argument, NULL, 16 },
+        { 0, 0, 0, 0 }
+      };
 
       c = getopt_long (argc, argv,
 #ifdef HAVE_STRUCT_UTMP_UT_TYPE
@@ -500,7 +497,7 @@ void log_out(struct utmp *entry, short fake_flag)
 
   /* Match the most recent login on the terminal. */
 
-  he = hashtab_find (login_table, entry->ut_line, TTY_LEN);
+  he = hashtab_find (login_table, entry->ut_line, (unsigned int)TTY_LEN);
 
   if (he != NULL)
     {
@@ -552,7 +549,7 @@ void log_in(struct utmp *entry)
       return;
     }
 
-  he = hashtab_find (login_table, entry->ut_line, TTY_LEN);
+  he = hashtab_find (login_table, entry->ut_line, (unsigned int)TTY_LEN);
 
   if (he != NULL)
     {
@@ -606,8 +603,8 @@ void print_record(struct utmp *login, time_t logout_time,
      items. */
 
   if (! ((names == NULL)
-         || hashtab_find (names, login->ut_name, NAME_LEN)
-         || hashtab_find (names, login->ut_line, TTY_LEN)))
+         || hashtab_find (names, login->ut_name, (unsigned int)NAME_LEN)
+         || hashtab_find (names, login->ut_line, (unsigned int)TTY_LEN)))
     return;			/* don't want to print this record */
 
 
@@ -632,7 +629,7 @@ void print_record(struct utmp *login, time_t logout_time,
   {
     int i = 0;
 
-    for (;(print_tty[i] != '\0') && (i < TTY_LEN); i++)
+    for (; (print_tty[i] != '\0') && (i < TTY_LEN); i++)
       sanitized_tty[i] = (isprint (print_tty[i]) && isascii (print_tty[i])
                           ? print_tty[i]
                           : '?');

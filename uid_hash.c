@@ -14,6 +14,7 @@
 #endif
 
 #include "common.h"
+#include "files.h"
 #include "hashtab.h"
 #include "uid_hash.h"
 
@@ -22,9 +23,9 @@
 struct hashtab *uid_table = NULL;
 
 struct uid_data
-  {
-    char *name;			/* name of the user */
-  };
+{
+  char *name;			/* name of the user */
+};
 
 
 /* code */

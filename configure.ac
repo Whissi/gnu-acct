@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.50 2010/01/23 19:37:53 nihilus Exp $
+dnl $Id: configure.ac,v 1.56 2010/02/12 02:38:52 nihilus Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl init autoconf
 AC_REQ(2.63)
-AC_INIT([acct],[6.5.3],[nietzsche@lysator.liu.se])
+AC_INIT([acct],[6.5.4],[nietzsche@lysator.liu.se])
 AC_CONFIG_SRCDIR([ac.c])
 AC_CANONICAL_TARGET
 
@@ -35,8 +35,8 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_SEARCH_LIBS([strerror],[cposix])
 
-AC_C_PROTOTYPES
 AC_C_CONST
+AC_C_INLINE
 AC_C_RESTRICT
 AC_C_VOLATILE
 AC_SYS_POSIX_TERMIOS
@@ -252,7 +252,19 @@ main ()
 AC_TYPE_PID_T dnl for sys/acct.h
 AC_TYPE_UID_T dnl same as above
 AC_TYPE_SIZE_T
-AC_TYPE_SIGNAL
+AC_DIAGNOSE([obsolete],[your code may safely assume C89 semantics that RETSIGTYPE is void.
+Remove this warning and the `AC_CACHE_CHECK' when you adjust the code.])dnl
+AC_CACHE_CHECK([return type of signal handlers],[ac_cv_type_signal],[AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([#include <sys/types.h>
+#include <signal.h>
+],
+		 [return *(signal (0, 0)) (0) == 1;])],
+		   [ac_cv_type_signal=int],
+		   [ac_cv_type_signal=void])])
+AC_DEFINE_UNQUOTED([RETSIGTYPE],[$ac_cv_type_signal],[Define as the return type of signal handlers
+		    (`int' or `void').])
+
+AC_TYPE_OFF_T
 AC_FUNC_FSEEKO
 
 AC_HEADER_DIRENT
