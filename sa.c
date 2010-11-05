@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
 {
   int c;
 
-  static unsigned int hzval;
+  hzval = sysconf(_SC_CLK_TCK);
   program_name = argv[0];
 
   /* Cache the page size of the machine for the PAGES_TO_KB macro */
@@ -727,7 +727,7 @@ give_usage (void)
 #ifdef HAVE_ACETIME
                " [--sort-real-time]"
 #endif
-               "\n"
+               " [--ahz hz]\n"
 #ifdef HAVE_PAGING
                "       [--show-paging] [--show-paging-avg]\n"
 #endif
@@ -1552,12 +1552,9 @@ int ask_if_junkable(char *s, int len)
   (void)printf ("Junk `%*s'? ", len, s);
   (void)fflush (stdout);
 
-  (void)fgets (line, 1000, stdin);
-
-  /* FIXME: Don't use sscanf() */
-  (void)sscanf (line, " %s ", word);
-
-  if ((word[0] == 'y') || (word[0] == 'Y'))
+  if (fgets (line, 1000, stdin) &&
+      (sscanf (line, " %s ", word) > 0) &&
+      ((word[0] == 'y') || (word[0] == 'Y')))
     return 1;
 
   return 0;

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.14 2009/09/17 23:13:30 nihilus Exp $
+## $Id: Makefile.am,v 1.15 2010/08/19 00:11:19 nihilus Exp $
 ## Process this file with automake to produce Makefile.in
 
 AUTOMAKE_OPTIONS =

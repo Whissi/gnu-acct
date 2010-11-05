@@ -1,10 +1,10 @@
 /* A POSIX-like <errno.h>.
 
-   Copyright (C) 2008 Free Software Foundation, Inc.
+   Copyright (C) 2008-2010 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
+   the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -21,6 +21,7 @@
 #if __GNUC__ >= 3
 @PRAGMA_SYSTEM_HEADER@
 #endif
+@PRAGMA_COLUMNS@
 
 /* The include_next requires a split double-inclusion guard.  */
 #@INCLUDE_NEXT@ @NEXT_ERRNO_H@
@@ -98,6 +99,7 @@
 
 /* On OpenBSD 4.0 and on native Windows, the macros ENOMSG, EIDRM, ENOLINK,
    EPROTO, EMULTIHOP, EBADMSG, EOVERFLOW, ENOTSUP, ECANCELED are not defined.
+   Likewise, on NonStop Kernel, EDQUOT is not defined.
    Define them here.  Values >= 2000 seem safe to use: Solaris ESTALE = 151,
    HP-UX EWOULDBLOCK = 246, IRIX EDQUOT = 1133.
 
@@ -143,6 +145,16 @@
 # ifndef ENOTSUP
 #  define ENOTSUP   2007
 #  define GNULIB_defined_ENOTSUP 1
+# endif
+
+# ifndef ESTALE
+#  define ESTALE    2009
+#  define GNULIB_defined_ESTALE 1
+# endif
+
+# ifndef EDQUOT
+#  define EDQUOT 2010
+#  define GNULIB_defined_EDQUOT 1
 # endif
 
 # ifndef ECANCELED

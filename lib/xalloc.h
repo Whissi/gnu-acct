@@ -1,7 +1,8 @@
 /* xalloc.h -- malloc with out-of-memory checking
 
-   Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-   1999, 2000, 2003, 2004, 2006, 2007, 2008 Free Software Foundation, Inc.
+   Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+   2000, 2003, 2004, 2006, 2007, 2008, 2009, 2010 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -45,6 +46,14 @@ extern "C" {
 #  endif
 # endif
 
+# ifndef ATTRIBUTE_ALLOC_SIZE
+#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+#   define ATTRIBUTE_ALLOC_SIZE(args) __attribute__ ((__alloc_size__ args))
+#  else
+#   define ATTRIBUTE_ALLOC_SIZE(args)
+#  endif
+# endif
+
 /* This function is always triggered when memory is exhausted.
    It must be defined by the application, either explicitly
    or by using gnulib's xalloc-die module.  This is the
@@ -52,13 +61,19 @@ extern "C" {
    memory allocation failure.  */
 extern void xalloc_die (void) ATTRIBUTE_NORETURN;
 
-void *xmalloc (size_t s) ATTRIBUTE_MALLOC;
-void *xzalloc (size_t s) ATTRIBUTE_MALLOC;
-void *xcalloc (size_t n, size_t s) ATTRIBUTE_MALLOC;
-void *xrealloc (void *p, size_t s);
+void *xmalloc (size_t s)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1));
+void *xzalloc (size_t s)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1));
+void *xcalloc (size_t n, size_t s)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1, 2));
+void *xrealloc (void *p, size_t s)
+      ATTRIBUTE_ALLOC_SIZE ((2));
 void *x2realloc (void *p, size_t *pn);
-void *xmemdup (void const *p, size_t s) ATTRIBUTE_MALLOC;
-char *xstrdup (char const *str) ATTRIBUTE_MALLOC;
+void *xmemdup (void const *p, size_t s)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((2));
+char *xstrdup (char const *str)
+      ATTRIBUTE_MALLOC;
 
 /* Return 1 if an array of N objects, each of size S, cannot exist due
    to size arithmetic overflow.  S must be positive and N must be
@@ -105,10 +120,13 @@ char *xstrdup (char const *str) ATTRIBUTE_MALLOC;
 # if HAVE_INLINE
 #  define static_inline static inline
 # else
-   void *xnmalloc (size_t n, size_t s) ATTRIBUTE_MALLOC;
-   void *xnrealloc (void *p, size_t n, size_t s);
-   void *x2nrealloc (void *p, size_t *pn, size_t s);
-   char *xcharalloc (size_t n) ATTRIBUTE_MALLOC;
+void *xnmalloc (size_t n, size_t s)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1, 2));
+void *xnrealloc (void *p, size_t n, size_t s)
+      ATTRIBUTE_ALLOC_SIZE ((2, 3));
+void *x2nrealloc (void *p, size_t *pn, size_t s);
+char *xcharalloc (size_t n)
+      ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1));
 # endif
 
 # ifdef static_inline
@@ -116,7 +134,8 @@ char *xstrdup (char const *str) ATTRIBUTE_MALLOC;
 /* Allocate an array of N objects, each with S bytes of memory,
    dynamically, with error checking.  S must be nonzero.  */
 
-static_inline void *xnmalloc (size_t n, size_t s) ATTRIBUTE_MALLOC;
+static_inline void *xnmalloc (size_t n, size_t s)
+                    ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1, 2));
 static_inline void *
 xnmalloc (size_t n, size_t s)
 {
@@ -128,6 +147,8 @@ xnmalloc (size_t n, size_t s)
 /* Change the size of an allocated block of memory P to an array of N
    objects each of S bytes, with error checking.  S must be nonzero.  */
 
+static_inline void *xnrealloc (void *p, size_t n, size_t s)
+                    ATTRIBUTE_ALLOC_SIZE ((2, 3));
 static_inline void *
 xnrealloc (void *p, size_t n, size_t s)
 {
@@ -161,9 +182,9 @@ xnrealloc (void *p, size_t n, size_t s)
      void
      append_int (int value)
        {
-	 if (used == allocated)
-	   p = x2nrealloc (p, &allocated, sizeof *p);
-	 p[used++] = value;
+         if (used == allocated)
+           p = x2nrealloc (p, &allocated, sizeof *p);
+         p[used++] = value;
        }
 
    This causes x2nrealloc to allocate a block of some nonzero size the
@@ -181,12 +202,12 @@ xnrealloc (void *p, size_t n, size_t s)
      void
      append_int (int value)
        {
-	 if (used == allocated)
-	   {
-	     p = x2nrealloc (p, &allocated1, sizeof *p);
-	     allocated = allocated1;
-	   }
-	 p[used++] = value;
+         if (used == allocated)
+           {
+             p = x2nrealloc (p, &allocated1, sizeof *p);
+             allocated = allocated1;
+           }
+         p[used++] = value;
        }
 
    */
@@ -199,25 +220,25 @@ x2nrealloc (void *p, size_t *pn, size_t s)
   if (! p)
     {
       if (! n)
-	{
-	  /* The approximate size to use for initial small allocation
-	     requests, when the invoking code specifies an old size of
-	     zero.  64 bytes is the largest "small" request for the
-	     GNU C library malloc.  */
-	  enum { DEFAULT_MXFAST = 64 };
+        {
+          /* The approximate size to use for initial small allocation
+             requests, when the invoking code specifies an old size of
+             zero.  64 bytes is the largest "small" request for the
+             GNU C library malloc.  */
+          enum { DEFAULT_MXFAST = 64 };
 
-	  n = DEFAULT_MXFAST / s;
-	  n += !n;
-	}
+          n = DEFAULT_MXFAST / s;
+          n += !n;
+        }
     }
   else
     {
       /* Set N = ceil (1.5 * N) so that progress is made if N == 1.
-	 Check for overflow, so that N * S stays in size_t range.
-	 The check is slightly conservative, but an exact check isn't
-	 worth the trouble.  */
+         Check for overflow, so that N * S stays in size_t range.
+         The check is slightly conservative, but an exact check isn't
+         worth the trouble.  */
       if ((size_t) -1 / 3 * 2 / s <= n)
-	xalloc_die ();
+        xalloc_die ();
       n += (n + 1) / 2;
     }
 
@@ -228,7 +249,8 @@ x2nrealloc (void *p, size_t *pn, size_t s)
 /* Return a pointer to a new buffer of N bytes.  This is like xmalloc,
    except it returns char *.  */
 
-static_inline char *xcharalloc (size_t n) ATTRIBUTE_MALLOC;
+static_inline char *xcharalloc (size_t n)
+                    ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE ((1));
 static_inline char *
 xcharalloc (size_t n)
 {

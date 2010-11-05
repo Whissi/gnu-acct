@@ -14,12 +14,18 @@
 #ifdef LINUX_MULTIFORMAT
 # include "linux-acct.h"
 #else
+# include <stdint.h> /* GNU/kFreeBSD */
 # include <sys/acct.h>
-	#ifdef __FreeBSD__
-	# if __FreeBSD_version >= 700100 /* FreeBSD 7.0-STABLE */
-	# define acct acctv2
-	# endif
-	#endif
+# if defined __FreeBSD__ || defined __FreeBSD_kernel__
+#  include <osreldate.h>
+#  if __FreeBSD_kernel__
+#   define __FreeBSD_version __FreeBSD_kernel_version
+#  endif /* __FreeBSD_kernel__ */
+#  if __FreeBSD_version >= 700100 /* FreeBSD 7.0-STABLE */
+#   define acct acctv2
+#   define ac_flag ac_flagx
+#  endif
+# endif
 #endif
 
 #include <utmp.h>

@@ -66,7 +66,8 @@ void parse_entries(void)
              program gets interrupted. */
 
           last_time = rec->ut_time + 1;
-          (void) signal (SIGINT, handler);
+          sigact.sa_handler = handler;
+          (void) sigaction (SIGINT, &sigact, NULL);
 #else
           /* ac: if this is the first time, we need to set up
              next_midnight correctly, so that do_totals will function
@@ -117,8 +118,8 @@ void parse_entries(void)
               utmp_print_file_and_line (stddebug);
               (void)fprintf(stddebug, ": problem: time warp (%-24.24s",
                             ctime (&last_time));
-              fprintf (stddebug, " -> %-24.24s)\n",
-                       ctime ((time_t *) &(rec->ut_time)));
+              time_t tmp_time = rec->ut_time;
+              fprintf (stddebug, " -> %-24.24s)\n", ctime (&tmp_time));
             }
 
 #ifdef BACKWARDS

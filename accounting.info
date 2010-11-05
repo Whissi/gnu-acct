@@ -31,8 +31,8 @@ about the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-   This is Edition 6.5.4 of the documentation, updated 6 February 2010
-for version 6.5.4 of the GNU Accounting Utilities.
+   This is Edition 6.5.5 of the documentation, updated 23 October 2010
+for version 6.5.5 of the GNU Accounting Utilities.
 
 * Menu:
 
@@ -279,7 +279,7 @@ printed out.
    The accounting file `wtmp' is maintained by `init' and `login'.
 Neither of these programs creates the file; if the file is not there,
 no accounting is done.  To begin accounting, create the file with a
-length of zero. *NOTE_* the `wtmp' file can get really big, really
+length of zero. Note that the `wtmp' file can get really big, really
 fast.  You might want to trim it every once and a while.
 
    GNU `ac' works nearly the same u*x `ac', though it's a little
@@ -1057,10 +1057,10 @@ Tag Table:
 Node: Top1028
 Node: Preface1939
 Node: ac11250
-Node: accton19562
-Node: last20067
-Node: lastcomm24542
-Node: sa27714
-Node: dump-acct34091
+Node: accton19564
+Node: last20069
+Node: lastcomm24544
+Node: sa27716
+Node: dump-acct34093
 
 End Tag Table

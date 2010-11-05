@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.56 2010/02/12 02:38:52 nihilus Exp $
+dnl $Id: configure.ac,v 1.58 2010/10/23 10:56:30 nihilus Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl init autoconf
 AC_REQ(2.63)
-AC_INIT([acct],[6.5.4],[nietzsche@lysator.liu.se])
+AC_INIT([acct],[6.5.5],[nietzsche@lysator.liu.se])
 AC_CONFIG_SRCDIR([ac.c])
 AC_CANONICAL_TARGET
 
@@ -166,11 +166,13 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <stdint.h>	/* GNU/kFreeBSD */
 #include <sys/acct.h>
 #include <utmp.h>
 
 #ifndef WTMP_FILE
-#  if defined(__FreeBSD__) || defined (__NetBSD__) || defined(__linux__)
+#  if defined(__FreeBSD__) || defined (__NetBSD__) || defined(__linux__) \
+        || defined(__FreeBSD_kernel__)
 #    define WTMP_FILE "/var/log/wtmp"
 #  else
 #    if defined(sun) || defined(AMIX)
@@ -186,7 +188,8 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #endif
 
 #ifndef ACCT_FILE
-#  if defined(__FreeBSD__) || defined(__linux__)
+#  if defined(__FreeBSD__) || defined(__linux__) \
+        || defined(__FreeBSD_kernel__)
 #    define ACCT_FILE "/var/account/pacct"
 #  else
 #    if defined(__NetBSD__)
@@ -206,7 +209,8 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #endif
 
 #ifndef SAVACCT_FILE
-#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__) \
+        || defined(__FreeBSD_kernel__)
 #    define SAVACCT_FILE "/var/account/savacct"
 #  else
 #    if defined(sun) || defined(AMIX)
@@ -222,7 +226,8 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #endif
 
 #ifndef USRACCT_FILE
-#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__) \
+        || defined(__FreeBSD_kernel__)
 #    define USRACCT_FILE "/var/account/usracct"
 #  else
 #    if defined(sun) || defined(AMIX)

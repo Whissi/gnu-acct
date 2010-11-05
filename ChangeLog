@@ -1,3 +1,19 @@
+Fri Nov 05 19:37:23 2010 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* sa.c - Fix hzval.
+	* ac.8 - Rename to sa.1
+
+Fri Oct 22 00:11:54 2010 Mats Erik Andersson <mats.andersson@gisladisker.se>
+
+	* FreeBSD / kFreeBSD >= 7.0-STABLE patch.
+
+Wen Sep 01 03:17:46 2010 Solar Designer <solar@openwall.com>
+
+	* Fix potential buffer-overflows.
+	* UNIX 98 pty support.
+	* sa.c - correct --help.
+	* accounting.texi - grammar fix.
+
 Thu Feb 11 23:30:05 2010 Markus Gothe <nietzsche@lysator.liu.se>
 
 	* Fixed includes for BSDen. Removed last K & R remainings.

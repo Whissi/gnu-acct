@@ -37,6 +37,10 @@ extern int errno;
 
 #include "common.h"
 #include "files.h"
+#if defined __FreeBSD__ || defined __FreeBSD_kernel__
+/* Eliminate macro from "files.h".  */
+# undef acct
+#endif
 #ifdef HAVE_GETOPT_LONG_ONLY
 #include <getopt.h>
 #else

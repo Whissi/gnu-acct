@@ -161,6 +161,7 @@ void print_record (struct utmp *, time_t logout_time,
                    char *, char *, char *);
 void display_date (time_t now);
 
+struct sigaction sigact;
 #if defined (SVR4) && !defined (_POSIX_SOURCE)
 RETSIGTYPE handler (int, int, struct sigcontext *);
 #else
@@ -171,7 +172,7 @@ RETSIGTYPE handler (int);
 
 int main(int argc, char *argv[])
 {
-  int c;
+  int c = 1;
   int other_wtmp_file_specified = 0; /* nonzero if the user used the
 					`-f' or `--file' flags */
 
@@ -187,7 +188,7 @@ int main(int argc, char *argv[])
      them to getopt, since it can't handle `last -10' and things like
      it... */
 
-  for (c = 1; c < argc; c++)
+  for (; c < argc; c++)
     {
       if (argv[c][0] == '-' && isdigit (argv[c][1]))
         {
@@ -427,7 +428,7 @@ void give_usage(void)
 /* Since the routines in ac & last are so similar, just include them
 from another file. */
 
-#define BACKWARDS
+#define BACKWARDS 1
 #include "al_share.cpp"
 
 /* since the sys clock has changed, each entry's login time has to be

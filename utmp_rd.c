@@ -114,7 +114,8 @@ void print_utmp_record(struct utmp *rec, FILE *out)
       fprintf (out, "%-*.*s|", HOST_LEN, HOST_LEN, rec->ut_host);
 #endif
 
-      fputs (ctime ((time_t *) &(rec->ut_time)), out);
+      time_t tmp_time = rec->ut_time;
+      fputs (ctime (&tmp_time), out);
     }
 }
 
