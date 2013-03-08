@@ -1,0 +1,1305 @@
+Mon Mar 8 21:03:32 2013 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Fixed vulnabilities, due to autmake. Thanks to Karl Berry 
+          for pointing this out.
+
+	* Many thanks to my wife Yulia Lizneva for giving me inspiration 
+          to keep this up.
+
+Mon Feb 28 00:08:45 2011 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Applied debian's patchset.
+
+Tue Jan 25 13:54:33 2011 Jan Görig <gorig>
+	
+	* direntry patch.
+
+Fri Nov 05 19:37:23 2010 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* sa.c - Fix hzval.
+	* ac.8 - Rename to ac.1
+
+Fri Oct 22 00:11:54 2010 Mats Erik Andersson <mats.andersson@gisladisker.se>
+
+	* FreeBSD / kFreeBSD >= 7.0-STABLE patch.
+
+Wen Sep 01 03:17:46 2010 Solar Designer <solar@openwall.com>
+
+	* Fix potential buffer-overflows.
+	* UNIX 98 pty support.
+	* sa.c - correct --help.
+	* accounting.texi - grammar fix.
+
+Thu Feb 11 23:30:05 2010 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Fixed includes for BSDen. Removed last K & R remainings.
+	  Bump version to 6.5.4.
+
+Sun Sep 05 18:30:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Minor fixes, included getop, mktime, rename & xmalloc
+	  from gnulib. Fixed HOST_LEN not defined issue.
+
+Mon Aug 24 00:01:05 2009 Markus Gothe <nietzsche@lysator.liu.se>
+	
+	* Major overhaul, releasing GNU Acct 6.5.
+
+Sat Jan 07 23:10:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* NEWS: document changes in the upcoming 6.4 release.
+
+Sat Jan 07 22:40:00 2006 <cian@gmail.com>
+
+	* accounting.texi: clarify sa sum line.
+	* accounting.info: regenerated.
+
+Sat Jan 07 22:10:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* Makefile.am: reflect earlier ToDo -> TODO change.
+
+	* config.guess: added.
+	* config.sub: added.
+	* depcomp: added.
+	* texinfo.tex: added.
+
+	* INSTALL: regenerated.
+	* Makefile.in: regenerated.
+	* aclocal.m4: regenerated.
+	* ansi2knr.c: regenerated.
+	* config.h.in: regenerated.
+	* configure: regenerated.
+	* install-sh: regenerated.
+	* mdate-sh: regenerated.
+	* missing: regenerated.
+	* mkinstalldirs: regenerated.
+
+	* accounting.info: regenerated.
+	* config.h: regenerated.
+	* stamp-vti: regenerated.
+	* version.texi: regenerated.
+
+Sat Jan 07 22:00:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* accounting.texi: document dump-acct command.
+	document new options (paging stats) for sa and lastcomm.
+	Mention Linux multiformat support. Update copyright.
+
+	* accton.c: fix incomplete prototypes.
+
+	* lastcomm.c: Simplify #ifdef AC*_COMPT constructs and
+	Fix HAVE_PAGING usage.
+	* sa.c: same.
+	* pacct_rd.c: same.
+	* configure.in: same. Also add comments from former acconfig.h file.
+	* common.h: same.
+
+	* lastcomm.1: Document new paging stats options.
+	* lastcomm.c: same.
+	* sa.8: same.
+	* sa.c: same.
+
+	* configure.in: Drop support for <linux/acct.h>, only look for
+	<sys/acct.h>.
+
+	* acconfig.h: removed.
+	* configure.in: re-add comments from the removed acconfig.h.
+	* ac.c: replace some '#if's with '#ifdef's because of above change.
+	* common.c: same.
+	* dev_hash.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* mktime.c: same.
+	* pacct_rd.c: same.
+	* sa.c: same.
+	* utmp_rd.c: same.
+	* al_share.cpp: same.
+
+	* pacct_rd.c: Actually use file parameter given to print_pacct_record.
+
+Sat Jan 07 21:30:00 2006 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* pacct_rd.c: Add Linux multiformat support.
+	* pacct_rd.h: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+	* dump-acct.c: same.
+	* configure.in: same.
+	* files.h.in: same.
+	* Makefile.am: same.
+	* linux-acct.h: added.
+
+Fri Feb 04 18:30:00 2005 Tim Schmielau <tim@physik3.uni-rostock.de>
+
+	* configure.in: Modernize AM_INIT_AUTOMAKE, Don't call AC_ARG_PROGRAM,
+	which already is invoked by AM_INIT_AUTOMAKE. Add quote to prevent
+	broken configure file.
+
+	* Makefile.am: Remove forbidden substitution and clean up generated
+	stamp-h file.
+
+	* lastcomm.c: Fix call to ctime for 64bit architectures.
+	* pacct_rd.c: likewise.
+
+	* lastcomm.c: Use AC[US]TIME_COMPT instead of HAVE_COMP_T.
+
+Fri Oct 10 01:00:00 2003  Ciaran O'Riordan <ciaran@member.fsf.org>
+
+	* lastcomm.c: integrated patch from Paul Jones which adds
+	paging and swapping support to lastcomm and sa
+	* sa.c: same as lastcomm.c
+	
+Thu Jun  5 17:55:14 2003  Ciaran O'Riordan <ciaran@member.fsf.org>
+
+	* AUTHORS: added my name as new maintainer
+	* TODO: updated info (and renamed file from ToDo)
+	
+Tue May 26 21:59:50 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: reverted below change to acct.h search.
+  	Incremented version number to 6.3.5.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+
+Tue May 26 15:51:41 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: changed the order in which configure looks for the
+ 	acct.h file from sys->linux to linux->sys.  This will help out the
+ 	linux 2.1.xx folks use the newer definitions.  Also incremented
+ 	version to 6.3.4.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+	
+	* accounting.texi (sa): make a note that column titles appear like
+ 	units of measurement and not as headings in the first row only.
+  	Also add a note about which options may be available on a given
+ 	system based on the members in struct acct.
+	* sa.8: same.
+
+Wed Apr  8 16:03:31 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure.in: increment version to 6.3.3.
+	* configure: regenerated.
+	* accounting.info: regenerated.
+
+	* Makefile.am (EXTRA_DIST): add ToDo and mktime.c.
+	* Makefile.in: regenerated.
+
+	* accounting.texi (Preface): add Tuomo Pyhala to contributors.
+
+	* lastcomm.c (main): when using the `--strict-match' flag, make
+ 	sure that the user doesn't specify more than one item in each
+ 	category (tty, dev, comm), since no records would ever be matched.
+	(desired_entry): when using the `--strict-match' flag, match all
+ 	items in all_list to the current entry.
+
+	* hashtab.c (get_key_len): fix typo in error message.
+
+Sun Mar 22 21:44:20 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* accounting.texi (Preface): add Alexander Kourakos and Derek
+ 	Clegg to contributors.
+
+	* utmp_rd.h: change utmp_rd_never_used's type to extern, since we
+ 	really don't need any of this data -- we just use it for sizeof.
+  	Thanks to Derek Clegg.
+	* pacct_rd.h: similar deal for pacct_rd_never_used.
+
+	* last.c: added global variables to keep track of field widths
+ 	that the user desires for printing.  Added `-w' and `--wide' flags
+ 	which allow the user to specify maximum precision.  Thanks to
+ 	Alexander Kourakos for the idea.
+	* last.1: updated docs.
+	* accounting.texi (last): updated docs.
+
+	* accounting.text (lastcomm): updated docs for `--ahz' flag.
+	(sa): same.
+	* lastcomm.1: same.
+	* sa.1: same.
+	
+Tue Mar 11 23:52:00 1998  Solar Designer  <solar@false.com>
+
+	* files.h.in: add workaround for a kernel includes problem with
+ 	Linux/Alpha.
+
+	* lastcomm.c (main): add `--ahz' option which lets us select a
+ 	different AHZ if we're trying to view files created on another
+ 	system (but with the same byte order and struct utmp).
+	* sa.c (main): same.
+
+	* sa.c (parse_acct_entries): don't divide elapsed time field by
+ 	AHZ.
+
+Tue Mar 10 10:13:07 1998  Noel Cragg  <noel@swish.red-bean.com>
+
+	* sa.c (print_user_list): revert Solar Designer's change, since it
+ 	wasn't necessary (it fixed the same bug that was fixed on 19 Aug
+ 	1997).
+
+	* NEWS: document new features in this release.
+
+	* configure.in: increment version to 6.3.2.
+	* configure: regenerated.
+
+	* accounting.text: add Solar Designer to contributors.
+
+Tue Mar 10 09:54:29 1998  Solar Designer  <solar@false.com>
+
+	* sa.c (print_user_list): off-by one error when allocating space
+ 	for entry_array.
+
+1997-10-13  Noel Cragg  <noel@swish.red-bean.com>
+
+	* mktime.c: copied new version of this file from glibc (includes
+	fixes for leap days).
+
+	* files.h.in: move #ifndef AHZ statement from common.h so that we
+	make sure we've included the files that might define AHZ before
+	redefining it!
+	* common.h: removed #ifndef AHZ statement.
+
+	* Makefile.am (compare): still specifying old names (tests-*)
+	instead of new ones.  Fixed.
+	* Makefile.in: regenerated.
+	* configure: regenerated.
+
+Sun Oct 12 11:50:18 1997  Kaveh R. Ghazi  <ghazi@caip.rutgers.edu>
+
+	* ac.c: Move inclusion of common.h ahead of all other local
+	headers so that the PARAMS() macro is always defined.
+	* dump-acct.c: Likewise.
+	* dump-utmp.c: Likewise.
+	* hashtab.c: Likewise.
+	* last.c: Likewise.
+	* lastcomm.c: Likewise.
+	* pacct_rd.c: Likewise.
+	* sa.c: Likewise.
+	* utmp_rd.c: Likewise.
+	
+	* ac.c: Wrap prototype function arguments in the PARAMS() macro.
+	* accton.c: Likewise.
+	* common.h: Likewise.
+	* dev_hash.h: Likewise.
+	* dump-acct.c: Likewise.
+	* dump-utmp.c: Likewise.
+	* file_rd.h: Likewise.
+	* hashtab.h: Likewise.
+	* last.c: Likewise.
+	* lastcomm.c: Likewise.
+	* pacct_rd.h: Likewise.
+	* sa.c: Likewise.
+	* uid_hash.h: Likewise.
+	* utmp_rd.h: Likewise.
+
+	* ac.c (user_data): Avoid using automatic aggregate initialization.
+	* sa.c (empty_string): Likewise.
+
+	* al_share.cpp: Avoid using a "void" function signature argument
+	since ansi2knr doesn't parse included files, of which this is one.
+
+	* common.h: Define the PARAMS() macro.
+
+	* configure.in: Add AC_C_CONST.  Also, avoid using an indented #
+	in cpp macros or the #elif directive.  Avoid using ANSI string
+	concatination in fputs, use fprintf instead.
+
+	* dump-acct.c: Avoid ANSI string concatination.
+	* dump-utmp.c: Likewise.
+
+	* getopt.h: Remove unnecessary use of the PROTOTYPES macro.
+
+1997-10-11  Noel Cragg  <noel@swish.red-bean.com>
+
+	* NEWS: document new features in this release.
+
+	* configure.in: increment version to 6.3.1 for prerelease testing.
+	* configure: regenerated.
+
+1997-10-08  Noel Cragg  <noel@swish.red-bean.com>
+
+	* Makefile.am (compare): new target.  Since what we're really
+	doing is comparing the output of these utils to the system's utils
+	(and not in anything resembling an automated fashion -- I'm not
+	sure _that_ can be accomplished), don't use the "check" target.
+
+	* Makefile.in: regenerated.
+	
+	* common.h: include prototypes iff PROTOTYPES is set.
+	* dev_hash.h: same.
+	* file_rd.h: same.
+	* getopt.h: same.
+	* hashtab.h: same.
+	* pacct_rd.h: same.
+	* uid_hash.h: same.
+	* utmp_rd.h: same.
+
+	* .cvsignore: ignore version.texi and stamp-vti files.
+
+	* accounting.texi: include the automake-generated version.texi
+	file so we can automatically substitute VERSION and UPDATED
+	variables.
+
+	* texinfo.tex: removed -- automake supplies it.
+
+Mon Sep 29 13:34:05 1997  Noel Cragg  <noel@swish.red-bean.com>
+
+	* configure: regenerated again (lots of changes today, no?).
+	* config.h.in: same.
+	* Makefile.in: same.
+	
+	* configure.in: changed order around to make automake happy.
+  	Changed the substitutions for pacct programs being built by
+ 	creating a variable for each program in question.  This allows us
+ 	to place the definitions for those in different install targets in
+ 	the generated Makefile.
+
+	* acconfig.h: add a #define for PROTOTYPES.  This will mean source
+ 	changes, too, but those haven't been completed yet.
+
+	* Makefile.am: choose the correct bin directories for each program
+ 	and fix the rules for man pages.  Comment out tests for the time
+ 	being, until my tests can be munged into the correct form for
+ 	automake.
+
+	* Makefile.in: thought better of removing it, actually.  We
+ 	include "configure" even though it is regenerated, no?
+		
+	* accounting.texi: rms says that the manual shouldn't contain the
+ 	locations of the system files -- we want to be able to share
+ 	manuals between systems.  Removed all locations and added a note
+ 	about default filesystem locations of wtmp and acct files.  Also
+ 	made below change to common.c to make it easier for people to
+ 	track down their system files.
+	* ac.1: same, plus renamed from ac.1.in since we no longer need to
+ 	substitute pathnames into this file.
+	* accton.8: same, similar.
+	* last.1: same, similar.
+	* lastcomm.1: same, similar.
+	* sa.8: same, similar.
+	
+	* common.c (print_acct_file_locations): new function.  Display the
+ 	locations of the default process accouting files.
+	(print_wtmp_file_location): new function.  Same as above, but for
+ 	the wtmp file.
+	* common.h: add prototypes for above.
+	* ac.c: call the appropriate function above when giving help.
+	* accton.c: same.
+	* dump-acct.c: same.
+	* dump-utmp.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+
+	* Fixed copyright dates in all files to conform to
+ 	gnuorg/maintain.text.
+
+	* configure.in: add a default in the AC_TRY_RUN macro for
+ 	cross-compiling so autoconf doesn't complain every time it is run.
+	* configure: regenerated.
+
+	* install-sh: renamed from install.sh.
+
+	* mkinstalldirs: add to conform to automake.
+	
+	* version.h.in: do text substitution via autoconf to get our
+ 	version number to conform to automake.
+	* version.h: removed -- now automatically generated.
+	* ac.c: use new #define -- VERSION_STRING -- from version.h
+	* accton.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+	
+	* Makefile.am: new file.  Converted the package to use automake.
+  	What a gas!
+	* Makefile.in: removed, since automake generates it.
+	
+	* AUTHORS: new file, added to meet GNU standards.
+	* NEWS: same.
+
+	* INSTALL: new version from FSF.
+
+	* configure.in: convert old autoconf macro names to new.
+	* configure: regenerated.
+	* config.h.in: regenerated.
+
+	* Makefile.in (prefix): fix typo -- missing `@' signs.  Thanks to
+ 	Walter Mueller <walt@pi4.informatik.uni-mannheim.de>.
+	
+	* file_rd.c (file_reader_get_entry): cast pointers to (char *)
+ 	before doing pointer arithmetic, also from Eric.
+	
+	* configure.in: add fixes to support HP-UX 9.05 with /bin/cc.
+  	Thanks to Eric Backus <ericb@lsid.hp.com>.
+
+	* alloca.c: new file, for those system that don't have alloca.
+	* Makefile.in: add @ALLOCA@ to all object lists.
+	
+Tue Aug 19 10:20:55 1997  Noel Cragg  <noel@swish.red-bean.com>
+
+	* version.h: increment version to 6.3.
+	
+	* ac.c: change version message -- remove `beta'.
+	* accton.c: same.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+
+	* accounting.texi.in: integrate the below changes to the
+ 	documentation and add attributions for some of the below stuff.
+
+	* ac.c: rename `--year' to `--print-year' to be consistent with
+ 	last.
+	* ac.1.in: document it.
+
+	* sa.c: add a `--sort-real-time' option to sort by "real" (or
+ 	elapsed) time.
+	* sa.8.in: document it.
+
+	* last.c: add `--print-seconds' option and change name for
+ 	`--year' to `--print-year' and add docs.
+	* last.1.in: document it.
+
+	* sa.c (print_user_list): increment the number of users _before_
+ 	allocating the entry array, or else we'll clobber memory.
+
+Thu Nov 21 21:03:31 1996  Noel Cragg  <noel@coyote.rain.org>
+
+	* last.c (print_record): check for all printable ascii characters
+ 	rather than just alphanumerics.
+
+Thu Sep  5 14:12:04 1996  Noel Cragg  <noel@gargle.rain.org>
+
+	* last.c (print_record): print out '?' instead of control
+ 	characters for tty names.
+
+Wed Aug 14 13:21:20 1996  Noel Cragg  <noel@kiva.rain.org>
+
+	* hashtab.c (hashtab_resize): code to increase the number of
+ 	buckets in a hash table.
+	(hashtab_create): call hashtab_resize to keep performance near
+ 	O(1), if possible.
+
+	* last.c (main): fix typo in dereferencing argv.
+
+Sat Apr 20 13:13:58 1996  Noel Cragg  <noel@gargle>
+
+	* accounting.texi.in (sa): fix small typo (missing `@').
+
+Fri Apr 19 00:20:53 1996  Noel Cragg  <noel@gargle>
+
+	* version.h (RELEASE_MINOR): update to version 6.2.
+
+	* hashtab.c (hashtab_find): use MEMCMP instead of STRNCMP.
+	(hashtab_create): same.
+
+	* sa.c (parse_acct_entries): more typos!  Damnit!
+	(print_stats_nicely): I hope this is finally the right formula.
+	(parse_acct_entries): fix memory printout for PRINT_USERS section.
+
+	* pacct_rd.c (comp_t_2_double): make this routine faster by doing
+ 	bit-shifts rather than floating-point math.
+
+	* sa.c (main): remove NUMBER_SORTING_OPTIONS because we want to be
+ 	ableo to include various fields (some flags have sorting
+ 	side-effects) but sort by the last thing specified.
+	(parse_acct_entries): fix four typos -- COMPT instead of COMP_T.
+  	Ugh.
+
+	* dump-acct.c: add flags `-R', `--raw', `-n', and `-num' for both
+ 	raw output and number of records to print.
+	* dump-utmp.c: same.
+
+	* Makefile.in: fix test scripts not to check for SYS_XXX programs.
+  	Also, put "-" before execution of TIME command so a bad return
+ 	status won't screw us up (hal.gnu.ai.mit.edu does this).
+
+	* configure.in: fix typo of AC_CHECK_PROGS --> AC_PATH_PROGS.
+
+Thu Apr 18 11:07:02 1996  Noel Cragg  <noel@gargle>
+
+	* install.sh: added to repository so we can support an INSTALL
+ 	target.
+	* configure.in: look for an INSTALL program.
+
+	* configure.in: don't use WHICH to find programs, since autoconf
+ 	now has AC_CHECK_PROGS.
+
+	* al_share.cpp (parse_entries): forgot to remove variable
+ 	LAST_TIME -- last reported the wrong date at the end of
+ 	processing.
+
+        * sa.c: use new hash routines.
+	
+	* hashtab.h (hashtab_elem): change key type from CHAR * to VOID *
+ 	to support non-strings.
+	* hashtab.c (hashtab_find): same.
+	(hashtab_create): same.
+
+	* accounting.texi.in: fix docs -- all options for sa were actually
+ 	implemented some time ago.
+	* sa.8.in: same.
+
+	* al_share.cpp: new file -- since PARSE_ENTRIES is structurally
+ 	the same in both ac.c and last.c, let's only have one copy of it
+ 	with #ifdefs for the appropriate program.
+	* ac.c: use al_share.cpp.
+	* last.c: use al_share.cpp.
+
+	* sa.c: remove all of that #ifdef hair.  Now it's half its
+ 	original size!  Gee, looking at it before mods, you'd think I was
+ 	4 years old when I wrote that!
+	
+	* dev_hash.c: use new generic hash table code.
+	(clear_dev_table): removed -- unused.
+	(setup_devices): declare static, since we do the setup here.
+	* lastcomm.c: don't call SETUP_DEVICES.
+
+	* hashtab.c (hashtab_init): accept a parameter that tells the code
+ 	whether or not the thing being hashed is a string or a number.  If
+ 	it's a number, it shouldn't be truncated like a string might be.
+  	Changed callers.
+	(get_key_len): modify to accept the numeric parameter also.
+
+	* uid_hash.c: use new generic hash table code.
+	(clear_uid_table): removed function, since it's no longer used.
+	* lastcomm.c: don't call CLEAR_UID_TABLE.
+	* sa.c: same.
+	
+	* sa.c (init_flags_and_data): use MEMSET to clear summary record
+ 	rather than setting each individual field to zero.
+
+	* Makefile.in: general clean-up; remove deprecated targets and
+ 	reorganize.
+
+	* pacct_rd.c (print_pacct_record): new function (similar to mods
+ 	made earlier to utmp_rd.c).  Change callers to use this function.
+	(pacct_get_entry): delete argument which made the file reader
+ 	print the entry.  Use PRINT_PACCT_RECORD instead.
+	* lastcomm.c: use PRINT_PACCT_RECORD.
+	* sa.c: same.
+	* dump-acct.c: same.
+
+	* files.h.in: fix for multiple inclusion.
+
+        * Makefile.in: put @DEFS@ in for CFLAGS, so MKTIME.C gets defs
+ 	from CONFIG.H.
+	(realclean): fix realclean target to clean up newly
+ 	autoconf-generated files.
+
+	* ac.c: fixed #includes for time headers (use autoconf symbols).
+  	Also change names of XXX_FILE to XXX_FILE_LOC.
+	* last.c: same.
+	* lastcomm.c: same.
+	* sa.c: same.
+
+	* ac.1.in: new file which has autoconf-substitution-style variable
+ 	names.
+	* accton.8.in: same.
+	* last.1.in: same.
+	* lastcomm.1.in: same.
+	* sa.8.in: same.
+	* accounting.texi.in: same.
+	
+	* ac.1: removed, since we now use autoconf to substitute
+ 	filenames automatically.
+	* accton.8: same.
+	* last.1: same.
+	* lastcomm.1: same.
+	* sa.8: same.
+	* accounting.texi: same.
+
+	* files.h.in: automatic substitution of variable names by
+ 	autoconf.
+	
+	* configure.in: add comments, include stuff that used to be in
+ 	FILES.H, substitute new files.
+
+	* files.h: move #ifdefs that were here into CONFIGURE.IN, so we
+ 	can insert those values into man pages and other docs.  Removed
+ 	this file.
+	
+Wed Apr 17 20:51:40 1996  Noel Cragg  <noel@gargle>
+
+	* utmp_rd.c (bad_utmp_record): new routine to check for obviously
+ 	bad records (like all zeroes).
+	* ac.c (parse_entries): use it.
+	* last.c (parse_entries): use it.
+
+	* ac.c (parse_entries): check for empty records (that is, where
+ 	UT_LINE and UT_NAME are both empty).
+	* last.c (parse_entries): same.
+
+Wed Apr 17 23:43:18 1996  Noel Cragg  <noel@occs.cs.oberlin.edu>
+
+	* last.c (print_record): Don't print replacement TTY name if we're
+	on a BSD system.
+
+	* last.c (parse_entries): cast the argument of CTIME to the right
+	type.
+	* ac.c (parse_entries): same.
+
+Wed Apr 17 10:40:07 1996  Noel Cragg  <noel@gargle>
+
+	* utmp_rd.h (UTMAXTYPE): #define this to a reasonable default if
+ 	it wasn't done by the system.
+
+	* utmp_rd.c (fix_ut_type_field): fix records that have an
+ 	out-of-range UT_TYPE field.
+
+        * last.c: make sure all uses of print_which_recs are inside #ifdef
+ 	HAVE_UT_TYPE blocks.
+	
+        * hashtab.c: forgot to #include "config.h"...
+	
+        * dev_hash.c: add some #ifdefs for autoconfiscated headers
+ 	(string.h, stdlib.h, etc.).
+	* file_rd.c: same.
+	* hashtab.c: same.
+
+	* utmp_rd.c: same.
+	
+	* last.c: remove #includes for INET_NTOA, since we get it from
+ 	utmp_rd.h.
+	* utmp_rd.c: same.
+	
+	* utmp_rd.h: add #includes for INET_NTOA.
+
+	* last.c (parse_entries): fix an #ifdef so we don't define a label
+ 	unless we're under linux.
+
+	* Makefile.in (VPATH): add this to support different compilation
+ 	directories.
+
+        * ac.c (parse_entries): added TIME_WARP_SUSPICIOUS for time warps
+ 	forward that are greater than the value of that variable.  Does
+ 	the same thing as the backwards time warps.  Added command-line
+ 	flag `--tw-suspicious' to deal with it and updated usage string.
+  	Renamed `--timewarp-value' to `--tw-leniency' for consistency.
+	* last.c (parse_entries): same.
+	* ac.1: updated docs.
+	* last.1: updated docs.
+	* accounting.texi: updated docs.
+	
+	* ac.c (do_totals): removed the PRINT_FLAG argument, since all
+ 	callers were passing the same thing.  Changed callers.
+	(main): add `-a' and `--all-days' flags -- user can choose whether
+ 	they want to see all of the days printed.  Useful for graphing
+ 	programs.
+	* ac.1: updated docs.
+	* accounting.texi: updated docs.
+
+	* utmp_rd.c (fix_ut_type_field): new fix for machines that write
+ 	logouts of user processes with USER_PROCESS instead of
+ 	DEAD_PROCESS.
+	* ac.c (parse_entries): same -- handles this case in case
+ 	DEAD_PROCESS is not available.
+	
+	* last.c (parse_entries): same.
+
+	* ac.c (main): move init for utmp reader before parsing options
+ 	because we might choose to use an alternate wtmp file.
+	* last.c (main): same.
+	* lastcomm.c (main): same, but for pacct files.
+	* sa.c (main): same, but for pacct files.
+
+	* ac.c (give_usage): forgot to change string to reflect new `-f'
+ 	and `--file' flags.
+
+	* hashtab.c (hashtab_create): use the TABLE_SIZE structure element
+ 	instead of the #defined HASH_SIZE.
+
+	* ac.c (main): add `-y' and `--year' flags.
+	(parse_entries): use DO_TOTALS instead of cutting & pasting the
+ 	code with minor changes.
+	(do_totals): accept a few more args so that we can use it in the
+ 	above.
+
+	* last.c (print_record): get rid of the EVENT_ENUM business and go
+ 	for a simpler solution: pass in values of strings that should
+ 	replace UT_NAME, UT_LINE, and the message at the end of the line.
+  	This way, we don't have to switch on UT_TYPE and the enum all over
+ 	again.
+
+	* dump-utmp.c (main): use PRINT_UTMP_RECORD.
+
+        * ac.c: rename PRINT_FILE_INCONSISTENCIES to PRINT_FILE_PROBLEMS.
+	* last.c: same.
+	
+	* Makefile.in: update dependencies.
+
+	* lastcomm.1: update documentation for new flags.
+	* last.1: same.
+	* ac.1: same.
+	* accounting.texi: same.
+
+	* lastcomm.c (main): add `-f' and change `--other-file' to
+ 	`--file' to save typing.
+	* ac.c (main): same.
+	* last.c (main): same, but also remove `--supplants' flag, since
+ 	this is really covered under the `--complain' flag.  Add
+ 	`--more-records' and `-x' to give similar results as Miquel van
+ 	Smoorenburg's last program under Linux.
+	
+	* ac.c (parse_entries): changed flow again and re-incorporated
+ 	RECORD_TYPE #define thing.  Instead of trying to handle both types
+ 	of records with a bunch of kludges in the main switch statement,
+ 	we use FIX_UT_TYPE_FIELD.
+	* last.c (parse_entries): same.
+
+	* utmp_rd.c (fix_ut_type_field): new function -- makes bsd records
+ 	into sysv records.  For those machines that have a combination of
+ 	bsd and sysv records in their log files (Linux).
+	
+	* utmp_rd.h: re-insert #define RECORD_TYPE stuff so we can have a
+ 	single, unified switch statement for ac and last.
+
+Tue Apr 16 01:57:28 1996  Noel Cragg  <noel@gargle>
+
+	* utmp_rd.c (utmp_get_entry): change to take no parameters.
+	(print_utmp_record): new function.  Changed callers to use this
+ 	function rather than pass a flag to UTMP_GET_ENTRY.
+
+	* last.c (log_everyone_in): fix bug that printed placeholder
+ 	records as real supplants.
+
+	* ac.c (parse_entries): change debugging print string for standard
+ 	column widths (easier to read).
+
+	* name_list.c: removed -- hash tables are more efficient.  This
+ 	was mainly cut-and-paste, so there's not much work lost.
+	* name_list.h: removed.
+
+	* last.c: use hash tables.
+	* lastcomm.c: use hash tables.
+
+	* hashtab.c (hashtab_dump_keys): new file -- generic hash table
+ 	handling code to replace slow linked list stuff in all files.
+	* hashtab.h: new headers for above.
+	* ac.c: use hash tables.
+
+	* name_list.c: new file -- common code for linked lists of
+ 	strings.  Changed callers.
+	* name_list.h: header for above.
+	
+	* file_rd.c: new file -- common code from pacct_rd.c and
+ 	utmp_rd.c, to keep mistakes down.  Changed callers.
+	* file_rd.h: protos & data for above.
+
+Tue Apr  9 00:43:13 1996  Noel Cragg  <noel@gargle>
+
+        * ac.c: a few casts needed for a clean compile under Ultrix.
+	(main): fix `-z' flag and change `--dont-print-zeroes' to
+ 	`--print-zeros.'
+	* accounting.texi: fix docs.
+	* ac.1: same.
+
+	* last.c: same.
+	
+        * ac.c (parse_entries): reorganize switch loop so sysv-isms are
+ 	checked first.  If no cases match, things fall through to
+ 	bsd-isms.
+	* last.c (parse_entries): same.
+
+	* configure.in: rename SYSTEM_V_STYLE_RECORDS to HAVE_UT_TYPE.
+	* acconfig.h: same.
+	* ac.c: same.
+
+	* last.c: same.
+
+        * ac.c: make all file problem strings contain the word "problem:"
+ 	for easy grepping.
+	(parse_entries): remove big switch statement and use IFs instead
+ 	(since we have to check for both sysv and bsd syntaxes).
+	
+	* utmp_rd.h: removed definition of RECORD_TYPE, since some sysv
+ 	boxes use a combo of sysv and bsd syntaxes, so we have to check
+ 	for both.  Yecch!
+
+	* configure.in: check for UT_ID and UT_PID fields in utmp.h.
+	* acconfig.h: #undefs for above.
+	* utmp_rd.c (utmp_get_entry): print out the above fields if
+ 	available.
+	
+	* ac.c (update_system_time): change order of the debugging print
+ 	statement and the addition so the right values are reported.
+	(do_totals): put the call to localtime INSIDE the local scope of
+ 	the thing that needs to use it, otherwise it is wasted CPU.
+	(log_in): check for empty UT_LINE field.
+	(log_out): same.
+
+	* utmp_rd.c (utmp_get_entry): remove "bad record" stuff -- we
+ 	don't want to filter out any records, really.
+
+        * ac.h: removed this -- never used.  Gee, I wrote this a long time
+ 	ago before I knew very much.  Oh, well.
+	* last.h: same.
+	* lastcomm.h: same.
+	* sa.h: same.
+	
+        * last.c: changed vars which keep track of times to TIME_T from
+ 	LONG.
+
+	* last.c (log_in): same bogosity as ac.c (log_in), below.
+	(log_everyone_in): same.
+
+	* ac.c: changed variables which keep track of times to TIME_T from
+ 	LONG.  This way, we use the system's precision.
+	(log_out): the stuff about daylight savings time was completely
+ 	wrong -- while stuff returned by localtime may jump around, time_t
+ 	is always stepwise continuous.  If there's a negative number, we
+ 	may have overflowed TIME_T.  Removed bogus stuff.
+	(log_everyone_out): same.
+	(update_user_time): add a check for negative TIME_T values and
+ 	holler if we see one.
+
+	* ac.c (parse_entries): correct a bug when trying to print out
+ 	wtmp files which use dates in the future.
+
+	* utmp_rd.c: it was possible to print out an error message without
+ 	a filename and crash the program -- add a variable which should
+ 	always be set with the filename from which records were read.
+	* pacct_rd.c: same.
+
+	* ac.1: Dirk sent more changes that fix small typos and formatting
+ 	junk in the docs.  Applied!
+	* accton.8: same.
+	* last.1: same.
+	* lastcomm.1: same.
+	* sa.8: same.
+	* accounting.texi: same.
+
+Mon Apr  8 16:52:49 1996  Noel Cragg  <noel@gargle>
+
+	* accounting.texi: documentation changes for new flags and
+ 	credits.
+
+	* version.h: increment to 6.1.
+
+	* Makefile.in (accton): include getopt.o and getopt1.o.
+
+	* ac.c (main): add short options "-h" and "-V" for "--help" and
+ 	"--version" respectively.  Make sure usage strings match list of
+ 	commands passed to getopt.
+	* last.c (main): same.
+	* lastcomm (main): same.
+	* sa.c (main): same.
+
+	* accton.c (main): use getopt so we can provide the "--version"
+ 	and "--help" flags.
+
+	* last.c (print_record): print out the IP address if we have
+ 	UT_ADDR.
+	(main): rename "--print-address" to "--ip-address" to get printing
+ 	of IP addresses instead of hosts.
+
+	* utmp_rd.c (utmp_get_entry): don't print the IP address if it
+ 	isn't there.
+
+	* last.c (display_date): print out a given date, paying attention
+ 	to the PRINT_YEAR flag.
+	(main): add "--year" and "-y" flags, so the user can choose to
+ 	print out the year with dates.
+
+	* ac.c (main): fix long options to use enums.
+	* lastcomm.c (main): same.
+	* sa.c (main): same.
+
+	* mktime.c: new version from GNU C library.  HOORAY!  Paul Eggert
+ 	(the tz guru) has contributed his mktime routine to the C library!
+  	Away with my broken routine!
+
+	* ac.c (midnight_after_me): bug fixed -- the code was skipping a
+ 	few days and attributing DST hours to the day AFTER the DST change
+ 	occurred because I forgot to set tm_isdst to something negative
+ 	(mktime figures out DST stuff then).
+
+	* pacct_rd.c (pacct_get_entry): change record print format (use
+ 	fixed field widths to make things easier to read).
+	* utmp_rd.c (utmp_get_entry): same.
+
+	* ac.c (midnight_after_me): use mktime instead of adding the "26
+ 	hours" business and handing off to MIDNIGHT_BEFORE_ME.  Yecch!
+  	Also, take a long instead of a pointer to such.  Changed callers.
+	(midnight_before_me): removed function -- not used.
+
+Sun Apr  7 00:25:42 1996  Noel Cragg  <noel@gargle>
+
+	* ac.c (parse_entries): fix RUN_LVL special case for those
+ 	machines that incorrectly report shutdowns and reboots as RUN_LVL
+ 	instead of BOOT_TIME.
+
+	* dump-utmp.c (main): forgot to include case values for short
+ 	options.
+	* dump-acct.c (main): same.
+
+	* utmp_rd.c (utmp_get_entry): print ut_addr and ut_host if
+ 	available.
+
+	* last.c: add skeletal code to take advantage of the ut_addr field
+ 	(if a system has it).  Need options yet.
+
+	* configure.in (HAVE_UT_ADDR): check for the ut_addr field in
+ 	the system's utmp.h.
+	* acconfig.h: add proto #undef.
+
+Fri Apr  5 17:43:02 1996  Noel Cragg  <noel@gargle>
+
+	* pacct_rd.c (comp_t_2_double): don't call POW!  Since our
+ 	exponent will always be an integer, we can do this ourself much
+ 	faster than the library routine.
+
+	* dump-acct.c: add prototype for main to shut up gcc.
+	* dump-utmp.c: same.
+
+	* configure.in: have CFLAGS include -Wall and -Wmissing-prototypes
+ 	only if we're using gcc.
+	* Makefile.in: same.
+
+	* common.c (file_open): Actually, this stat business is a bad
+ 	idea.  Who cares if we open regular files or named pipes (or
+ 	/dev/null, for that matter?).  Modify the routine to recognize "-"
+ 	as an alias for stdin/stdout.
+
+Fri Apr  5 20:17:09 1996  Noel Cragg  <noel@occs.cs.oberlin.edu>
+
+	* common.c: need to include sys/types.h for Ultrix.
+	(file_open): don't check for a specific error status from stat.
+
+	* Makefile.in (DA_LIBS): needs -lm for the comp_t stuff.
+
+Fri Apr  5 11:08:22 1996  Noel Cragg  <noel@gargle>
+
+	* pacct_rd.c (pacct_get_entry): accept PRINT_FLAG, which tells the
+ 	routine whether or not it should print out the entries as it reads
+ 	them (for dump-acct).
+	* lastcomm.c: changed call to PACCT_GET_ENTRY.
+	* sa.c: same.
+
+	* utmp_rd.c (utmp_get_entry): accept PRINT_FLAG, which tells the
+ 	routine whether or not it should print out the entries as it reads
+ 	them (for dump-utmp).
+	* ac.c: change call to UTMP_GET_ENTRY.
+	* last.c: same.
+
+	* acconfig.h: new symbol -- HAVE_LINUX_ACCT_H as a work-around
+ 	under Linux while we wait for the C library to get a sys/acct.h
+	* configure.in: check for linux/acct.h.
+	* pacct_rd.h: choose linux/acct.h or sys/acct.h.
+	
+	* dump-acct.c: new file for dumping acct/pacct files in a
+ 	human-readable format.  Remember "sumrd.c" from the old days?
+	* dump-utmp.c: same for utmp files.
+	* Makefile.in: rules for dump-* programs.
+	* configure.in: add dump-acct to the list of pacct-related
+ 	programs to build (if available).
+
+	* lastcomm.1 (type): update documentation to reflect new options.
+	* accounting.texi (lastcomm): same.
+
+	* lastcomm.c: renamed NAME_LIST to ALL_LIST and added three new
+ 	lists (with similar function) -- TTY_LIST, COMMAND_LIST, and
+ 	USER_LIST.  Each of these lists is used to match only a
+ 	tty/command/username.  Luc I. Suryo <root@patriots.nl.mugnet.org>
+ 	was having problems matching user `ed' because that is also the
+ 	name of a command.
+	(cons_name_list): new function to cons values onto a list of
+ 	names.
+	(dump_name_list): print out the contents of a name list.
+
+	* lastcomm.c (parse_entries): check to see that there are no
+ 	unprintable characters in command names.
+	(main): new flag `--print-controls' to control whether or not
+ 	control characters are printed.
+	
+	* ac.1: tell the user that the units are HOURS.
+	* accounting.texi (ac): same.
+
+	* last.c (parse_entries): change information string that prints
+ 	after end of execution to include seconds and year.
+
+Thu Apr  4 12:15:47 1996  Noel Cragg  <noel@gargle>
+
+	* common.c (file_open): renamed from OPEN_BINARY.  Now checks file
+ 	types before opening, to make sure we're not opening directories
+ 	or other weird things.
+	* last.c: use FILE_OPEN.
+	* ac.c: use FILE_OPEN.
+	* lastcomm.c: use FILE_OPEN.
+	* sa.c: use FILE_OPEN.
+
+	* lastcomm.c: change inclusion order so we don't accidentally
+ 	redefine AHZ.  Ugh.
+
+	* ac.c (do_statistics): change formatting slightly -- put a space
+ 	in between username and total (unlike BSD) to make us friendly
+ 	with awk and perl.
+
+	* common.c (rename): new function as a replacement for those
+ 	machines that don't have it (Xenix -- Christoph again).
+	* common.h: add proto.
+	* configure.in: add code to check for rename in sys libs.
+	* acconfig.h: add proto #undef.
+
+	* last.c: change #if clauses around retsigtype stuff (also from
+ 	Christoph).
+
+	* files.h: change for Xenix to use /usr/adm/pacct from Christoph
+ 	Badura <bad@flatlin.ka.sub.org>.
+	* sa.c (print_stats_nicely): Christoph says that ac_mem IS NOT a
+ 	comp_t (for Xenix) -- but some machines have it defined that way,
+ 	like suns.
+
+	* ac.c (do_statistics): change tabbing so that columns line up.
+
+	* sa.c (print_command_list): quit if there are no entries to
+ 	report.
+
+Sun Jan 28 17:02:52 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* Makefile.in (info, dvi): overlooked these targets.  Thanks to
+ 	David S. Miller <davem@caip.rutgers.edu> for noticing!
+
+Sat Jan 27 00:05:40 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* README: updated to reflect newest info.
+
+        * sa.c: I've just done the most horrible thing imaginable -- I've
+ 	put too many #ifdef statements in this program.  Turns out that
+ 	some OS's don't have the full STRUCT ACCT so we need to provide as
+ 	much as we can, but no more.  The solution: comment out the stuff
+ 	that's not applicable.  Ugh.
+	
+	* sa.c (hash_name): simpler (but similar) hash function.
+
+	* common.c (desired_entry): removed function and moved to the
+ 	appropriate source files (ac.c, last.c) since it wasn't applicable
+ 	to all programs.
+
+	* utmp_rd.h (HOST_LEN): new #define for those machines that have
+ 	the UT_HOST field in STRUCT UTMP.
+	* last.c (print_record): use HOST_LEN if available.
+
+	* dev_hash.c: change data structure so that there isn't a limit on
+ 	the length of a device name in memory.
+	* uid_hash.c: same as above, but change made for username.
+
+	* last.c: change the #define business to real enums for error
+ 	checking.
+	* sa.c: same.
+
+Fri Jan 26 00:21:56 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* sa.c (parse_acct_entries): fix printed length of command names
+ 	(so we don't print extra junk on the end of the output lines).
+
+	* Removed RCSIDs from source files and installed a new versioning
+ 	scheme.
+	* version.h: file that contains the release number information.
+
+	* Makefile.in (lastcomm-test, sa-test): add some `-' prefixes for
+ 	bad return values of the `time' program on some systems
+ 	(m68k-bsd-sony).
+
+Thu Jan 25 04:18:07 1996  Noel Cragg  <noel@csxt.cs.oberlin.edu>
+
+	* utmp_rd.c (utmp_get_entry): fix FSEEK command's distance -- was
+	zero for the first call!
+	* pacct_rd.c (pacct_get_entry): same.
+
+Thu Jan 25 01:01:40 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* ac.c, last.c, lastcomm.c, sa.c: print fatal errors to stdout
+ 	instead of stderr.
+
+Wed Jan 24 03:41:36 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* last.c (main): make sure PRINT_ALL_RECORDS gets set if the user
+ 	is trying to print out a particular user/tty.
+
+	* ac.c (main): add `--compatibility' flag which makes the program
+ 	behave like most other u*x ACs.
+	* accounting.texi (ac): update documentation.
+	* ac.1: same.
+
+	* Makefile.in (SA_OBJS): added pacct_rd.o.
+
+	* pacct_rd.h: renamed NEVER_USED variable so it wouldn't conflict
+ 	with the other definition in utmp_rd.h.
+	* utmp_rd.h: similar...
+
+	* configure.in: detect presence and types of fields in STRUCT
+ 	ACCT.
+	* acconfig.h: added #defines for above mods.
+	* makecnst: removed file, since autoconf does it all nowadays.
+
+	* last.c (give_usage): fix usage string to reflect old-style
+ 	option processing.
+	* last.1: same.
+	* accounting.texi (last): same.
+
+Wed Jan 24 06:25:14 1996  Noel Cragg  <noel@wombat.gnu.ai.mit.edu>
+
+	* utmp_rd.c (utmp_get_entry): the ibm-rt lets us fseek to a
+        negative location?!  Grr.  Fix the check to see whether we're done
+        with a file...
+	* pacct_rd.c (pacct_get_entry): same.
+
+Wed Jan 24 02:35:47 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* utmp_rd.c (utmp_get_entry): skip invalid records (those without
+ 	a tty or valid time) and retry.
+
+Tue Jan 23 02:11:37 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* Fixed all sources to pay attention to HAVE_STRING_H,
+ 	HAVE_STDLIB_H, HAVE_UNISTD_H, and HAVE_LIMITS_H.
+	
+	* configure.in (HAVE_MKTIME): change definitions so that Makefile
+ 	is modified, rather than having mktime.c be #included from ac.c.
+	* Makefile.in: same.
+	
+	* pacct_rd.c (pacct_get_entry): fix buglet where we would loop
+ 	infinitely if we couldn't open a file (forgot to remove that file
+ 	from the list).
+	* utmp_rd.c (utmp_get_entry): same.
+	
+	* dev_hash.c (setup_devices): fix buglet where we tried to look
+ 	through entries in non-existent directories.
+
+	* pacct_rd.c (comp_t_2_double): moved this from common.c, since it
+ 	isn't used by all programs.
+
+	* dev_hash.c, dev_hash.h: new files which take care of device
+ 	number to name resolution.
+	(setup_devices): change calling convention -- takes an argument
+ 	which is the name of a directory from which elements should be
+ 	added.
+
+	* last.c (print_record): field width taken care of at compile
+ 	time.
+
+	* pacct_rd.c, pacct_rd.h: new files which read from pacct/acct
+ 	files.
+	* lastcomm.c: modified to use pacct_rd.c.
+	* Makefile.in (lastcomm): added dependencies for pacct_rd.c.
+
+	* configure.in: add a check for the COMP_T being used in
+ 	<sys/acct.h>.
+
+	* utmp_rd.h (NAME_LEN, TTY_LEN): moved this stuff from common.h.
+
+	* Makefile.in (OBJS): added utmp_rd.o.
+	(depend): regenerated dependencies.
+
+	* lastcomm.c (HASH): added this #define since it was taken out of
+ 	uid_hash.h.
+
+	* common.h (NAME_LEN, TTY_LEN): instead of #defining constants,
+ 	make the compiler do the work -- use sizeof.
+
+	* uid_hash.h: removed stuff that other source files didn't need to
+ 	see (struct definitions, internal tables, etc.) to uid_hash.c.
+
+	* uid_hash.h (uid_list): fix smally typo in variable type (missing
+ 	the `*').
+
+	* last.c (parse_entries): fix the initialization of the LAST_TIME
+ 	variable.
+
+	* uid_hash.h: removed silly #ifdef for an extern (was inserted to
+ 	get around an old gcc 1.39 warning message) -- not really useful
+ 	anymore.
+
+	* utmp_rd.h: move #defines for RECORD_TYPE & c. here so AC and
+ 	LAST can share the same code.
+
+	* acconfig.h: rename HAVE_ACCT_H to HAVE_SYS_ACCT_H.
+
+	* utmp_rd.c, utmp_rd.h: new files which manage reading from
+ 	multiple wtmp files.
+	* ac.c (main): make it use code from utmp_rd.c.
+	* last.c (main): same.
+	* Makefile.in (ac last): add utmp_rd.c to object file lists.
+
+	* last.c (main): Add code to handle old-style (like `-10')
+ 	options.
+
+	* REMEMBER TO DOCUMENT CHANGES AS THEY HAPPEN...
+
+Fri Jan 19 09:45:01 1996  Noel Cragg  <noel@gargle.psych.oberlin.edu>
+
+	* common.h: add #defines for NAME_LEN.
+	* ac.c: change structure definitions and other code to use NAME
+ 	len instead of having '8' hard-coded all over the place.
+	* last.c: same.
+
+	* ac.c (init_flags_and_data): remove this stuff, since most
+ 	compilers can handle variable initialization!
+	* last.c (init_flags_and_data): same.
+	
+Fri Jan  5 18:34:52 1996  Noel Cragg  <noel@gargle.vo.com>
+
+	* Makefile.in, acconfig.h, configure.in: update to new version of
+ 	autoconf.  Changed a few affected files because of renamed
+ 	preprocessor variables (common.c, common.h, lastcomm.c).
+
+	* Makefile.in: fixed a few "bogus" lines (according to emacs
+ 	19.30).
+
+	* accounting.texi: fixed numerous bugs pointed out by Susan.
+
+	* ac.1, accton.1, last.1, lastcomm.1, sa.1: added excellent man
+ 	pages from Susan Kleinmann <sgk@sgk.tiac.net> to the repository.
+
+Mon Dec 18 10:07:14 1995  Noel Cragg  <noel@gargle.vo.com>
+
+	* sa.c (main): fix command-line flag combination check (use AND
+ 	instead of OR).
+
+	* makecnst (flag): try to find cpp.  Really this should be
+ 	autoconfiscated.  I'll do that later today.
+
+	*** The following changes were done before 18 Dec 1995 by Dirk and
+ 	others, but they weren't documented heretofore. ***
+
+	* files.h: change #defines to reflect Linux's new filesystem
+ 	standard.
+
+	* accton.c (main): return correct exit status for each execution
+ 	possibility.
+
+	* accounting.texi: fix a few formatting glitches, change
+ 	documentation relating to change of "--truncate-ftp-entries" flag.
+
+	* Makefile.in (last-test): remove "--truncate-ftp-entries" since
+ 	it is now the default behaviour.
+
+	* last.c: change the "--truncate-ftp-entries" flag to
+ 	"--no-truncate-ftp-entries" and make truncation (is that a word?)
+ 	the default.
+
+Fri Oct 13 09:41:36 1995  Dirk Eddelbuettel  <edd@miles.econ.queensu.ca>
+
+	* uid_hash.h (NAME_LEN): fixed bug#1651 reported and patched by 
+	  Austin Donnelly <and1000@cam.ac.uk>
+
+Mon Oct  2 16:39:00 1995  Dirk Eddelbuettel  <edd@miles.econ.queensu.ca>
+
+	* accton.c: exit() now returns value of `errno' and /etc/init.d/acct
+	  examines that value; this gives better messages
+	  
+	* accounting.texi: added a missing formatter for @item 
+
+	* last.1 man page addded
+
+Pre Sep 21 00:00:00 1995  Ian Murdock  <imurdock@debian.org>
+
+        * added __linux__ definitions to files.h (we use
+ 	/var/account/pacct as ACCT_FILE, /var/account/wtmp as WTMP_FILE,
+ 	/var/account/savacct as SAVACCT_FILE, and /var/account/usracct as
+ 	USRACCT_FILE)
+	
+        * changed last to truncate ftp entries by default (as Unix does
+ 	it)
+	
+        * fixed a typo in accounting.texi

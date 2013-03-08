@@ -1,0 +1,145 @@
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Fri Sep 18 01:29:33 2009 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>DUMP-UTMP</title>
+
+</head>
+<body>
+
+<h1 align="center">DUMP-UTMP</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">dump-utmp
+&minus; print an utmp file in human-readable format.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>dump-acct</b>
+[<b>&minus;r</b>|<b>&minus;&minus;reverse</b>]
+[<b>&minus;R</b>|<b>&minus;&minus;raw</b>]
+[<b>&minus;n</b>|<b>&minus;&minus;num</b> <i>recs</i>]
+[<b>&minus;h</b>|<b>&minus;&minus;help</b>] [
+<i>files</i>]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>dump-acct</b>
+<i>filename</i> prints a list of all logins. This list is
+usually written in <i>/var/log/wtmp</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">All fields are
+separated by vertical line. Fields are: <i>user name</i>,
+<i>tty</i>, <i>type</i>, <i>id</i>, <i>pid</i>,
+<i>hostaddr</i>, <i>host</i>, <i>time</i>.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;h,
+&minus;&minus;help</b></p>
+
+<p style="margin-left:22%;">Prints the usage string and
+default locations of system files to standard output and
+exits.</p>
+
+<p style="margin-left:11%;"><b>&minus;n, &minus;&minus;num
+recs</b></p>
+
+<p style="margin-left:22%;">Number of lines to print.</p>
+
+<p style="margin-left:11%;"><b>&minus;r,
+&minus;&minus;reverse</b></p>
+
+<p style="margin-left:22%;">Start printing from last
+records.</p>
+
+<p style="margin-left:11%;"><b>&minus;R,
+&minus;&minus;raw</b></p>
+
+<p style="margin-left:22%;">Print raw records, not
+human-readable.</p>
+
+<h2>FILES
+<a name="FILES"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p style="margin-top: 1em"><i>wtmp</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">The system wide login record
+file. See <b>wtmp</b>(5) for further details.</p></td></tr>
+</table>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>login</b>(1),
+<b>wtmp</b>(5), <b>init</b>(8), <b>sa</b>(8).</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The GNU
+accounting utilities were written by Noel Cragg
+&lt;noel@gnu.ai.mit.edu&gt;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page was written by Ognyan Kulev
+&lt;ogi@fmi.uni-sofia.bg&gt; and updated by Daniel Baumann
+&lt;daniel@debian.org&gt; for the Debian project (but may be
+used by others).</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Fri Sep 18 01:28:38 2009 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LASTCOMM</title>
+
+</head>
+<body>
+
+<h1 align="center">LASTCOMM</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">lastcomm
+&minus; print out information about previously executed
+commands.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lastcomm</b></p>
+
+<p style="margin-left:22%;">[ <i>command-name ...</i> ]
+<br>
+[ <i>user-name ...</i> ] <br>
+[ <i>terminal-name ...</i> ] <br>
+[ <b>&minus;&minus;strict-match</b> ] <br>
+[ <b>&minus;&minus;forwards</b> ] <br>
+[ <b>&minus;f</b> <i>filename</i> |
+<b>&minus;&minus;file</b> <i>filename</i> ] [
+<b>&minus;&minus;ahz</b> <i>hz</i> ] <br>
+[ <b>&minus;&minus;user</b> <i>name</i> ] [
+<b>&minus;&minus;command</b> <i>name</i> ] [
+<b>&minus;&minus;tty</b> <i>name</i> ] <br>
+[ -B | <b>&minus;&minus;show_paging</b> ] [
+<b>&minus;&minus;debug</b> ] [ <b>&minus;V</b> |
+<b>&minus;&minus;version</b> ] [ <b>&minus;h</b> |
+<b>&minus;&minus;help</b> ]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lastcomm</b>
+prints out information about previously executed commands.
+If no arguments are specified, <b>lastcomm</b> will print
+info about all of the commands in <i>acct</i> (the record
+file). If called with one or more of <i>command-name,
+user-name,</i> or <i>terminal-name,</i> only records
+containing those items will be displayed. For example, to
+find out which users used command &lsquo;a.out&rsquo; and
+which users were logged into &lsquo;tty0&rsquo;, type:</p>
+
+<p align="center">lastcomm a.out tty0</p>
+
+<p style="margin-top: 1em">This will print any entry for
+which &lsquo;a.out&rsquo; or &lsquo;tty0&rsquo; matches in
+any of the record&rsquo;s fields (command, name, or
+terminal). If you want to find only items that match *all*
+of the arguments on the command line, you must use the
+&rsquo;&minus;strict-match&rsquo; option. For example, to
+list all of the executions of command <i>a.out</i> by user
+<i>root</i> on terminal <i>tty0,</i> type:</p>
+
+<p align="center">lastcomm &minus;&minus;strict-match a.out
+root tty0</p>
+
+<p style="margin-top: 1em">The order of the arguments is
+not important.</p>
+
+<p style="margin-top: 1em">For each entry the following
+information is printed: <br>
++ command name of the process <br>
++ flags, as recorded by the system accounting routines: <br>
+S -- command executed by super-user <br>
+F -- command executed after a fork but without a following
+exec <br>
+C -- command run in PDP-11 compatibility mode (VAX only)
+<br>
+D -- command terminated with the generation of a core file
+<br>
+X -- command was terminated with the signal SIGTERM <br>
++ the name of the user who ran the process <br>
++ time the process exited</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;&minus;strict-match</b></p>
+
+<p style="margin-left:22%;">Print only entries that match
+*all* of the arguments on the command line.</p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;user</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">List records for user with
+<i>name.</i> This is useful if you&rsquo;re trying to match
+a username that happens to be the same as a command (e.g.,
+<i>ed</i> ).</p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;command</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">List records for command
+<i>name.</i></p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;tty</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">List records for tty
+<i>name.</i></p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;forwards</b></p>
+
+<p style="margin-left:22%;">Read file forwards instead of
+backwards. This avoids trying to seek on the file and can be
+used to read from a pipe. This must be specified prior to
+any <b>&minus;f</b> arguments.</p>
+
+<p style="margin-left:11%;"><b>&minus;f</b>
+<i>filename,</i> <b>&minus;&minus;file</b>
+<i>filename</i></p>
+
+<p style="margin-left:22%;">Read from the file
+<i>filename</i> instead of <i>acct.</i> A filename of
+&quot;-&quot; will result in reading from stdin. This must
+either be the first <b>&minus;f</b> option, or
+<b>&minus;&minus;forwards</b> must precede all
+<b>&minus;f</b> options.</p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;ahz</b>
+<i>hz</i></p>
+
+<p style="margin-left:22%;">Use this flag to tell the
+program what <b>AHZ</b> should be (in hertz). This option is
+useful if you are trying to view an <i>acct</i> file created
+on another machine which has the same byte order and file
+format as your current machine, but has a different value
+for <b>AHZ.</b></p>
+
+<p style="margin-left:11%;"><b>&minus;p,
+&minus;&minus;show&minus;paging</b></p>
+
+<p style="margin-left:22%;">Print paging statistics</p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;debug</b></p>
+
+<p style="margin-left:22%;">Print verbose internal
+information.</p>
+
+<p style="margin-left:11%;"><b>&minus;V,
+&minus;&minus;version</b></p>
+
+<p style="margin-left:22%;">Print the version number of
+<b>lastcomm.</b></p>
+
+<p style="margin-left:11%;"><b>&minus;h,
+&minus;&minus;help</b></p>
+
+<p style="margin-left:22%;">Prints the usage string and
+default locations of system files to standard output and
+exits.</p>
+
+<h2>FILES
+<a name="FILES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>acct</i></p>
+
+<p style="margin-left:22%;">The system wide process
+accounting file. See <b>acct</b>(5) (or <b>pacct</b>(5)) for
+further details.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The GNU
+accounting utilities were written by Noel Cragg
+&lt;noel@gnu.ai.mit.edu&gt;. The man page was adapted from
+the accounting texinfo page by Susan Kleinmann
+&lt;sgk@sgk.tiac.net&gt;.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>last</b>(1),
+<b>acct</b>(5)</p>
+<hr>
+</body>
+</html>

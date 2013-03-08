@@ -1,0 +1,243 @@
+.\" Man page by Dirk Eddelbuettel
+.TH LAST 1 "1997 August 19"
+.SH NAME
+last \- list logins on the system
+.SH SYNOPSIS
+.hy 0
+.na
+.TP
+.B last 
+[ 
+.BI \- "num"
+|
+.BI \-n " num"
+|
+.BI \-\-lines " num"
+]
+.br
+[
+.BI \-f " filename"
+|
+.BI \-\-file " filename"
+] 
+.br
+[
+.I people ...
+] 
+[
+.I ttys ...
+] 
+.br
+[
+.B \-\-complain
+]
+[
+.B \-\-no-truncate-ftp-entries
+]
+.br
+[
+.B \-x
+|
+.B \-\-more-records
+]
+[
+.B \-a
+|
+.B \-\-all-records
+]
+.br
+[
+.B \-\-tw-leniency
+.I num
+]
+[
+.B \-\-tw-suspicious
+.I num
+]
+.br
+[
+.B \-i
+|
+.B \-\-ip-address
+]
+[
+.B \-\-debug
+]
+[
+.B \-w
+|
+.B \-\-wide
+]
+.br
+[
+.B \-s
+|
+.B \-\-print-seconds
+]
+[
+.B \-y
+|
+.B \-\-print-year
+]
+.br
+[
+.B \-V
+|
+.B \-\-version
+]
+[
+.B \-h
+|
+.B \-\-help
+]
+.hy 1
+.ad b
+.SH DESCRIPTION
+.B last
+looks through the file 
+.I wtmp
+(which records all logins/logouts) and
+prints information about connect times of users. Records are printed from
+most recent to least recent.  Records can be specified by tty and username.
+tty names can be abbreviated: 
+.ce
+.BR last " 0" 
+.ce 0
+is equivalent to 
+.ce
+.BR last " tty0."
+.ce 0
+.LP
+Multiple arguments can be specified: 
+.ce
+.BR last " root console"
+.ce 0
+will print all of the entries for the user 
+.I root 
+and all entries logged in on the 
+.I console
+tty.
+.LP
+The special users 
+.IR reboot " and " shutdown 
+log in when the system reboots or
+(surprise) shuts down.  
+.ce
+.BR last " reboot" 
+.ce 0
+will produce a record of reboot times.
+.LP
+If 
+.B last 
+is interrupted by a quit signal, it prints out how far its search
+in the 
+.I wtmp
+file had reached and then quits.
+.SH OPTIONS
+.PD 0
+.TP
+.BI \-n " num, " \-\-lines " num "
+Limit the number of lines that 
+.B last 
+outputs.  This is different from u*x
+.B last, 
+which lets you specify the number right after a dash.
+.TP
+.BI \-f " filename, " \-\-file " filename"
+Read from the file 
+.I filename
+instead of the system's 
+.I wtmp
+file.
+.TP
+.B \-\-complain
+When the 
+.I wtmp
+file has a problem (a time-warp, missing record, or
+whatever), print out an appropriate error.
+.TP
+.BI \-\-tw-leniency " num"
+Set the time warp leniency to 
+.I num 
+seconds.  Records in 
+.I wtmp
+files might be slightly out of order (most notably when two logins
+occur within a one-second period - the second one gets written first).
+By default, this value is set to 60.  If the program notices this
+problem, time is not assigned to users unless the
+.B \-\-timewarps
+flag is used.
+.TP
+.BI \-\-tw-suspicious " num"
+Set the time warp suspicious value to 
+.I num 
+seconds.  If two records in the
+.I wtmp
+file are farther than this number of seconds apart, there is a problem
+with the
+.I wtmp
+file (or your machine hasn't been used in a year).  If the program
+notices this problem, time is not assigned to users unless the
+.B \-\-timewarps
+flag is used.
+.TP 
+.B \-\-no-truncate-ftp-entries
+When printing out the information, don't chop the number part off of 
+`ftp'XXXX entries.
+.TP 
+.B \-x, \-\-more-records
+Print out run level changes, shutdowns, and time changes in addition to
+the normal records.
+.TP 
+.B \-a, \-\-all-records
+Print out all records in the
+.I wtmp
+file.
+.TP
+.B \-i, \-\-ip-address
+Some machines store the IP address of a connection in a utmp record.
+Enabling this option makes
+.B last
+print the IP address instead of
+the hostname.
+.TP
+.B \-w, \-\-wide
+By default,
+.B last
+tries to print each entry within in 80 columns.  Use this option to
+instruct
+.B last
+to print out the fields in the
+.I wtmp
+file with full field widths.
+.TP
+.B \-\-debug
+Print verbose internal information.
+.TP
+.B \-s, \-\-print-seconds
+Print seconds when displaying dates.
+.TP
+.B \-y, \-\-print-year
+Print year when displaying dates.
+.TP
+.B \-V, \-\-version
+Print 
+.B last's 
+version number.
+.TP
+.B \-h, \-\-help
+Prints the usage string and default locations of system files to
+standard output and exits.
+.SH FILES
+.I wtmp
+.RS
+The system wide login record file. See
+.BR wtmp (5)
+for further details.
+.SH AUTHOR
+The GNU accounting utilities were written by Noel Cragg
+<noel@gnu.ai.mit.edu>. The man page was added by Dirk Eddelbuettel
+<edd@qed.econ.queensu.ca>.
+.SH "SEE ALSO"
+.BR who (1),
+.BR wtmp (5)

@@ -1,0 +1,99 @@
+Welcome to the GNU Accounting Utilities package!
+
+This is a set of utilities which reports and summarizes data about
+user connect times and process execution statistics under u*x.  This
+package contains:
+
+	ac:           summarize login accounting
+	accton:       turn process accounting on or off
+	last:         show the people who have logged in
+	lastcomm:     show which commands have been used
+	sa:           summarizes process accounting
+
+	dump-utmp:    print a utmp file in a human-readble format
+	dump-acct:    same as above for acct/pacct files
+
+See the file `INSTALL' for generic instructions on how to compile and
+install this software.
+
+See the file `NEWS' for late-breaking news about this version.
+
+See the file `ChangeLog' for an up-to-date list of source-level
+modifications.
+
+A big thanks to Dirk Eddelbuettel <edd@econ.queensu.ca> for
+motivation!
+
+NOTE: if you're installing this package to replace your system's
+accounting utilities, you will need to delete the "usracct" and
+"savacct" files written by your system's sa, as GNU sa is not able to
+read them (formats vary too widely between systems).
+
+----------------------------------------------------------------------
+
+The usual:
+
+  * If you run into a bug, please send a "good" bug report -- a
+  message that contains detailed instructions that allow me to
+  reproduce the bug.
+
+  * If you can make a patch for a particular problem, great!  But if
+  you modify more than 10 lines, I need to worry about disclaimers and
+  copyright stuff.  Let's try this: if you find a bug, report it and
+  I'll let you know whether or not I've been working on the problem
+  (or want to do so).  We can proceed from there.  As a maintainer, I
+  want to make sure that folks are not duplicating work.
+
+  * Straightforward testing: "./configure; make compare" and check the
+  output files (compare-*) in the source directory (should show times
+  and etc.).
+
+  * If this package isn't finding your utmp/pacct files correctly,
+  check the file configure.in script (files.h is now automatically
+  generated from the results of that script).
+
+  * Any suggestions for better output from the dump-acct and dump-utmp
+  programs?  I'm not sure what format will be easiest to parse.
+
+  * If you see slightly different numbers for output with GNU sa
+  compared with your system's sa, it's probably due to round-off error
+  (vendor utils use floats, we use doubles).  Check it, however, and
+  send me a report.
+
+  * PLEASE SUGGEST FEATURES THAT YOU WOULD LIKE!  I realize that the
+  standard options aren't great, so I'm looking for suggestions to
+  make the output more digestible.  Would anyone be interested in
+  scripts/options to produce graphic output (postscript, xplot,
+  gnuplot, etc.)?
+
+Coming up:
+
+  * The next major release will introduce utmpx support for those of
+  you lucky enough to have it.
+
+It's good to know that people are willing to donate their time and
+effort to getting the GNU Accounting Utilities up and working on many
+machines.  Thanks a lot for the help!
+
+-Noel
+
+Noel Cragg \\ 6244 Aberdeen Avenue \\ Goleta CA 93117-2002 \\ 805 964 1892
+     noel@cs.oberlin.edu \\ noel@red-bean.com \\ noel@gnu.ai.mit.edu
+
+----------------------------------------------------------------------
+
+The GNU Accounting Utilities are Copyright (C) 1993, 1996, 1997, 2008,
+2009, 2010 Free Software Foundation, Inc.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

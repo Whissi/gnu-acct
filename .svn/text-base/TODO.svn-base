@@ -1,0 +1,535 @@
+Things to be done in the near future:
+* Add I10N support
+* Clean/rewrite the build system
+* Extract common code into shared files
+* Review the Info manual
+* Improve output of commands (i.e. the default output of 'ac')
+* Simplify the option handling code (getopt)
+
+--------------------------------------------------------------
+OLD TODO: (the more long-term items)
+
+Next major release: utmpx support.
+  -"Bruno Lopes F. Cabral" <bruno@zeus.openline.com.br> would like at
+   least a copy of fwtmp so he can fix his wtmp files
+  -write some library routines that will read utmp and utmpx records
+   into the same internal data structure -- that way, we don't have to
+   handle the two record types separately
+
+Need a few utilities that convert wtmp and acct entries to text and
+vice versa.  That would be a great way to write a test suite for the
+programs, too -- write the input files in text, convert them to the
+appropriate binary format, and run the programs on those binary files.
+
+Possibly add `--wide' flag code to ac.
+
+make compare targets
+  -- detect GNU versions of utils (or else we'll get differences between
+      "ac -p" and "ac -p --compat")
+  -- skip the compare if a system util doesn't exist
+
+handle uucpxxxx records as well as ftpxxxx ones.
+
+Don't complain about missing login entries?  I wrote the following to
+Dirk & Karl: "I should disable the "missing login record" warning,
+because it really doesn't mean much.  Oftentimes getty or another
+system utility will write a `logout' record for a given tty just for
+good measure -- it really doesn't mean anything is wrong.  I'll put
+that in the todo list."
+
+Delete version.h.in and files.h.in from the disty and generate them
+entirely using autoconf?  Currently this seems broken to me.  I need a
+generic way to detect already installed pacct/acct/wtmp/utmp files...
+
+Write a simple set of functions that manage getopt options, usage
+strings, and the like.  It's stupid to have to update them in several
+places -- that's prone to error.
+
+Write up a few sentences on column labeling.
+
+Make sure the --seperate-forks flag works.
+
+DNS lookups for ut_addr field -- should we lookups at all?  Should we
+cache lookups?
+
+Grow number precision in ac so we always get decent column alignment?
+
+Add appropriate INDEX entries for the texi file.
+
+Use stdarg instead of this alloca business for error messages?
+
+Forrest Aldrich <forrie@elf.wang.com> requests: Write some shell
+scripts to manage log rotation and all.  Perhaps along the lines of
+the "handleacct.sh" script by Juha.  Ask him.
+
+Linux patches: check to see if disk space is available before writing.
+Ugly -- try to get character string usernames from inside the kernel.
+UIDs are no problem (given), but the kernel doesn't know about
+GETPWUID.  Also look at NetBSD sources and see how they calculate
+AC_MEM.
+
+Some System V boxes (kropotkin) are smart enough to include the
+USERNAME of the person when issuing a DEAD_PROCESS record!  Cool.
+Change the code to use it.
+
+----------------------------------------------------------------------
+The following are some e-mail messages between myself and various
+other folks.  They may or may not be useful, but are included
+(primarily) to make me keep some of these concepts in mind.
+
+For the concerned reader, I've removed some of the discussion on
+logfile rotation specifics (the junk that isn't within the scope of
+this package).  You might want to check out the `logrotate' package
+available from Red Hat Software (http://www.redhat.com).
+----------------------------------------------------------------------
+
+----------
+From rms Nov 2 1992 to noel
+
+Knowing the shoddy practices of Unix, I have a suspicion that there
+are arbitrary limits in the format of the accounting files on Unix.
+Are there?
+
+For example, is there a restriction in the format on the length of a
+user name?
+
+The GNU system is supposed to abolish such limits.  So if there are any,
+could you send me a description of where they are?  Also, could you
+add #ifdefs to support an improved file format that will not have
+any limits?  We could use the improved format in GNU.
+
+Another issue occurs to me.  It seems that on Unix systems the
+accounting files fill up the disk and one must manually take care of
+moving them, purging old info, etc.  Can you implement something that
+automatically solves this problem?
+[snip]
+
+----------
+From noel Nov 2 1992
+to rms
+
+>Knowing the shoddy practices of Unix, I have a suspicion that there
+>are arbitrary limits in the format of the accounting files on Unix.
+>Are there?
+
+Yes, you guessed it.  There is a limit on the size of the username,
+command name, tty, and node name (just to name a few)...
+
+>The GNU system is supposed to abolish such limits.  So if there are any,
+>could you send me a description of where they are?  Also, could you
+>add #ifdefs to support an improved file format that will not have
+>any limits?  We could use the improved format in GNU.
+
+I agree that the limits should be disposed of.  In fact, I think (in
+this case, at least) that it would save on the file sizes -- to
+automatically save 8 characters for a username is wasteful, especially
+if many usernames are 4 or 5 characters (tty name are even a better
+example)!  Yes, I think I can implement a better file format pretty
+easily -- it will make the job of writing records to the file easier
+(by login and init, for example) but involve a little craftier reading
+on the part of my programs.  Oh, well.  Who cares, if we save a lot of
+space in the process AND make the resultant data much more readable.
+
+Even better -- I could restructure the file so that it doesn't contain
+ambiguities of the current system.  What I mean: the wtmp file has a
+record for each login and logout and leaves ac to try and figure out
+which records belong together.  Sometimes you just can't figure it
+out -- records are missing.  What if the wtmp file had records like
+the acct file, where you recorded the username, tty, etc. along with
+BOTH the login AND logout time?  There would be no problem with
+reboots, though: i.e., somebody logs in and the machine reboots -- no
+record would be written to the file.  Is that important?  I guess so.
+I'm just musing about this...
+[snip]
+
+----------
+From rms Nov 2 1992
+to noel
+
+[snip]
+Make the inquiry tools (such as lastcomm) to look at *all* the
+existing wtmp files, both the current one and the renamed ones,
+in the proper order.
+[snip]
+
+----------
+From noel Nov 2 1992
+to noah
+
+I've been working on re-writes of the unix accounting utils (ac, last,
+lastcomm, sa, etc.).  In the process, rms has asked me to change the
+format of the files that are kept around -- he wants variable-length
+records (unlimited name lengths).  I was thinking that it might be
+more useful to re-evaluate how the login/logout records are stored.
+Could you give me your thoughts on this?
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+When a person logs in, LOGIN writes a record to both the wtmp and utmp
+files.  When the login process dies, INIT searches through the utmp
+file and removes the appropriate record and then adds a record to the
+wtmp file.
+
+Wouldn't it be great if the wtmp file had records that contained both
+the login AND logout time (instead of two separate ones)?  Since INIT
+is cleaning up after LOGIN anyways (it has to find the login record in
+the utmp file), why not give the responsibility to INIT completely?
+The process as I envision it is:
+
+  * INIT starts up and writes a reboot record (as usual).  It then
+    checks the utmp file.  If there are entries, we know that the
+    system crashed while people were logged in.  Read those records
+    and write them to the wtmp file as people who were interrupted
+    because the machine rebooted.
+
+  * Somebody logs in and LOGIN writes a record to utmp file (just in
+    case system goes down while somebody is logged in -- see above)
+
+  * when login process dies, INIT looks through the utmp file and gets
+    the info that LOGIN wrote there.  After removing the record from
+    the utmp file, INIT writes a complete record to the wtmp file.
+
+  * when init is told to quit, it writes a shutdown record (as usual)
+    and writes records for all entries in the utmp file (if
+    necessary), marking them as people who got logged out because of
+    shutdown.
+
+  * DATE will both write a record of time change to the wtmp file AND
+    update all of the records in the utmp file, so INIT and LOGIN
+    don't have to worry about it.
+
+INIT, LOGIN, and DATE are the producers of the utmp and wtmp files.  If
+the format of the files were to change, these would be the main
+concerns.  The other stuff just looks at these files -- the accounting
+stuff like AC and LAST; the login monitoring stuff like W and WHO.
+I'm doing the accounting package, so that's not a problem.  The W and
+WHO programs will just have to be modified to support rms'
+arbitrary-length names.
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+That's the deal for the login accounting.  I don't think there's much
+help for process accouting, unless it be in saving an actual username
+(userids can change over time)...  Let me know.
+
+-N
+
+----------
+From noah Nov 2 1992
+to noel, rms, mib
+
+(CC recipients: Noel Cragg asked me what kinds of changes might be made to
+various accounting systems for the hurd.  Here are some thoughts off the
+top of my head.  Perhaps someone else has better ideas).
+
+Assuming we don't have to be backward-contemptible with the currently
+broken unix accounting mechanisms, I'd envision implementing some of the
+following changes. 
+
+Wtmp/utmp files would be of the form
+
+      long length_header;  /* total size of record */
+      struct {
+         char *ut_line;       /* null-terminated tty name */
+         char *ut_name;       /* null-terminated user login name */
+         char *ut_host;       /* null-terminated FQDN of remote host, or IP
+                               * address in string form if no FQDN can be
+                               * found. 
+                               */
+
+         time_t ut_time;      /* login time */
+         time_t ut_ltime;     /* logout time */
+
+         long ut_ltime_offset;  /* Offset of this record in wtmp file */
+
+         ...  /* whatever else we find useful */
+      };
+      long length_trailer; /* total size of record */
+
+
+ut_{line,name,host} should not have any static size limitations---hence the
+need for recording the size of the record (and also requiring string
+records to be null-terminated).  Reading the whole record into a buffer and
+setting the appropriate pointers into it is straightforward.
+
+The reason for recording the length of the record both before and after it
+is that most (but not all) programs read accounting files backwards for
+convenience to the user (i.e. show most recent records first).  I don't
+think I've ever seen a program which needs random-access to the utmp/wtmp
+or pacct files---they read through them in a linear fashion---which is why
+a dynamic format is possible to begin with.  Having the length headers also
+allows for potential expansion later without having to stick reserved
+fixed-size fields in the structure.  You just have to guarantee that new
+fields are always added to the end of the structure (rather than being
+inserted in the middle) and old programs will continue to process the old
+information without any lossage.
+
+The ut_ltime_offset record is for whatever cleans up the utmp file when a
+user logs out (it probably should not be init---the hurd can include some
+sort of server to do this).  When a user logs in a record should be created
+in utmp and at the tail end of wtmp.  The utmp record should have the
+offset of the ut_ltime field of the relevant wtmp record stored in
+ut_ltime_offset.  Then whatever removes the utmp entry later can lseek
+directly to the correct position in wtmp and write the logout time (getting
+this info from the utmp record before removing it, of course).  This wins
+as long as the wtmp file isn't rotated in the meantime, but in that case
+the "wtmp server" can notice by doing a stat of /var/adm/wtmp and seeing
+when the inode changes, or keeping an open file descripter on wtmp and only
+doing a close/reopen on the right path when it gets a HUP signal.  Who
+cares for now---it's trivial to make the server do the right thing.
+
+(For the record: in present unix systems init, rlogind, and telnetd clean
+the utmp file.  Init does it when a login spawned by getty (which init is
+in turn responsible for spawning) exits, and rlogind and telnetd hang
+around implementing the Internet-domain socket communication as well as to
+clean up after the user logs out).
+
+Process accounting will almost certainly have to be done by the exec
+server(s).  
+
+For just summarizing CPU time the current accounting mechanism is more or
+less adequate, but almost useless for audit trails.  It would be nice if
+there were a way for process accounting to store both the pathname of the
+program run and the arguments with which it was invoked, along with all the
+other usual things.  Pacct records should have a more flexible format
+too---no limit on the length of strings.  If possible the accounting data
+should be stored by user name, not uid.  That way user accounts with
+identical uids can be summarized separately, for example.
+
+All those pathname and argument strings and so forth will be very expensive
+in terms of disk usage.  That's why the amount of stuff actually recorded
+by the exec server should be settable via the command line or a
+configuration file.  I'm mainly interested in having a design which is
+flexible enough to do all this even if most sites never use it (for
+instance, on the GNU machines we don't charge people for CPU time so the
+only good the pacct records are for is tracking down attempted breakins to
+foreign sites.  Right now when we need to do that the available information
+is usually next to useless).
+
+Note that storing the major/minor device number will probably not be the
+preferred way to record the controlling terminal on which a process was
+run, but I don't know what the preferred method will be yet.
+
+If they don't exist already, perhaps there could be library interface
+routines for getting records from these files so that the details of the
+searching mechanism can be minimized.  If this is then kept in a shared
+library, sites can customize their accounting mechanisms without having to
+recompile any programs (at least in some cases).
+
+
+I don't have time right now to think about this issue in any more detail.
+Ask me again in a couple of weeks if you still want more thoughts.  In any
+case, this is (in rough detail) the functionality I would like as both a
+sysadmin and a casual user of the accounting system.
+
+----------
+From mib Dec 9 1992
+to noel, rms, noah
+
+That's not good enough for utmp.  When a record is cleared from utmp,
+it needs to be deleted.  On Unix, this can be done without
+interlocking with other users, because of the fixed-length records.
+Your scheme doesn't explain how the utmp file ever gets shorter:
+nothing about it seems to be different from wtmp.
+
+I have some ideas about how to make it work more easily; among other
+things, the information could be stored in separate files; one per
+user.  This makes it easier for users to control their own
+information, as well as making it less complicated to access and
+modify.  It could be managed by a translator; thus saving disk space;
+the info would actually all be in core, and automagically cleared on
+reboot.
+
+Your scheme works well for wtmp, however.  It might be better if these
+were ascii formats instead of binary formats, however.
+
+	-mib
+----------
+From rms Dec 9 1992
+to mib, noel, noah
+
+If utmp is for users currently logged in, then I think it would
+be ok to keep a separate file for each such user.  After all,
+the number of them is not going to be terribly large.  Then you
+can freely choose the format of the data in these files.
+
+----------
+From noel <when?>
+to noah, rms, mib
+
+Noah Friedman writes:
+> For just summarizing CPU time the current accounting mechanism is
+> more or less adequate, but almost useless for audit trails.  It
+> would be nice if there were a way for process accounting to store
+> both the pathname of the program run and the arguments with which it
+> was invoked, along with all the other usual things.
+
+> Pacct records should have a more flexible format too---no limit on
+> the length of strings.  If possible the accounting data should be
+> stored by user name, not uid.  That way user accounts with identical
+> uids can be summarized separately, for example.
+
+> All those pathname and argument strings and so forth will be very
+> expensive in terms of disk usage.  That's why the amount of stuff
+> actually recorded by the exec server should be settable via the
+> command line or a configuration file.  I'm mainly interested in
+> having a design which is flexible enough to do all this even if most
+> sites never use it (for instance, on the GNU machines we don't
+> charge people for CPU time so the only good the pacct records are
+> for is tracking down attempted breakins to foreign sites.  Right now
+> when we need to do that the available information is usually next to
+> useless).
+
+> Note that storing the major/minor device number will probably not be
+> the preferred way to record the controlling terminal on which a
+> process was run, but I don't know what the preferred method will be
+> yet.
+
+> If they don't exist already, perhaps there could be library
+> interface routines for getting records from these files so that the
+> details of the searching mechanism can be minimized.  If this is
+> then kept in a shared library, sites can customize their accounting
+> mechanisms without having to recompile any programs (at least in
+> some cases).
+
+Ding!  These are good things to worry about.  The acct record should
+definitely be of variable length.  It could be implemented in a
+similar way to the utmp/wtmp records.  To the user, however, the
+structure will be as follows:
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+struct acct
+{
+  long ac_items;		/* what items in this structure are
+				   valid -- see the description of the
+				   file format below */
+  char *ac_comm;		/* null-terminated command name */
+  char *ac_path;		/* path of the executable */
+  char *ac_args;		/* arguments to the command */
+  char *ac_uname;		/* null-terminated user name */
+  unsigned short ac_uid;	/* user id */
+  char *ac_gname;		/* null-terminated group name */
+  unsigned short ac_gid;	/* group id */
+  char *ac_tty;			/* null-terminated tty name */
+  dev_t ac_ttyno;		/* tty number */
+  double ac_utime;		/* user time */
+  double ac_stime;		/* system time */
+  double ac_etime;		/* elapsed time */
+  char ac_flags;		/* setuid, exec, fork, etc. */
+  time_t ac_begin;		/* beginning time */
+};
+
+#define	AFORK	0001		/* has executed fork, but no exec */
+#define	ASU	0002		/* used super-user privileges */
+#define	ACOMPAT	0004		/* used compatibility mode */
+#define	ACORE	0010		/* dumped core */
+#define	AXSIG	0020		/* killed by a signal */
+#define	AVP	0040		/* this is (was) a vector process */
+#define AHZ	64		/* the accuracy of data is 1/AHZ */
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+But the records will not be stored quite this way on disk.  Records
+will not only be variable-length to allow for strings, however.  They
+can even store a variable amount of information.
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+long length_header;		/* total size of the record */
+long ac_items;			/* bits set to 1 if the particular
+				   piece of information is used */
+
+/* the information, provided it its used -- NOTE that strings have two
+   pieces of information: the length and the null-terminated string
+   itself */
+
+#define AC_COMM  0x00000001
+short ac_comm_len;
+char *ac_comm;			/* null-terminated command name */
+
+#define AC_PATH  0x00000002
+short ac_path_len;
+char *ac_path;			/* path of the executable */
+
+#define AC_ARGS  0x00000004
+short ac_args_len;
+char *ac_args;			/* arguments to the command */
+
+#define AC_UNAME 0x00000008
+short ac_uname_len;
+char *ac_uname;			/* null-terminated user name */
+
+#define AC_UID   0x00000010
+unsigned short ac_uid;		/* user id */
+
+#define AC_GNAME 0x00000020
+short ac_gname_len;
+char *ac_gname;			/* null-terminated group name */
+
+#define AC_GID   0x00000040
+unsigned short ac_gid;		/* group id */
+
+#define AC_TTY   0x00000080
+short ac_tty_len;
+char *ac_tty;			/* null-terminated tty name */
+
+#define AC_TTYNO 0x00000100
+dev_t ac_ttyno;			/* tty number */
+
+#define AC_UTIME 0x00000200
+double ac_utime;		/* user time */
+
+#define AC_STIME 0x00000400
+double ac_stime;		/* system time */
+
+#define AC_ETIME 0x00000800
+double ac_etime;		/* elapsed time */
+
+#define AC_FLAGS 0x00001000
+char ac_flags;			/* setuid, exec, fork, etc. */
+
+#define AC_BEGIN 0x00002000
+time_t ac_begin;		/* beginning time */
+
+long length_trailer;		/* total record length */
+
+      -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+Library routines will be implemented so that records can be written to
+disk correctly, though the interface to those library routines will
+use the struct acct defined above.
+
+It will also be possible to select the information you want when
+accton is run.  It is easy enough to maintain a /usr/adm/acct.config
+file or something similar which would store the ac_items variable.
+Since accton is a system call, we can have some kernel global to
+signal that a new set of items should be recorded.
+
+The structure also has room to grow -- another 18 bits in ac_items
+have yet to be used.  Plus, if we hold to the convention of adding to
+the end of the structure rather than the beginning, and we pass the
+highest bit mask we know about, old programs can still be used without
+recompiling, even if the reoutines in the shared libraries change.
+That is, the library routine will be smart enough not to give the
+calling program more information than it knows about -- overfilling a
+structure.
+
+It is even possible for one /usr/adm/acct file to contain records with
+varying types -- sa and last will have to be a little smarter, but
+that's no big deal.  Most machines have the CPU to handle a little
+extra work.
+
+----------
+From: Jim Kingdon <kingdon@cyclic.com>
+To: noel@harvey.cyclic.com
+Subject: GNU Accounting utilities
+Date: Fri, 12 Sep 1997 10:31:51 -0400
+
+[snip]
+All the discussion of "but what if the log is rotated?" and such make
+me think this is one of those "given sufficient thrust, pigs fly just
+fine" solutions.  A better solution would be to still write login and
+logout records, but to add a login time field to the logout record,
+add some kind of session ID, or something of the sort.
+[snip]

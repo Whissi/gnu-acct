@@ -1,0 +1,118 @@
+New in 6.5.4:
+
+  * Fix for BSDen.
+
+New in 6.5.3:
+
+  * Merged patches from Debian and Red Hat.
+
+New in 6.5.1:
+
+  * GNUlib for compability, audited code... Reworked.
+
+New in 6.5:
+
+  * Patches from Debian.
+
+  * Actually released to the public.
+
+  * Huge code-refactoring.
+
+New in 6.4:
+
+  * Linux multiformat support: Starting from release 2.6.8, the Linux
+    kernel writes either the totally new v3 format or v1 or v2 formats
+    that are enhanced relative to the v0 format of earlier kernels.
+    GNU acct now understands v0, v2, and v3 formats (v1, written on
+    the m68k architecture, is not supported) and uses the information
+    from the additional fields in v2 format. Particularely, 32 bit
+    user and group IDs are supported.
+
+  * Added `--format', `--byteswap', and `--ahz' options to dump-acct.
+    Together with the existing `--raw' switch and Linux multiformat
+    support this results in a handy format converter.
+
+  * The acct.h header file is now expected to be at <sys/acct.h>,
+    the older <linux/acct.h> is ignored. As this file is not used
+    at all when Linux multiformat is enabled (which is the default),
+    noone should notice this change anyways.
+
+  * A bug with the ctime() function on 64 bit platforms was fixed.
+
+  * Some small code cleanups were performed, GNU acct should now compile
+    without warnings on ANSI C compilers.
+
+  * The build system was updated to recent versions of the tools used.
+
+
+New in 6.3.5:
+  * Reverted below change to acct.h header search.
+
+
+New in 6.3.4:
+  * When trying to find the acct.h header file, look in the linux
+    directory before the sys directory, since the former is probably
+    newer than the latter.
+
+  * Documentation fixes for sa.
+
+
+New in 6.3.3:
+
+  * For those systems which have wide utmp fields, last now tries to
+    fit its output into 80 columns by using "reasonable" default
+    fields lengths for those members.  The `-w' and `--wide' flags
+    have been added to allow you to view the fields with their "full
+    precision," as it were.
+
+  * Fix elapsed time calculation in sa.
+
+  * Added an `--ahz' flag to lastcomm and sa to make it easier for
+    those folks who are trying to analyze logs generated on other
+    systems with the same byte order and file format but a different
+    value for AHZ.
+
+  * Fixed the `--strict-match' flag in lastcomm.  The following now
+    works as expected:
+
+      lastcomm --strict-match noel cat ttyp7
+
+
+New in 6.3.2:
+
+  * Small memory allocation problem fixed in sa.
+
+  * Released to the general public.
+
+
+New in 6.3.1:
+
+  * A `NEWS' file (and others) so that we conform to the GNU
+    requirements for packaging.
+
+  * We use `automake' to build the package, so things like ansi2knr
+    should be called automatically for those of you that don't have
+    ANSI C compilers.  It also helps write the install targets, etc.
+    Very cool.  I was suprised how easy it was to integrate into this
+    package.  Hats off to David J. MacKenzie and Tom Tromey!
+
+
+New in 6.3:
+
+  * Hey!  We're on prep.ai.mit.edu!
+
+  * Renamed long option `--year' to `--print-year' in both the ac and
+  last programs.
+
+  * Added a `--print-seconds' (or `-s') flag to last, for those who
+  really want the nitty-gritty.
+
+  * Added a `--sort-real-time' option to sa for those who want to sort
+  the output by "real" (elapsed) time.
+
+  * Fixed a buffer overrun error in sa which was preventing it from
+  sorting the username list correctly.
+
+Ancient history:
+
+  * Check the file `ChangeLog' in the source directory.

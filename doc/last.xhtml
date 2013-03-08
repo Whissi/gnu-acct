@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Fri Sep 18 01:28:20 2009 -->
+<title>LAST</title>
+
+</head>
+<body>
+
+<h1>LAST</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">OPTIONS</a><br/>
+<a href="#heading5">FILES</a><br/>
+<a href="#heading6">AUTHOR</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">last &minus;
+list logins on the system</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="5%" class="center"></col>
+<col width="47%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>last</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">[ <b>&minus;</b><i>num</i> |
+<b>&minus;n</b> <i>num</i> | <b>&minus;&minus;lines</b>
+<i>num</i> ]</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:22%;">[ <b>&minus;f</b>
+<i>filename</i> | <b>&minus;&minus;file</b> <i>filename</i>
+] <br/>
+[ <i>people ...</i> ] [ <i>ttys ...</i> ] <br/>
+[ <b>&minus;&minus;complain</b> ] [
+<b>&minus;&minus;no-truncate-ftp-entries</b> ] <br/>
+[ <b>&minus;x</b> | <b>&minus;&minus;more-records</b> ] [
+<b>&minus;a</b> | <b>&minus;&minus;all-records</b> ] <br/>
+[ <b>&minus;&minus;tw-leniency</b> <i>num</i> ] [
+<b>&minus;&minus;tw-suspicious</b> <i>num</i> ] <br/>
+[ <b>&minus;i</b> | <b>&minus;&minus;ip-address</b> ] [
+<b>&minus;&minus;debug</b> ] [ <b>&minus;w</b> |
+<b>&minus;&minus;wide</b> ] <br/>
+[ <b>&minus;s</b> | <b>&minus;&minus;print-seconds</b> ] [
+<b>&minus;y</b> | <b>&minus;&minus;print-year</b> ] <br/>
+[ <b>&minus;V</b> | <b>&minus;&minus;version</b> ] [
+<b>&minus;h</b> | <b>&minus;&minus;help</b> ]</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>last</b>
+looks through the file <i>wtmp</i> (which records all
+logins/logouts) and prints information about connect times
+of users. Records are printed from most recent to least
+recent. Records can be specified by tty and username. tty
+names can be abbreviated:</p>
+
+<p class="center"><b>last</b> 0</p>
+
+<p>is equivalent to</p>
+
+<p class="center"><b>last</b> tty0.</p>
+
+<p style="margin-top: 1em">Multiple arguments can be
+specified:</p>
+
+<p class="center"><b>last</b> root console</p>
+
+<p>will print all of the entries for the user <i>root</i>
+and all entries logged in on the <i>console</i> tty.</p>
+
+<p style="margin-top: 1em">The special users <i>reboot</i>
+and <i>shutdown</i> log in when the system reboots or
+(surprise) shuts down.</p>
+
+<p class="center"><b>last</b> reboot</p>
+
+<p>will produce a record of reboot times.</p>
+
+<p style="margin-top: 1em">If <b>last</b> is interrupted by
+a quit signal, it prints out how far its search in the
+<i>wtmp</i> file had reached and then quits.</p>
+
+<h2 id="heading4">OPTIONS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;n</b>
+<i>num,</i> <b>&minus;&minus;lines</b> <i>num</i></p>
+
+<p style="margin-left:22%;">Limit the number of lines that
+<b>last</b> outputs. This is different from u*x <b>last,</b>
+which lets you specify the number right after a dash.</p>
+
+<p style="margin-left:11%;"><b>&minus;f</b>
+<i>filename,</i> <b>&minus;&minus;file</b>
+<i>filename</i></p>
+
+<p style="margin-left:22%;">Read from the file
+<i>filename</i> instead of the system&rsquo;s <i>wtmp</i>
+file.</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;complain</b></p>
+
+<p style="margin-left:22%;">When the <i>wtmp</i> file has a
+problem (a time-warp, missing record, or whatever), print
+out an appropriate error.</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;tw-leniency</b>
+<i>num</i></p>
+
+<p style="margin-left:22%;">Set the time warp leniency to
+<i>num</i> seconds. Records in <i>wtmp</i> files might be
+slightly out of order (most notably when two logins occur
+within a one-second period - the second one gets written
+first). By default, this value is set to 60. If the program
+notices this problem, time is not assigned to users unless
+the <b>&minus;&minus;timewarps</b> flag is used.</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;tw-suspicious</b>
+<i>num</i></p>
+
+<p style="margin-left:22%;">Set the time warp suspicious
+value to <i>num</i> seconds. If two records in the
+<i>wtmp</i> file are farther than this number of seconds
+apart, there is a problem with the <i>wtmp</i> file (or your
+machine hasn&rsquo;t been used in a year). If the program
+notices this problem, time is not assigned to users unless
+the <b>&minus;&minus;timewarps</b> flag is used.</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;no-truncate-ftp-entries</b></p>
+
+<p style="margin-left:22%;">When printing out the
+information, don&rsquo;t chop the number part off of
+&lsquo;ftp&rsquo;XXXX entries.</p>
+
+<p style="margin-left:11%;"><b>&minus;x,
+&minus;&minus;more-records</b></p>
+
+<p style="margin-left:22%;">Print out run level changes,
+shutdowns, and time changes in addition to the normal
+records.</p>
+
+<p style="margin-left:11%;"><b>&minus;a,
+&minus;&minus;all-records</b></p>
+
+<p style="margin-left:22%;">Print out all records in the
+<i>wtmp</i> file.</p>
+
+<p style="margin-left:11%;"><b>&minus;i,
+&minus;&minus;ip-address</b></p>
+
+<p style="margin-left:22%;">Some machines store the IP
+address of a connection in a utmp record. Enabling this
+option makes <b>last</b> print the IP address instead of the
+hostname.</p>
+
+<p style="margin-left:11%;"><b>&minus;w,
+&minus;&minus;wide</b></p>
+
+<p style="margin-left:22%;">By default, <b>last</b> tries
+to print each entry within in 80 columns. Use this option to
+instruct <b>last</b> to print out the fields in the
+<i>wtmp</i> file with full field widths.</p>
+
+<p style="margin-left:11%;"><b>&minus;&minus;debug</b></p>
+
+<p style="margin-left:22%;">Print verbose internal
+information.</p>
+
+<p style="margin-left:11%;"><b>&minus;s,
+&minus;&minus;print-seconds</b></p>
+
+<p style="margin-left:22%;">Print seconds when displaying
+dates.</p>
+
+<p style="margin-left:11%;"><b>&minus;y,
+&minus;&minus;print-year</b></p>
+
+<p style="margin-left:22%;">Print year when displaying
+dates.</p>
+
+<p style="margin-left:11%;"><b>&minus;V,
+&minus;&minus;version</b></p>
+
+<p style="margin-left:22%;">Print <b>last&rsquo;s</b>
+version number.</p>
+
+<p style="margin-left:11%;"><b>&minus;h,
+&minus;&minus;help</b></p>
+
+<p style="margin-left:22%;">Prints the usage string and
+default locations of system files to standard output and
+exits.</p>
+
+<h2 id="heading5">FILES
+</h2>
+
+
+<p style="margin-left:11%;"><i>wtmp</i></p>
+
+<p style="margin-left:22%;">The system wide login record
+file. See <b>wtmp</b>(5) for further details.</p>
+
+<h2 id="heading6">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%;">The GNU accounting utilities
+were written by Noel Cragg &lt;noel@gnu.ai.mit.edu&gt;. The
+man page was added by Dirk Eddelbuettel
+&lt;edd@qed.econ.queensu.ca&gt;.</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%;"><b>who</b>(1),
+<b>wtmp</b>(5)</p>
+<hr/>
+</body>
+</html>

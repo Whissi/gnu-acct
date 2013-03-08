@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Fri Sep 18 01:27:48 2009 -->
+<title>DUMP-UTMP</title>
+
+</head>
+<body>
+
+<h1>DUMP-UTMP</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">OPTIONS</a><br/>
+<a href="#heading5">FILES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+<a href="#heading7">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">dump-utmp
+&minus; print an utmp file in human-readable format.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>dump-acct</b>
+[<b>&minus;r</b>|<b>&minus;&minus;reverse</b>]
+[<b>&minus;R</b>|<b>&minus;&minus;raw</b>]
+[<b>&minus;n</b>|<b>&minus;&minus;num</b> <i>recs</i>]
+[<b>&minus;h</b>|<b>&minus;&minus;help</b>] [
+<i>files</i>]</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>dump-acct</b>
+<i>filename</i> prints a list of all logins. This list is
+usually written in <i>/var/log/wtmp</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">All fields are
+separated by vertical line. Fields are: <i>user name</i>,
+<i>tty</i>, <i>type</i>, <i>id</i>, <i>pid</i>,
+<i>hostaddr</i>, <i>host</i>, <i>time</i>.</p>
+
+<h2 id="heading4">OPTIONS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&minus;h,
+&minus;&minus;help</b></p>
+
+<p style="margin-left:22%;">Prints the usage string and
+default locations of system files to standard output and
+exits.</p>
+
+<p style="margin-left:11%;"><b>&minus;n, &minus;&minus;num
+recs</b></p>
+
+<p style="margin-left:22%;">Number of lines to print.</p>
+
+<p style="margin-left:11%;"><b>&minus;r,
+&minus;&minus;reverse</b></p>
+
+<p style="margin-left:22%;">Start printing from last
+records.</p>
+
+<p style="margin-left:11%;"><b>&minus;R,
+&minus;&minus;raw</b></p>
+
+<p style="margin-left:22%;">Print raw records, not
+human-readable.</p>
+
+<h2 id="heading5">FILES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="5%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>wtmp</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The system wide login record
+file. See <b>wtmp</b>(5) for further details.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>login</b>(1),
+<b>wtmp</b>(5), <b>init</b>(8), <b>sa</b>(8).</p>
+
+<h2 id="heading7">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The GNU
+accounting utilities were written by Noel Cragg
+&lt;noel@gnu.ai.mit.edu&gt;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page was written by Ognyan Kulev
+&lt;ogi@fmi.uni-sofia.bg&gt; and updated by Daniel Baumann
+&lt;daniel@debian.org&gt; for the Debian project (but may be
+used by others).</p>
+<hr/>
+</body>
+</html>

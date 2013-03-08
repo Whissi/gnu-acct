@@ -1,7 +1,27 @@
+Mon Mar 8 21:03:32 2013 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Fixed vulnabilities, due to autmake. Thanks to Karl Berry 
+          for pointing this out.
+
+	* Many thanks to my wife Yulia Lizneva for giving me inspiration 
+          to keep this up.
+
+	* Update gnulib to latest git.
+
+	* Bumbing version to 6.6.1
+
+Mon Feb 28 00:08:45 2011 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Applied debian's patchset.
+
+Tue Jan 25 13:54:33 2011 Jan Görig <gorig>
+	
+	* direntry patch.
+
 Fri Nov 05 19:37:23 2010 Markus Gothe <nietzsche@lysator.liu.se>
 
 	* sa.c - Fix hzval.
-	* ac.8 - Rename to sa.1
+	* ac.8 - Rename to ac.1
 
 Fri Oct 22 00:11:54 2010 Mats Erik Andersson <mats.andersson@gisladisker.se>
 

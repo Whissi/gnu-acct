@@ -1,0 +1,12 @@
+/* version.h.in
+ *
+ * some defines to give version numbers to all of these programs.
+ *
+ */
+
+#ifndef VERSION_H
+#define VERSION_H
+
+#define VERSION_STRING "@VERSION@"
+
+#endif /* VERSION_H */
