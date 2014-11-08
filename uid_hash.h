@@ -29,5 +29,6 @@ MA 02139, USA.
 #define UID_HASH_H
 
 char *uid_name (int);
+char *gid_name (int);
 
 #endif /* UID_HASH_H */

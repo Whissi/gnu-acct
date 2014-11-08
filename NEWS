@@ -1,3 +1,9 @@
+New in 6.6.2:
+
+  * Link with -lm.
+  * Fix texi.
+  * The rest of fixes from 6.5.5 to 6.6.1.  
+
 New in 6.5.4:
 
   * Fix for BSDen.

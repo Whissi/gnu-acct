@@ -189,6 +189,7 @@ int dont_read_summary_files = 0;
 int print_users = 0;
 int percentages = 0;		/* include percentages in printout */
 int user_summary_flag = 0;	/* are we printing a user summary? */
+int group_summary_flag = 0;	/* are we printing a group summary? */
 int ahz = AHZ;			/* for viewing logs from another system */
 
 
@@ -316,6 +317,7 @@ int main(int argc, char *argv[])
         { "percentages", no_argument, NULL, 14 },
         { "not-interactive", no_argument, NULL, 19 },
         { "user-summary", no_argument, NULL, 20 },
+        { "group-summary", no_argument, NULL, 30 },
         { "reverse-sort", no_argument, NULL, 21 },
         { "merge", no_argument, NULL, 22 },
         { "threshold", required_argument, NULL, 23 },
@@ -387,7 +389,7 @@ int main(int argc, char *argv[])
 #ifdef HAVE_ACMEM
                        "k"
 #endif
-                       "mnrs"
+                       "mMnrs"
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
                        "t"
 #endif
@@ -501,6 +503,11 @@ int main(int argc, char *argv[])
         case 20:
           user_summary_flag = 1;
           break;
+        case 'M':
+        case 30:
+          user_summary_flag = 1;
+          group_summary_flag = 1;
+          break;
         case 'r':
         case 21:
           reverse_sort = 1;
@@ -563,13 +570,13 @@ int main(int argc, char *argv[])
 
   if (print_users && (merge_files || user_summary_flag))
     {
-      (void)printf("%s: can't specify `--merge' or `--user-summary' with `--print-users'\n", program_name);
+      (void)printf("%s: can't specify `--merge' or `--user-summary' or `--group-summary' with `--print-users'\n", program_name);
       exit(EXIT_FAILURE);
     }
 
   if (merge_files && user_summary_flag)
     {
-      (void)printf("%s: can't specify `--user-summary' with `--merge'\n",
+      (void)printf("%s: can't specify `--user-summary' or `--group-summary' with `--merge'\n",
                    program_name);
       exit(EXIT_FAILURE);
     }
@@ -701,7 +708,7 @@ give_usage (void)
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME) && defined(HAVE_ACETIME)
                " [--print-ratio]"
 #endif
-               " [--print-users] [--merge] [--user-summary]\n\
+               " [--print-users] [--merge] [--user-summary] [--group-summary]\n\
                 [--list-all-names] [--not-interactive] [--threshold <num>]\n\
                 "
 #if defined(HAVE_ACSTIME) && defined(HAVE_ACUTIME) && defined(HAVE_ACMEM)
@@ -1211,7 +1218,7 @@ void parse_acct_entries (void)
                   " %6.0f io"
 #endif
                   " %-*.*s%s\n",
-                  uid_name (rec->ac_uid),
+                  (!group_summary_flag) ? uid_name (rec->ac_uid) : gid_name (rec->ac_gid),
 #if defined(HAVE_ACUTIME) && defined(HAVE_ACSTIME)
                   ut + st,
 #endif
@@ -1254,7 +1261,7 @@ void parse_acct_entries (void)
             update_command_list (rec->ac_comm, &s, (rec->ac_flag & AFORK));
 
           if (NEED_USRACCT_INFO)
-            update_user_list (uid_name (rec->ac_uid), &s);
+            update_user_list ((!group_summary_flag) ? uid_name (rec->ac_uid) : gid_name (rec->ac_gid), &s);
 
           update_totals (&s);
         }

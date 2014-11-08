@@ -31,8 +31,8 @@ about the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-   This is Edition 6.5.6 of the documentation, updated 16 March 2011
-for version 6.5.6 of the GNU Accounting Utilities.
+   This is Edition 6.6.2 of the documentation, updated 8 November 2014
+for version 6.6.2 of the GNU Accounting Utilities.
 
 * Menu:
 
@@ -408,7 +408,7 @@ automatically compensates for this, but some other `ac's may not...
 beware.
 
 The FTP Problem
-...............
+---------------
 
 I've tested the standard `ac' in Ultrix 4.2 (DECstation/DECsystem),
 SunOS 4.1.1 (Sun3, Sun4, Sparc), Mach 2.5 (Omron/Luna), and DomainOS
@@ -915,11 +915,11 @@ the desired output format with the _new_ `AHZ' setting.
 
 Tag Table:
 Node: Top1028
-Node: Preface1869
-Node: ac10851
-Node: accton19165
-Node: lastcomm19711
-Node: sa22885
-Node: dump-acct29262
+Node: Preface1871
+Node: ac10853
+Node: accton19167
+Node: lastcomm19713
+Node: sa22887
+Node: dump-acct29264
 
 End Tag Table

@@ -18,7 +18,7 @@
 # include <sys/acct.h>
 # if defined __FreeBSD__ || defined __FreeBSD_kernel__
 #  include <osreldate.h>
-#  if __FreeBSD_kernel__
+#  if defined __FreeBSD_kernel__
 #   define __FreeBSD_version __FreeBSD_kernel_version
 #  endif /* __FreeBSD_kernel__ */
 #  if __FreeBSD_version >= 700100 /* FreeBSD 7.0-STABLE */

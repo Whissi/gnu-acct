@@ -1,5 +1,6 @@
 dnl/*
-dnl    Copyright (C) 2009, 2010, 2011, Markus Gothe <nietzsche@lysator.liu.se>
+dnl    Copyright (C) 2009, 2010, 2011, 2013, 2014
+dnl    Markus Gothe <nietzsche@lysator.liu.se>
 dnl
 dnl    This program is free software: you can redistribute it and/or modify
 dnl    it under the terms of the GNU General Public License as
@@ -16,12 +17,12 @@ dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl */
 
 
-dnl $Id: configure.ac,v 1.58 2010/10/23 10:56:30 nihilus Exp $
+dnl $Id: configure.ac 84 2014-11-08 04:52:39Z nihilus $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl init autoconf
 AC_REQ(2.63)
-AC_INIT([acct],[6.6.1],[nietzsche@lysator.liu.se])
+AC_INIT([acct],[6.6.2],[nietzsche@lysator.liu.se])
 dnl AH_HEADER
 AC_CONFIG_HEADERS([config.h:config.h.in])
 AC_CONFIG_SRCDIR([ac.c])

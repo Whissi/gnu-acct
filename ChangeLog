@@ -1,6 +1,15 @@
+Sat Nov 08 05:23:44 2014 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Link with -lm when needed. Thanks to René Rhéaume.
+
+Mon Mar 28 21:30:14 2013 Vitaliy Slyusar <nucleus.mails@gmail.com>
+
+	* Added the --group-summary functionality to 'sa' to print the number 
+         of processes and number of CPU minutes on a per-group basis.
+
 Mon Mar 8 21:03:32 2013 Markus Gothe <nietzsche@lysator.liu.se>
 
-	* Fixed vulnabilities, due to autmake. Thanks to Karl Berry 
+	* Fixed vulnabilities, due to automake. Thanks to Karl Berry 
           for pointing this out.
 
 	* Many thanks to my wife Yulia Lizneva for giving me inspiration 
