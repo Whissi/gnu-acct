@@ -24,12 +24,12 @@ ac_SOURCES = ac.c common.c file_rd.c hashtab.c \
   
 accton_SOURCES = accton.c common.c
 
-dump_acct_SOURCES = dump-acct.c common.c file_rd.c \
-  pacct_rd.c
+dump_acct_SOURCES = dump-acct.c common.c dev_hash.c file_rd.c \
+  hashtab.c pacct_rd.c
 dump_acct_LDADD = $(LDADD) -lm
 
-dump_utmp_SOURCES = dump-utmp.c common.c file_rd.c \
-  utmp_rd.c
+dump_utmp_SOURCES = dump-utmp.c common.c dev_hash.c file_rd.c \
+ hashtab.c utmp_rd.c
 
 #dump_utmpx_SOURCES = dump-utmpx.c
 
@@ -40,7 +40,7 @@ lastcomm_SOURCES = lastcomm.c common.c dev_hash.c file_rd.c \
   hashtab.c pacct_rd.c uid_hash.c
 lastcomm_LDADD = $(LDADD) -lm
 
-sa_SOURCES = sa.c common.c file_rd.c hashtab.c \
+sa_SOURCES = sa.c common.c file_rd.c dev_hash.c hashtab.c \
   pacct_rd.c uid_hash.c
 sa_LDADD = $(LDADD) -lm
 
@@ -51,8 +51,8 @@ noinst_HEADERS = common.h config.h dev_hash.h file_rd.h hashtab.h \
 
 info_TEXINFOS = accounting.texi
 
-man_MANS = ac.1 last.1 dump-utmp.8 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
-EXTRA_DIST = ac.1 dump-utmp.8 accton.8 last.1 lastcomm.1 sa.8 TODO m4/gnulib-cache.m4
+man_MANS = ac.1 last.1 dump-utmp.8 dump-acct.8 @ACCTON_MAN@ @LASTCOMM_MAN@ @SA_MAN@
+EXTRA_DIST = ac.1 dump-utmp.8 dump-acct.8 accton.8 last.1 lastcomm.1 sa.8 TODO m4/gnulib-cache.m4
 
 ## Extra stuff to remove when cleaning
 

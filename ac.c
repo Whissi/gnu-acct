@@ -343,12 +343,29 @@ int main(int argc, char *argv[])
 
 void give_usage(void)
 {
-  (void)printf("\
-                Usage: %s [-dhpVy] [-f <file>] [people] ...\n\
-                [--daily-totals] [--individual-totals] [--file <file>]\n\
-                [--complain] [--reboots] [--supplants] [--timewarps] [--print-year]\n\
-                [--compatibility] [--print-zeros] [--debug] [--tw-leniency <value>]\n\
-                [--tw-suspicious <value>] [--version] [--help]\n", program_name);
+  (void)printf(
+  "\n"
+  "Usage: %s [OPTION] ...\n"
+  "\n"
+  "OPTIONS:\n"
+  "  -d, --daily-totals        Print totals for each day\n"
+  "  -p, --individual-totals   Print time totals for each user\n"
+  "  -f, --file <file>         Read from <file>\n"
+  "  --complain                Print errors for whatever problem\n"
+  "  --reboots                 Count the time between login and reboot\n"
+  "  --supplants               Count the time between logins on the terminal\n"
+  "  --timewarps               Count the time between login and time warp\n"
+  "  --compatibility           Shortcut for --reboots --supplants --timewarps\n"
+  "  -a, --all-days            Do not skip days without login activity\n"
+  "  --tw-leniency <value>     Set the time warp leniency <value> in seconds\n"
+  "  --tw-suspicious <value>   Set the time warp suspicious <value> in seconds\n"
+  "  --print-year              Print year when displaying dates\n"
+  "  --print-zeros             Don't suppress zeros in category totals\n"
+  "  --debug                   Print verbose internal information\n"
+  "  -V, --version             Show version and exit\n"
+  "  -h, --help                Show help and exit\n"
+  , program_name);
+
   print_wtmp_file_location();
 }
 

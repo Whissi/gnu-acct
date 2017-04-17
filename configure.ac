@@ -1,5 +1,5 @@
 dnl/*
-dnl    Copyright (C) 2009, 2010, 2011, 2013, 2014
+dnl    Copyright (C) 2009, 2010, 2011, 2013, 2014,2017
 dnl    Markus Gothe <nietzsche@lysator.liu.se>
 dnl
 dnl    This program is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@ dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl */
 
 
-dnl $Id: configure.ac 84 2014-11-08 04:52:39Z nihilus $
+dnl $Id: configure.ac 97 2017-04-05 21:10:58Z nihilus $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl init autoconf
 AC_REQ(2.63)
-AC_INIT([acct],[6.6.2],[nietzsche@lysator.liu.se])
+AC_INIT([acct],[6.6.3],[nietzsche@lysator.liu.se])
 dnl AH_HEADER
 AC_CONFIG_HEADERS([config.h:config.h.in])
 AC_CONFIG_SRCDIR([ac.c])
@@ -232,7 +232,7 @@ AC_CHECK_HEADER(sys/acct.h,
 dnl
 dnl find out where utmp/pacct are stored
 dnl
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -311,9 +311,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #    endif
 #  endif
 #endif
-
-main ()
-{
+]], [[
   FILE *fp;
   fp = fopen ("locs", "w");
   fprintf (fp, "WTMP_FILE_LOC=%s\n", WTMP_FILE);
@@ -321,8 +319,6 @@ main ()
   fprintf (fp, "SAVACCT_FILE_LOC=%s\n", SAVACCT_FILE);
   fprintf (fp, "USRACCT_FILE_LOC=%s\n", USRACCT_FILE);
   fclose (fp);
-  exit(0);
-}
 ]])],[. ./locs; rm locs],[echo "Error -- could not locate your wtmp and acct files."; exit 1],[echo "Sorry -- you cannot cross-compile this package (FIXME)."; exit 1 ])
 
 dnl types

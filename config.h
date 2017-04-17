@@ -431,7 +431,7 @@
 #define HAVE_RAW_DECL_GETPAGESIZE 1
 
 /* Define to 1 if gets is declared even after undefining macros. */
-#define HAVE_RAW_DECL_GETS 1
+/* #undef HAVE_RAW_DECL_GETS */
 
 /* Define to 1 if getsubopt is declared even after undefining macros. */
 #define HAVE_RAW_DECL_GETSUBOPT 1
@@ -569,7 +569,7 @@
 #define HAVE_RAW_DECL_RPMATCH 1
 
 /* Define to 1 if secure_getenv is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_SECURE_GETENV */
+#define HAVE_RAW_DECL_SECURE_GETENV 1
 
 /* Define to 1 if setenv is declared even after undefining macros. */
 #define HAVE_RAW_DECL_SETENV 1
@@ -970,7 +970,7 @@
 #define PACKAGE_NAME "acct"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "acct 6.6.2"
+#define PACKAGE_STRING "acct 6.6.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "acct"
@@ -979,7 +979,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "6.6.2"
+#define PACKAGE_VERSION "6.6.3"
 
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'ptrdiff_t'. */
@@ -1079,7 +1079,7 @@
 
 
 /* Version number of package */
-#define VERSION "6.6.2"
+#define VERSION "6.6.3"
 
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'wchar_t'. */

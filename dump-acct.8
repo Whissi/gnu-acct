@@ -1,0 +1,53 @@
+.\" Copyright (C) 2009 Red Hat, Inc. All Rights Reserved.
+.\" Written by Ivana Hutarova Varekova <varekova@redhat.com>
+.TH DUMP_ACCT 8 "2009 December 2" "Linux accounting system"
+
+.SH NAME
+dump\-acct \- print an acct/pacct file in human-readable format
+
+.SH SYNOPSIS
+.B dump-acct
+[\fB\-r\fR|\fB\-\-reverse\fR]
+[\fB\-R\fR|\fB\-\-raw\fR]
+[\fB\-n\fR|\fB\-\-num\fR\ \fIrecs\fR]
+[\fB\-\-byte\-swap\fR]
+[\fB\-\-format\fR]
+[\fB\-\-ahz\fR\ \fIfreq\fR]
+[\fB\-h\fR|\fB\-\-help\fR]
+[\fIfiles\fR]
+
+.SH DESCRIPTION
+The dump-acct command transforms the output \fBfile\fR from the
+accton format to the human-readable format: one record per line.
+Each record consists of severald fields which are separated by
+character "|" (the meaning of concreate field depends on the
+version of kernel package - with which the accton file was created).
+
+.SH OPTIONS
+The following options are supported:
+.TP
+.B -r, --reverse
+Print the output in reverse order.
+.TP
+.B -R, --raw
+The records will be printed without any parsing.
+.TP
+.B -n, --num NUMRECS
+Display only the first NUMRECS number of records.
+.TP
+.B --byteswap
+Swap the bytes (relative to your system's native byte order) in --raw output.
+.TP
+.B --format
+Set output format with --raw option.
+.TP
+.B --ahz FREQ
+Set the AHZ (platform dependent frequency in Hertz) to FREQ.
+.TP
+.B -h, --help
+Print a help message and the default location of the process accounting file
+and exit.
+
+.SH SEE ALSO
+accton (8), lastcomm (1)
+

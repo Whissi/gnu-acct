@@ -11,6 +11,11 @@
 
 @include version.texi
 
+@dircategory Miscellaneous
+@direntry
+* acct: (accounting).                   User specific process accounting.
+@end direntry
+
 @ifinfo
 GNU Accounting Utilities
 Copyright (C) 1993, 1996, 1997, 1998, 2005, 2008, 2009, 2010
@@ -74,9 +79,7 @@ the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-This is Edition @value{EDITION} of the documentation, updated
-@value{UPDATED} for version @value{VERSION} of the GNU Accounting
-Utilities.
+This is version @value{VERSION} of the GNU Accounting Utilities.
 @end ifnottex
 
 @menu
@@ -116,18 +119,6 @@ money, of course!  If there were some way that we could keep tabs on
 users and charge them through the nose for their CPU time...''
 
 The accounting utilities were born.
-
-Years later Markus Gothe was a facing the CEO at his work, keep asking
-him where and how he got the information on other employees payrolls.
-There was indeed a conflict, Markus denied all the modus operandi on how
-to get held of such copies or information. Plans was made up to frame 
-him, by interception.
-
-This momement Markus realized the words of Rob Savoye ``You cannot
-buy yourself free from guilt.'' He left the room with pride, for
-making a stand. However, sadly enogh, the CEO never realized that
-meaning. You cannot buy yourself free from guilt; A new revival had
-come for the GNU acccounting utilities and so a POSIX-standard.
 
 Seriously though, the accouting utilities can provide a system
 administrator with useful information about system usage---connections,

@@ -304,7 +304,7 @@ void give_usage(void)
 #ifdef HAVE_PAGING
                "[--show-paging] "
 #endif
-               "[--version] [--help]\n", program_name);
+               "[--ahz <freq>] [--version] [--help]\n", program_name);
   print_acct_file_location ();
 }
 

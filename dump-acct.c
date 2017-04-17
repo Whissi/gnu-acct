@@ -50,8 +50,9 @@ void give_usage(void)
           [--num <recs>] [--raw] [--reverse] [--help]\n",
           program_name);
 #ifdef LINUX_MULTIFORMAT
-  printf ("       [--format <version>] [--byteswap]\n");
+  printf ("          [--format <version>] [--byteswap]\n");
 #endif
+  printf ("          [--ahz <freq>]\n");
   print_acct_file_location ();
 }
 

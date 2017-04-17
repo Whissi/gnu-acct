@@ -6,6 +6,11 @@ START-INFO-DIR-ENTRY
 * acct: (accounting).          The GNU Accounting utilities for process and login accounting
 END-INFO-DIR-ENTRY
 
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* acct: (accounting).                   User specific process accounting.
+END-INFO-DIR-ENTRY
+
    GNU Accounting Utilities Copyright (C) 1993, 1996, 1997, 1998, 2005,
 2008, 2009, 2010 Free Software Foundation, Inc.
 
@@ -31,8 +36,7 @@ about the accounting utilities, read the introduction.  For specfic
 information about any of the applications, see the chapter with the
 program's name.
 
-   This is Edition 6.6.2 of the documentation, updated 8 November 2014
-for version 6.6.2 of the GNU Accounting Utilities.
+   This is version 6.6.3 of the GNU Accounting Utilities.
 
 * Menu:
 
@@ -69,18 +73,6 @@ money, of course!  If there were some way that we could keep tabs on
 users and charge them through the nose for their CPU time..."
 
    The accounting utilities were born.
-
-   Years later Markus Gothe was a facing the CEO at his work, keep
-asking him where and how he got the information on other employees
-payrolls.  There was indeed a conflict, Markus denied all the modus
-operandi on how to get held of such copies or information. Plans was
-made up to frame him, by interception.
-
-   This momement Markus realized the words of Rob Savoye "You cannot
-buy yourself free from guilt." He left the room with pride, for making
-a stand. However, sadly enogh, the CEO never realized that meaning. You
-cannot buy yourself free from guilt; A new revival had come for the GNU
-acccounting utilities and so a POSIX-standard.
 
    Seriously though, the accouting utilities can provide a system
 administrator with useful information about system usage--connections,
@@ -914,12 +906,12 @@ the desired output format with the _new_ `AHZ' setting.
 
 
 Tag Table:
-Node: Top1028
-Node: Preface1871
-Node: ac10853
-Node: accton19167
-Node: lastcomm19713
-Node: sa22887
-Node: dump-acct29264
+Node: Top1174
+Node: Preface1953
+Node: ac10292
+Node: accton18606
+Node: lastcomm19152
+Node: sa22326
+Node: dump-acct28703
 
 End Tag Table

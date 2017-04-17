@@ -30,6 +30,7 @@
 static struct file_rd_info *pacct_info = NULL;
 
 extern int ahz;
+char *dev_gnu_name (long);
 
 #define BUFFERED_RECS 256
 
@@ -86,6 +87,7 @@ struct acct *pacct_get_entry(void)
 void print_pacct_record(struct acct *rec, FILE *out)
 {
   time_t btime = (time_t)rec->ac_btime;
+  char *this_dev = dev_gnu_name ((long) rec->ac_tty);
 
   (void)fprintf(out, "%-*.*s|", COMM_LEN, COMM_LEN, rec->ac_comm);
 
@@ -119,8 +121,49 @@ void print_pacct_record(struct acct *rec, FILE *out)
 #endif
 
 #ifdef LINUX_MULTIFORMAT
-  (void)fprintf(out, "%8d %8d|", rec->ac_pid, rec->ac_ppid);
+  (void)fprintf(out, "%8d|%8d|", rec->ac_pid, rec->ac_ppid);
 #endif
+
+#ifdef ASU
+  if (rec->ac_flag & ASU)
+    (void)putchar('S');
+  else
+#endif
+    (void)putchar(' ');
+
+#ifdef AFORK
+  if (rec->ac_flag & AFORK)
+    (void)putchar('F');
+  else
+#endif
+    (void)putchar(' ');
+
+#ifdef ACOMPAT
+  if (rec->ac_flag & ACOMPAT)
+    (void)putchar('C');
+  else
+#endif
+    (void)putchar(' ');
+
+#ifdef ACORE
+  if (rec->ac_flag & ACORE)
+    (void)putchar('D');
+  else
+#endif
+    (void)putchar(' ');
+
+#ifdef AXSIG
+  if (rec->ac_flag & AXSIG)
+    (void)putchar('X');
+  else
+#endif
+    (void)putchar(' ');
+
+  (void)putchar('|');
+
+  (void)fprintf(out, "%8d|", (rec->ac_exitcode >> 8));
+
+  (void)fprintf(out, "%-8.8s|", this_dev);
 
   (void)fprintf(out, "%s", ctime (&btime));
 }

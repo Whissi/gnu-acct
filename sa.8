@@ -43,7 +43,7 @@ sa \-  summarizes accounting information
 [
 .B \-i
 |
-.B \-\-dont-read-summary-file
+.B \-\-dont-read-summary-files
 ]
 .br
 [
@@ -282,7 +282,7 @@ Print and sort the output by the total number of disk I/O operations.
 When using the `\-\-threshold' option, assume that all answers to
 interactive queries will be affirmative.
 .TP
-.B \-i, \-\-dont-read-summary-file
+.B \-i, \-\-dont-read-summary-files
 Don't read the information in the system's default
 .I savacct
 file.
@@ -386,7 +386,7 @@ rather than the system's default
 .I SAVACCT
 file.
 .TP
-.BI \-\-other-file " filename"
+.BI \-\-other-acct-file " filename"
 Read from the file 
 .I filename 
 instead of the system's default
@@ -397,8 +397,6 @@ file.
 .I acct
 The raw system wide process accounting file. See
 .BR acct (5)
-(or
-.BR pacct (5))
 for further details.
 .TP
 .I savacct

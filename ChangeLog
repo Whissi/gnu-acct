@@ -1,3 +1,16 @@
+Sat April 05  21:13:04 2017 Markus Gothe <nietzsche@lysator.liu.se>
+
+	* Integrated patchsets from SUSE and Red Hat.
+
+Sun Nov 09 13:09:44 2014 Colin Panisset <gnu@clabber.com>
+
+	* Add delimiter character between PID and PPID in print_pacct_record.
+
+Sun Nov 09 13:09:44 2014 Jaromír Cápík <jcapik@redhat.com>
+
+	* Add missing man-page for dump-acct. Fix missing switches
+	  in man pages or / and usage.
+
 Sat Nov 08 05:23:44 2014 Markus Gothe <nietzsche@lysator.liu.se>
 
 	* Link with -lm when needed. Thanks to René Rhéaume.
