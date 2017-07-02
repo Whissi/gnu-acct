@@ -1,4 +1,8 @@
-Sat April 05  21:13:04 2017 Markus Gothe <nietzsche@lysator.liu.se>
+Thu Jun 22 11:31:24 2017 Jan Rybar <jrybar@redhat.com>
+
+	* Added patch for --pid to 'lastcomm'.
+
+Sat April 05 21:13:04 2017 Markus Gothe <nietzsche@lysator.liu.se>
 
 	* Integrated patchsets from SUSE and Red Hat.
 

@@ -77,6 +77,8 @@ char *program_name;		/* name of the program, for usage & errs */
 
 int show_paging = 0;		/* If they want paging stats, print 'em */
 
+char show_pid = 0;
+
 static unsigned int hzval;
 
 /* Here are various lists for the user to specify entries that they
@@ -125,6 +127,9 @@ int main(int argc, char *argv[])
         { "show-paging", no_argument, NULL, 11 },
 #endif
         { "forwards", no_argument, NULL, 12 },
+#ifdef LINUX_MULTIFORMAT
+        { "pid", no_argument, NULL, 13},
+#endif
         { 0, 0, 0, 0 }
       };
 
@@ -208,6 +213,9 @@ int main(int argc, char *argv[])
               exit(EXIT_FAILURE);
             }
           backwards = 0;
+          break;
+        case 13:
+          show_pid = 1;
           break;
         case 'h':
         case 3:
@@ -304,6 +312,7 @@ void give_usage(void)
 #ifdef HAVE_PAGING
                "[--show-paging] "
 #endif
+               "[--pid] "
                "[--ahz <freq>] [--version] [--help]\n", program_name);
   print_acct_file_location ();
 }
@@ -392,8 +401,8 @@ void parse_entries(void)
             (void)putchar(' ');
 
           btime = (time_t) rec->ac_btime;
-          if ( show_paging == 0 )
-            (void)printf(" %-8.8s %-8.8s %6.2f secs %-16.16s\n",
+          if ( show_paging == 0)
+            (void)printf(" %-8.8s %-8.8s %6.2f secs %-16.16s",
                          this_uid, this_dev,
 #ifdef LINUX_MULTIFORMAT
                          ((ut + st) / (double) rec->ac_ahz),
@@ -403,7 +412,7 @@ void parse_entries(void)
                          ctime (&btime));
           else
 #ifdef HAVE_PAGING
-            (void)printf(" %6.0fmin %6.0fmaj %4.0fswp %6.2f secs %-16.16s\n",
+            (void)printf(" %6.0fmin %6.0fmaj %4.0fswp %6.2f secs %-16.16s",
                          minf, majf, swap,
 #ifdef LINUX_MULTIFORMAT
                          ((ut + st) / (double) rec->ac_ahz),
@@ -412,8 +421,24 @@ void parse_entries(void)
 #endif
                          ctime (&btime));
 #else
-            (void)printf("  --- No paging statistics! --- \n" );
+            (void)printf("  --- No paging statistics! ---  " );
 #endif
+
+
+          if (show_pid)
+          {
+#ifdef LINUX_MULTIFORMAT
+            if ((rec->ac_version & 0x7f) == 3)
+            {
+              (void) printf(" %d %d", rec->ac_pid, rec->ac_ppid);
+            }
+#else
+            (void)printf("  --- No PID information available! --- " );
+#endif
+          }
+
+
+          (void) printf("\n");
         }
     }
 }

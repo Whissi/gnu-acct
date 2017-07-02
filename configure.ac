@@ -22,7 +22,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl init autoconf
 AC_REQ(2.63)
-AC_INIT([acct],[6.6.3],[nietzsche@lysator.liu.se])
+AC_INIT([acct],[6.6.4],[nietzsche@lysator.liu.se])
 dnl AH_HEADER
 AC_CONFIG_HEADERS([config.h:config.h.in])
 AC_CONFIG_SRCDIR([ac.c])

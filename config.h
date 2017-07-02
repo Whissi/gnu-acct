@@ -970,7 +970,7 @@
 #define PACKAGE_NAME "acct"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "acct 6.6.3"
+#define PACKAGE_STRING "acct 6.6.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "acct"
@@ -979,7 +979,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "6.6.3"
+#define PACKAGE_VERSION "6.6.4"
 
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'ptrdiff_t'. */
@@ -1079,7 +1079,7 @@
 
 
 /* Version number of package */
-#define VERSION "6.6.3"
+#define VERSION "6.6.4"
 
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'wchar_t'. */
